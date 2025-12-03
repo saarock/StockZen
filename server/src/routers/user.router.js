@@ -1,5 +1,5 @@
 import express from "express";
-import { sendMailToTheUser } from "../controller/user.controller";
+import { sendMailToTheUser } from "../controller/user.controller.js";
 const router = express.Router();
 
 router.post("/send_mail", sendMailToTheUser);

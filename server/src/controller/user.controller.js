@@ -1,3 +1,5 @@
+import asyncHandler from "../utils/asyncHandler.js";
+
 /**
  * sends mail to the user to confrim the email
  */
