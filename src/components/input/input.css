@@ -1,0 +1,13 @@
+.input-field {
+    width: 100%;
+    max-width: 400px;
+    margin: 0.5rem 0;
+    padding: 14px 45px 14px 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    outline: none;
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+  }
+  
