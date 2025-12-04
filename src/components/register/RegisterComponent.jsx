@@ -1,7 +1,7 @@
-import React from "react";
+"use client";
 import Button from "../button/Button";
-import Input from "../input/Input";
 import EntryComponent from "../entryComponent";
+import Input from "../input/Input";
 import "./registerComponent.css";
 
 const RegisterComponent = ({
@@ -12,68 +12,87 @@ const RegisterComponent = ({
   onChangeConfrimPassword,
   onChangePassword,
   onChangePhoneNumber,
-  goToBackPage
+  goToBackPage,
 }) => {
-
   return (
-    <>
-     <div className="register-div">
-      <form className="register-form" onSubmit={register}>
-        <div className="register-title">Create a New Account</div>
+    <div className="register-container">
+      <div className="register-card">
+        <div className="register-header">
+          <h1 className="register-title">Create Account</h1>
+          <p className="register-description">
+            Join us today and start your journey
+          </p>
+        </div>
 
-        <Input
-          type="text"
-          name="fullName"
-          placeholder="Full Name"
-          required={true}
-          onChange={onChangeFullName}
-        />
-        <Input
-          type="text"
-          name="userName"
-          placeholder="Username"
-          required={true}
-          onChange={onChangeUserName}
-        />
-        <Input
-          type="email"
-          name="email"
-          placeholder="Email"
-          required={true}
-          onChange={onChangeEmail}
-        />
-        <Input
-          type="text"
-          name="phoneNumber"
-          placeholder="Phone Number"
-          required={true}
-          onChange={onChangePhoneNumber}
-        />
-        <Input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          required={true}
-          onChange={onChangeConfrimPassword}
-        />
-        <Input
-          type="password"
-          name="password"
-          placeholder="Password"
-          required={true}
-          onChange={onChangePassword}
-        />
+        <form className="register-form" onSubmit={register}>
+          <div className="form-row">
+            <Input
+              type="text"
+              name="fullName"
+              placeholder="Full Name"
+              required={true}
+              onChange={onChangeFullName}
+            />
+          </div>
 
-        <Button type="submit" className="register-button" text={"Register"} />
-      </form>
+          <div className="form-row">
+            <Input
+              type="text"
+              name="userName"
+              placeholder="Username"
+              required={true}
+              onChange={onChangeUserName}
+            />
+          </div>
 
-      <EntryComponent />
+          <div className="form-row">
+            <Input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              required={true}
+              onChange={onChangeEmail}
+            />
+          </div>
 
+          <div className="form-row">
+            <Input
+              type="text"
+              name="phoneNumber"
+              placeholder="Phone Number"
+              required={true}
+              onChange={onChangePhoneNumber}
+            />
+          </div>
 
+          <div className="form-row">
+            <Input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required={true}
+              onChange={onChangePassword}
+            />
+          </div>
+
+          <div className="form-row">
+            <Input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              required={true}
+              onChange={onChangeConfrimPassword}
+            />
+          </div>
+
+          <Button
+            type="submit"
+            className="register-submit-btn"
+            text="Create Account"
+          />
+        </form>
+      </div>
     </div>
-          <Button text={"Back"} onClick={goToBackPage} />
-    </>
-   
   );
 };
 

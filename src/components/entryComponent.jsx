@@ -1,43 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router';
-import './entry.css';
 
+import { useState, useEffect } from "react"
+import { useNavigate, useLocation } from "react-router"
+import "./entry.css"
 
 const EntryComponent = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [isLogin, setIsLogin] = useState(location.pathname === '/login'); // Set initial state based on URL
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [isLogin, setIsLogin] = useState(location.pathname === "/login")
 
-    // Update the state whenever the location changes (page navigation)
-    useEffect(() => {
-        setIsLogin(location.pathname === '/login');
-    }, [location]);
+  useEffect(() => {
+    setIsLogin(location.pathname === "/login")
+  }, [location])
 
-    // Handle navigation based on the current form state (Login or Signup)
-    const handleNavigation = () => {
-        if (isLogin) {
-            navigate('/register'); // Navigate to the signup page if the user is on login page
-        } else {
-            navigate('/login'); // Navigate to the login page if the user is on signup page
-        }
-    };
+  const handleNavigation = () => {
+    if (isLogin) {
+      navigate("/register")
+    } else {
+      navigate("/login")
+    }
+  }
 
-    return (
-        <div className="entry-container">
-            <div className="entry-title">{isLogin ? "New here?" : "Already a member?"}</div>
-            <div className="entry-subtitle">
-                {isLogin
-                    ? "Signup and discover a great amount of new opportunities."
-                    : "Login and continue where you left off."}
-            </div>
-            <div className="entry-toggle" onClick={handleNavigation}>
-                {isLogin ? "Register" : "Login"}
-            </div>
-            <div className="invertory-image">
-                <img src = {`./images/in.png`} alt="Inventory" className="entry-image" width={500} height={500}/>
-            </div>
-        </div>
-    );
-};
+  return (
+    <div className="entry-container bg-red">
+      <div className="entry-title">{isLogin ? "New here?" : "Already a member?"}</div>
+      <div className="entry-subtitle">
+        {isLogin
+          ? "Signup and discover a great amount of new opportunities."
+          : "Login and continue where you left off."}
+      </div>
+      <div className="entry-toggle" onClick={handleNavigation}>
+        {isLogin ? "Register" : "Login"}
+      </div>
+      <div className="invertory-image">
+        <img src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDaclAgcMuaCpoOMl-z3Tn5VsKPQ42tgDOFFR6NFJ9kNoM_K6553E2qxeSOXVvs6mJ308"} alt="Inventory" className="entry-image" width={500} height={500} />
+      </div>
+    </div>
+  )
+}
 
-export default EntryComponent;
+export default EntryComponent

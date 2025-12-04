@@ -5,6 +5,7 @@ import { handleResponse } from "../../utils";
 import { useDispatch } from "react-redux";
 import { setError } from "../../features/auth/authSlice";
 import "./registerPage.css";
+import EntryComponent from "../../components/entryComponent";
 
 const RegisterPage = () => {
   // hooks  starts
@@ -19,15 +20,13 @@ const RegisterPage = () => {
 
   const [otpFormData, setOtpFormData] = useState({
     otp: "",
-    email: ""
-  })
+    email: "",
+  });
 
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [cacheEmail, setCacheEmail] = useState("");
 
   // hooks ends
-
-
 
   // function to handel the input change of the resgister form
   const handleInputChange = (name, value) => {
@@ -37,7 +36,6 @@ const RegisterPage = () => {
     }));
   };
 
-
   // function to send the mail and get otp
   const sendMail = async (email) => {
     try {
@@ -45,7 +43,6 @@ const RegisterPage = () => {
       if (response.success) {
         setCacheEmail(email);
         setIsOtpSent(true);
-
       } else {
         dispatch(setError(response.error));
       }
@@ -54,50 +51,44 @@ const RegisterPage = () => {
     }
   };
 
-  // function to register after all the things are successfully processed 
+  // function to register after all the things are successfully processed
   const register = async (e) => {
-
     try {
+      alert("afsdfgsadg")
+      if (isOtpSent) {
+        await handleResponse(Auth.register(formData));
+        navigator("/login");
+        return;
+      }
 
-    if (isOtpSent) {
-      await handleResponse(Auth.register(formData));
-      navigator("/login")
-      return;
+      e.preventDefault();
+      console.log("Form Data:", formData);
+
+      if (formData.password !== formData.confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+
+      await sendMail(formData.email);
+    } catch (error) {
+      dispatch(setError(error.message));
     }
-
-
-    e.preventDefault();
-    console.log("Form Data:", formData);
-
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-
-    await sendMail(formData.email);
-
-  } catch(error) {
-    dispatch(setError(error.message));
-  }
-    
   };
-
 
   // function to handel the input change of hte otpInput
   const handelOtpInputChange = async (value) => {
     setOtpFormData((prevData) => ({
       ...prevData,
       otp: value,
-      email: cacheEmail
+      email: cacheEmail,
     }));
-  }
-
+  };
 
   // function sends the otp and email to get verified
   const sendOtp = async (e) => {
     e.preventDefault();
     try {
-      const response = await handleResponse(Auth.verifyMail(otpFormData));      
+      const response = await handleResponse(Auth.verifyMail(otpFormData));
       if (response.success) {
         register();
       } else {
@@ -106,39 +97,54 @@ const RegisterPage = () => {
     } catch (error) {
       dispatch(setError(error.message));
     }
-  }
-
+  };
 
   const goToPrevPage = () => {
     setIsOtpSent(false);
-  }
+  };
 
-  const goToBackPage = () =>{
+  const goToBackPage = () => {
     setIsOtpSent(true);
-  }
+  };
 
   return (
-    <div className="register-page">
-      {isOtpSent ? (
-        <VerifyMailComponent
-         onChangeOtp={(e) => handelOtpInputChange(e.target.value)}
-          onSubmitOtp={sendOtp}
-          goToPrevPage={goToPrevPage}
-           />
-      ) : (
-        <RegisterComponent
-          register={register}
-          onChangeFullName={(e) => handleInputChange("fullName", e.target.value)}
-          onChangeUserName={(e) => handleInputChange("userName", e.target.value)}
-          onChangeEmail={(e) => handleInputChange("email", e.target.value)}
-          onChangePhoneNumber={(e) => handleInputChange("phoneNumber", e.target.value)}
-          goToBackPage={goToBackPage}
-          onChangeConfrimPassword={(e) =>
-            handleInputChange("confirmPassword", e.target.value)
-          }
-          onChangePassword={(e) => handleInputChange("password", e.target.value)}
-        />
-      )}
+    <div className="main-container">
+      <div className="content-wrapper">
+        <div className="left-panel">
+          {isOtpSent ? (
+            <VerifyMailComponent
+              onChangeOtp={(e) => handelOtpInputChange(e.target.value)}
+              onSubmitOtp={sendOtp}
+              goToPrevPage={goToPrevPage}
+            />
+          ) : (
+            <RegisterComponent
+              register={register}
+              onChangeFullName={(e) =>
+                handleInputChange("fullName", e.target.value)
+              }
+              onChangeUserName={(e) =>
+                handleInputChange("userName", e.target.value)
+              }
+              onChangeEmail={(e) => handleInputChange("email", e.target.value)}
+              onChangePhoneNumber={(e) =>
+                handleInputChange("phoneNumber", e.target.value)
+              }
+              goToBackPage={goToBackPage}
+              onChangeConfrimPassword={(e) =>
+                handleInputChange("confirmPassword", e.target.value)
+              }
+              onChangePassword={(e) =>
+                handleInputChange("password", e.target.value)
+              }
+            />
+          )}
+        </div>
+
+        <div className="right-panel">
+          <EntryComponent />
+        </div>
+      </div>
     </div>
   );
 };

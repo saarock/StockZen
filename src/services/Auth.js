@@ -32,6 +32,18 @@ class Auth {
       throw new Error(error.response.data.message);
     }
   }
+
+  static async logout(user) {
+    try {
+      console.log(user);
+
+      const response = await protectedApi.post("/logout", user);
+      const data = response.data;
+      return data;
+    } catch (error) {
+      throw new Error(error.response.data.message);
+    }
+  }
 }
 
 export default Auth;

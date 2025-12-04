@@ -1,9 +1,26 @@
 .button {
-    background-color: #2b6cb2;
-    width: fit-content;
-    color: white;
-    padding: 0.8rem;
-    border-radius: 3rem;
-    width: 8rem;
-    cursor: pointer;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #101540;
+  color: white;
+}
+
+.button:hover {
+  background-color: #1a1f5a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 21, 64, 0.3);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

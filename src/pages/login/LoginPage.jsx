@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import LoginComponent from '../../components/login/LoginComponent'
-import { Cookie, handleResponse, LocalStorage } from '../../utils';
-import Auth from '../../services/Auth';
+import LoginComponent from '../../components/login/login';
+import Cookie from '../../utils/cookie';
+import {handleResponse} from '../../utils';
+import LocalStorage from '../../utils/localStorage';
+import { Auth } from '../../services';
 import { useDispatch, useSelector } from "react-redux";
 import { ACCESS_TOKEN_COOKIE_NAME, REFRESH_TOKEN_COOKIE_NAME } from '../../constant';
 import { login } from '../../features/auth/authSlice';

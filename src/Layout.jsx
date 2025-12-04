@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { Outlet } from 'react-router';
 import { ToastContainer } from 'react-toastify';
 import {useSaarockToast} from "./hooks";
+import Header from './components/header/header';
+import Footer from './components/footer/footer';
 
 
 const Layout = () => {
@@ -14,7 +16,7 @@ const Layout = () => {
       const { saarock } = await import("https://cdn.jsdelivr.net/gh/saarock/saarock.js@main/dist/index.js");
       
       saarockToast.backToTop({
-        backColor: "blue",
+        backColor: "#1a1f5a",
       });
     })();
   }, []);
@@ -22,12 +24,12 @@ const Layout = () => {
 
   return (
     <>
-      {/* <Header /> */}
+      <Header />
       <ToastContainer />
       <main style={{position: "relative"}}>
         <Outlet />
       </main>
-      {/* <Footer /> */}
+      <Footer />
 
     </>
   )

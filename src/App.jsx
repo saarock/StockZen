@@ -4,6 +4,7 @@ import Layout from "./Layout";
 import RegisterPage from "./pages/register/RegisterPage";
 
 import HomePage from "./pages/home/HomePage";
+import LoginPage from "./pages/login/LoginPage";
 
 function App() {
   return (
@@ -12,23 +13,9 @@ function App() {
         <Routes>
           {/* Main Layout */}
           <Route path="" element={<Layout />}>
-            <Route
-              path="/"
-              index
-              element={
-            
-                  <HomePage />
-                
-              }
-            />
-            <Route
-              path="/register"
-              element={
-            
-                  <RegisterPage />
-                
-              }
-            />
+            <Route path="/" index element={<HomePage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<LoginPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
