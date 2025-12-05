@@ -1,4 +1,5 @@
 import api from "../instance/axiosInstance";
+import protectedApi from "../instance/axiosProtectedInstance";
 
 class Auth {
   static async register(userFromData) {
@@ -58,15 +59,13 @@ class Auth {
   
     static async verify() {
         try {
+ 
             const response = await protectedApi.post("/verifyToken");
             const data = response.data;
-
+  
             return data;
         } catch (error) {
-            if(!error.response.data.success) {
-
-            }
-            throw new Error(error.response.data.message);
+            throw new Error(error);
         }
     }
 

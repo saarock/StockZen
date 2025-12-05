@@ -5,10 +5,9 @@ import { Auth } from '../services';
 import { login, setError, setLoading } from '../features/auth/authSlice';
 import { ACCESS_TOKEN_COOKIE_NAME } from '../constant';
 import LoadingComponent from './loading/LoadingComponent';
-import Cookie from '../utils/cookie';
 import LocalStorage from '../utils/localStorage';
 import { handleResponse } from '../utils';
-
+import Cookie from "../utils/cookie"
 
 const PUBLIC_ROUTES = ["/", "/login", "/register"]; // Define all public routes
 
@@ -36,13 +35,10 @@ const ProtectedPage = ({ children }) => {
 
             try {
                 dispatch(setLoading(true)); // Set loading state to true before the async operation
-                const response = await handleResponse(Auth.verify());
-                console.log(response);
-                
+                const response = await handleResponse(Auth.verify());               
 
                 if (response.error) {
                     dispatch(setError(response.error));
-
                     throw new Error(response.error)
                 }
 

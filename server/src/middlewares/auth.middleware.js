@@ -6,7 +6,8 @@ import asyncHandler from "../utils/asyncHandler.js";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
   try {
-    console.log("yes");
+    console.log("user is valid");
+
     
     const token = req.headers.authorization?.split(" ")[1];
     const jwtSecret = process.env.ACCESS_TOKEN_SECRET;

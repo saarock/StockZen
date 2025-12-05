@@ -27,6 +27,7 @@ router.post("/verifyToken", verifyJWT, (req, res) => {
     //     console.log(userSocketId + " user socket id ")
     //     io.to(userSocketId).emit("notification", { totalNotifications });
     // }
+    
     return res.status(201).json(new ApiResponse(200, null, "Verified"));
   } catch (eror) {
     throw new ApiError(

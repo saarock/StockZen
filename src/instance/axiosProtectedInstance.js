@@ -1,5 +1,7 @@
 import axios from "axios";
 import { ACCESS_TOKEN_COOKIE_NAME } from "../constant";
+import Cookie from "../utils/cookie";
+
 
 // Create the protected axios instance
 const protectedApi = axios.create({

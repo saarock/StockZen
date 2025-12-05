@@ -1,6 +1,8 @@
 const handleResponse = async (apiCall) => {
     try {
+
       const response = await apiCall;      
+      
       if (!response || response.statusCode !== 200) {
         throw new Error(response?.message || "Something went wrong!");
       }
