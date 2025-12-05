@@ -1,0 +1,143 @@
+/* Container styles */
+.dashboard-nav-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f6f8;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Sidebar styles with colorful blue gradient */
+.dashboard-sidebar {
+  width: 260px;
+  background: linear-gradient(90deg, #111f4c 0%, #2a4378 100%, #12182c 0%, #2563eb 100%);
+  background-size: 300% 300%;
+  animation: gradientShift 8s ease infinite;
+  color: #fff;
+  padding: 20px;
+  transition: transform 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Gradient animation */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Mobile toggle button */
+.mobile-menu-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1100;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: #fff;
+  font-size: 24px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  cursor: pointer;
+  display: none;
+}
+
+/* User info */
+.user-info {
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+.user-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* Nav links */
+.nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  margin: 15px 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  color: #dbeafe;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transform: translateX(5px);
+}
+
+.nav-link.activeg {
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-weight: bold;
+}
+
+.icon {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.link-text {
+  font-size: 1rem;
+}
+
+/* Always show sidebar on desktop */
+@media (min-width: 769px) {
+  .dashboard-sidebar {
+    transform: translateX(0);
+  }
+
+  .mobile-menu-btn {
+    display: none;
+  }
+
+  .dashboard-nav-container {
+    padding-left: 260px;
+  }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .dashboard-sidebar {
+    transform: translateX(-100%);
+  }
+
+  .dashboard-sidebar.active {
+    transform: translateX(0);
+  }
+
+  .dashboard-nav-container {
+    padding-left: 0;
+  }
+}
+
+/* Scrollable sidebar */
+.dashboard-sidebar {
+  overflow-y: auto;
+}
