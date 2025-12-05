@@ -11,6 +11,16 @@ class Auth {
     }
   }
 
+  static async login(userLoginFormDetails) {
+    try {
+      const response = await api.post("/login", userLoginFormDetails);
+      const data = response.data;
+      return data;
+    } catch (error) {
+      throw new Error(error.response.data.message);
+    }
+  }
+
   static async verifyRefreshTokenAndgetNewAccessToken(refreshToken) {}
 
   static async sendMail(to) {

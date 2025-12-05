@@ -5,10 +5,11 @@ import "./button.css";
 const Button = ({
     className,
     text,
-    onClick
+    onClick,
+    ...props
 }) => {
   return (
-    <button onClick={onClick} className={`${className} button`}>{text}</button>
+    <button onClick={onClick} {...props} className={`${className} button`}>{text}</button>
   )
 };
 

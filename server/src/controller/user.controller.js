@@ -2,6 +2,34 @@ import asyncHandler from "../utils/asyncHandler.js";
 import mailOtpStore from "../utils/mailOtpStore.js";
 import nodeMailer from "../utils/mailSender.js";
 import ApiResponse from "../utils/apiResponse.js";
+import jwt from "jsonwebtoken";
+import User from "../models/user.model.js";
+import ApiError from "../utils/apiError.js";
+
+
+const generateAccessAndRefreshTokens = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new ApiError(
+      500,
+      "Error generating access and refresh token: " + error.message
+    );
+  }
+};
+
+
+
+
 /**
  * sends mail to the user to confrim the email
  */
@@ -29,6 +57,10 @@ export const sendMailToTheUser = asyncHandler(async (req, res) => {
 export const verifyUserMail = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
   const isCorrectOpt = mailOtpStore.verifyOtp(email, otp);
+  console.log(isCorrectOpt);
+  console.log("Main verify");
+  
+  
   if (!isCorrectOpt) {
     throw new ApiError(400, "Wrong otp");
   }
@@ -81,5 +113,99 @@ export const registerUser = asyncHandler(async (req, res) => {
       500,
       error?.message || "Something went wrong while login"
     );
+  }
+});
+
+
+
+export const loginUser = asyncHandler(async (req, res) => {
+  try {
+    const { userName, email, password } = req.body;
+    console.log("Login user");
+
+    if (!(userName || email)) {
+      throw new ApiError(400, "UserName or email requried");
+    }
+
+    const user = await User.findOne({
+      $or: [{ userName }, { email }],
+    });
+
+    if (!user) {
+      throw new ApiError(404, "User doesnot exit");
+    }
+
+    if (!user.isActive) {
+      console.log("deactivate");
+      throw new ApiError(
+        403,
+        "Your Account is Deactivated Pleased contact to our team."
+      );
+    }
+
+    const passwordCorrect = user.isPasswordCorrect(password);
+    if (!passwordCorrect) {
+      throw new ApiError(401, "Incorrect Password.");
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+      user._id
+    );
+
+    const {
+      password: _,
+      refreshToken: __,
+      ...userWithoutSensativeData
+    } = user.toObject();
+
+    return res
+      .status(201)
+      .json(
+        new ApiResponse(200, {
+          userWithoutSensativeData,
+          accessToken,
+          refreshToken,
+        })
+      );
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while login"
+    );
+  }
+});
+
+
+
+export const refreshAccessToken = asyncHandler(async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(403).json({ message: "Refresh token required." });
+  }
+
+  try {
+    // console.log("yes: " + process.env.REFRESH_TOKEN_SECRET);
+
+    // Verify the refresh token
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    // console.log(decoded);
+
+    const user = await User.findById(decoded._id);
+    console.log(user);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Generate a new access token
+    const newAccessToken = await user.generateAccessToken();
+
+    // Send the new access token back in the response
+    return res
+      .status(201)
+      .json(new ApiResponse(200, newAccessToken, "Register Successfull"));
+  } catch (error) {
+    return res.status(401).json({ message: error.message });
   }
 });

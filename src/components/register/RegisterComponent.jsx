@@ -13,6 +13,7 @@ const RegisterComponent = ({
   onChangePassword,
   onChangePhoneNumber,
   goToBackPage,
+  loading,
 }) => {
   return (
     <div className="register-container">
@@ -86,6 +87,7 @@ const RegisterComponent = ({
           </div>
 
           <Button
+            disabled={loading}
             type="submit"
             className="register-submit-btn"
             text="Create Account"

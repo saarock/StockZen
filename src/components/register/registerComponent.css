@@ -3,15 +3,20 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      border-radius: 2rem;
+  
 }
 
 .register-card {
-  background: white;
-  border-radius: 20px;
-  padding: 3rem 2.5rem;
-  box-shadow: 0 20px 60px rgba(16, 21, 64, 0.12);
-  width: 100%;
-  max-width: 520px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 3rem;
+  /* box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 2rem;
+  width: 32rem;
+  
 }
 
 /* Enhanced header styling */
