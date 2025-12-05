@@ -2,9 +2,12 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import "./App.css";
 import Layout from "./Layout";
 import RegisterPage from "./pages/register/RegisterPage";
-
 import HomePage from "./pages/home/HomePage";
 import LoginPage from "./pages/login/LoginPage";
+import NotFound from "./pages/NotFound/NotFound";
+import ProtectedPage from "./components/ProtectedPage";
+import AddProduct from "./components/adminDashComponents/AddProduct";
+import AdminDashboardLayout from "./AdminDashboardLayout";
 
 function App() {
   return (
@@ -13,9 +16,54 @@ function App() {
         <Routes>
           {/* Main Layout */}
           <Route path="" element={<Layout />}>
-            <Route path="/" index element={<HomePage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/"
+              index
+              element={
+                <ProtectedPage>
+                  <HomePage />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <ProtectedPage>
+                  <RegisterPage />{" "}
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <ProtectedPage>
+                  <LoginPage />{" "}
+                </ProtectedPage>
+              }
+            />
+            {/* <Route path="/products" element={<ProtectedPage><Products /> </ProtectedPage>} /> */}
+            <Route
+              path="*"
+              element={
+                <ProtectedPage>
+                  <NotFound />{" "}
+                </ProtectedPage>
+              }
+            />
+          </Route>
+
+          {/* Admin Dashboard layout */}
+
+          <Route path="admin/dashboard" element={<AdminDashboardLayout />}>
+            <Route
+              path="add-product"
+              index
+              element={
+                <ProtectedPage>
+                  <AddProduct />
+                </ProtectedPage>
+              }
+            />
           </Route>
         </Routes>
       </BrowserRouter>

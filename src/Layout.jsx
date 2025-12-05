@@ -11,15 +11,15 @@ const Layout = () => {
   const {saarockToast} = useSaarockToast();
 
 
-  useEffect(() => {
-    (async () => {
-      const { saarock } = await import("https://cdn.jsdelivr.net/gh/saarock/saarock.js@main/dist/index.js");
+  // useEffect(() => {
+  //   (async () => {
+  //     const { saarock } = await import("https://cdn.jsdelivr.net/gh/saarock/saarock.js@main/dist/index.js");
       
-      saarockToast.backToTop({
-        backColor: "#1a1f5a",
-      });
-    })();
-  }, []);
+  //     saarockToast.backToTop({
+  //       backColor: "#1a1f5a",
+  //     });
+  //   })();
+  // }, []);
 
 
   return (

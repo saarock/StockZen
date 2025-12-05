@@ -54,6 +54,23 @@ class Auth {
       throw new Error(error.response.data.message);
     }
   }
+
+  
+    static async verify() {
+        try {
+            const response = await protectedApi.post("/verifyToken");
+            const data = response.data;
+
+            return data;
+        } catch (error) {
+            if(!error.response.data.success) {
+
+            }
+            throw new Error(error.response.data.message);
+        }
+    }
+
+    
 }
 
 export default Auth;

@@ -11,9 +11,9 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// import { initSocket } from "./services/socket.service.js";
+import { initSocket } from "./services/socket.service.js";
 
-// const io = initSocket(server);
+const io = initSocket(server);
 
 
 
@@ -45,4 +45,4 @@ app.use("/api/v1/users", userRouter);
 
 
 export default server;
-// export { io }
+export { io }
