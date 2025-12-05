@@ -10,6 +10,7 @@ import {
   AlignLeft,
   Sparkles,
 } from "lucide-react";
+import productService from "../../services/productService";
 import { handleResponse } from "../../utils";
 
 // Mock data for demonstration - replace with your actual imports
@@ -121,7 +122,7 @@ const AddProduct = () => {
         productService.addProduct(submitData)
       );
 
-      toast.success("Product added successfully");
+      toast.success(response.data || "Product added successfully");
 
       setFormData({
         name: "",

@@ -1,5 +1,6 @@
 import protectedApi from "../instance/axiosProtectedInstance";
 
+
 class ProductService {
     async addProduct(product) {
         try {
