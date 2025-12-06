@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './AdminComp.css';
 import productService from '../../services/productService';
-import Product from '../Product/Product';
+
 import { useDispatch, useSelector } from 'react-redux';
 import useUser from '../../hooks/useUser';
 import { toast } from "react-toastify"
 import { addToCart  } from '../../features/product/productSlice';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import {categoryOptions} from "../../constant.js";
-
+import Prodcut from "../Product/Product.jsx";
 
 const ShowAndManageProductComponent = ({ adminWant = '1', refresh }) => {
   const [products, setProducts] = useState([]);

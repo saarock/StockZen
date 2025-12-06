@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound/NotFound";
 import ProtectedPage from "./components/ProtectedPage";
 import AddProduct from "./components/adminDashComponents/AddProduct";
 import AdminDashboardLayout from "./AdminDashboardLayout";
+import ProductManagePage from "./pages/admin/ProductManagePage";
 
 function App() {
   return (
@@ -64,6 +65,8 @@ function App() {
                 </ProtectedPage>
               }
             />
+            <Route path='manage-product' index element={<ProtectedPage><ProductManagePage /></ProtectedPage>} />
+
           </Route>
         </Routes>
       </BrowserRouter>

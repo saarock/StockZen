@@ -126,7 +126,7 @@ const AdminDashBoardNav = () => {
               return (
                 <Link
                   key={link.path}
-                  href={link.path}
+                 to={link.path}
                   onClick={() => {
                     if (window.innerWidth < 1024) setSidebarOpen(false);
                   }}
