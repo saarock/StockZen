@@ -1,6 +1,5 @@
 import React from 'react';
 import "./AdminComp.css";
-
 const ProductManageNav = ({ setWhatUserWant, userWant }) => {
     return (
         <nav className="pdtM-product-manage-nav">

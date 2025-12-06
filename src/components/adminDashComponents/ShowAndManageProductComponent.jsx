@@ -5,10 +5,10 @@ import productService from '../../services/productService';
 import { useDispatch, useSelector } from 'react-redux';
 import useUser from '../../hooks/useUser';
 import { toast } from "react-toastify"
-import { addToCart  } from '../../features/product/productSlice';
-import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+import { addToCart  } from "../../features/product/productSlice.js";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner.jsx";
 import {categoryOptions} from "../../constant.js";
-import Prodcut from "../Product/Product.jsx";
+import Product from '../Product/Product.jsx';
 
 const ShowAndManageProductComponent = ({ adminWant = '1', refresh }) => {
   const [products, setProducts] = useState([]);
