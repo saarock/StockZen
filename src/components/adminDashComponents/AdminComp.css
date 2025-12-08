@@ -279,11 +279,12 @@ input[type="file"]::file-selector-button:hover {
   padding: 15px;
   text-align: center;
   font-size: 14px;
+  
 }
 
 .product-table th {
-  background-color: #f1f1f1;
   color: #333;
+    background-color: #1a2250 !important;
 }
 
 .product-table td {
@@ -434,12 +435,13 @@ thead th:last-child {
 /* Pagination styling */
 .pagination {
   display: flex;
-  justify-content: center;
+  justify-content: center !important;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
   padding: 16px 0;
 }
+
 
 .pagination button {
   padding: 10px 20px;

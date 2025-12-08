@@ -9,6 +9,9 @@ import ProtectedPage from "./components/ProtectedPage";
 import AddProduct from "./components/adminDashComponents/AddProduct";
 import AdminDashboardLayout from "./AdminDashboardLayout";
 import ProductManagePage from "./pages/admin/ProductManagePage";
+import { Profile } from "./components";
+import UserDashboardLayout from "./UserDashboardLayout";
+import Products from "./pages/products/Products";
 
 function App() {
   return (
@@ -51,6 +54,10 @@ function App() {
                 </ProtectedPage>
               }
             />
+
+            <Route path="/products" element={<ProtectedPage><Products /> </ProtectedPage>} />
+
+
           </Route>
 
           {/* Admin Dashboard layout */}
@@ -65,8 +72,31 @@ function App() {
                 </ProtectedPage>
               }
             />
-            <Route path='manage-product' index element={<ProtectedPage><ProductManagePage /></ProtectedPage>} />
+            <Route
+              path="manage-product"
+              index
+              element={
+                <ProtectedPage>
+                  <ProductManagePage />
+                </ProtectedPage>
+              }
+            />
+          </Route>
 
+          {/* User Dashboard Layout */}
+          <Route path="user/dashboard" element={<UserDashboardLayout />}>
+            {/* <Route path="" index element={<ProtectedPage><UserDashPage /></ProtectedPage>} /> */}
+            <Route
+              path="profile"
+              element={
+                <ProtectedPage>
+                  <Profile />
+                </ProtectedPage>
+              }
+            />
+            {/* <Route path="notifications" element={<ProtectedPage><Notificatoins /></ProtectedPage>} /> */}
+            {/* <Route path="stats" element={<ProtectedPage><Stats /></ProtectedPage>} /> */}
+            {/* <Route path="my-product" element={<ProtectedPage><MyProduct/></ProtectedPage>} /> */}
           </Route>
         </Routes>
       </BrowserRouter>

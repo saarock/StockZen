@@ -9,7 +9,7 @@
   /* The actual spinner circle */
   .loading-spinner {
     border: 8px solid #f3f3f3; /* Light gray color for the background */
-    border-top: 8px solid #3498db; /* Blue color for the spinning section */
+    border-top: 8px solid #1a2250; /* Blue color for the spinning section */
     border-radius: 50%;
     width: 60px;
     height: 60px;
