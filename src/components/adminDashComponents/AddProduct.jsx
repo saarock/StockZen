@@ -122,8 +122,12 @@ const AddProduct = () => {
         productService.addProduct(submitData)
       );
 
-      toast.success(response.data || "Product added successfully");
-
+      if (response.error) {
+        toast.error(response?.error || "Invalid inputs.");
+        return;
+      } else {
+        toast.success(response.data ?? "Product added successfully");
+      }
       setFormData({
         name: "",
         price: "",
@@ -260,6 +264,7 @@ const AddProduct = () => {
                     name="expiryDate"
                     value={formData.expiryDate}
                     onChange={handleChange}
+                    min={new Date().toISOString().split("T")[0]}
                     className={`w-full px-4 py-3.5 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-4 ${
                       errors.expiryDate
                         ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-100"

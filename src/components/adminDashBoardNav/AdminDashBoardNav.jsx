@@ -51,11 +51,11 @@ const AdminDashBoardNav = () => {
   const isActive = (path) => pathname === path;
 
   return (
-    <div className="sticky top-0 left-0">
+    <div>
       {/* Mobile Toggle Button */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden fixed top-20 left-4 z-50 p-3 rounded-2xl bg-gradient-to-br from-[#101540] to-[#1a2060] text-white shadow-xl shadow-[rgba(16,21,64,0.4)] hover:shadow-2xl hover:shadow-[rgba(16,21,64,0.6)] transition-all duration-300 hover:scale-110 active:scale-95"
+        className="lg:hidden fixed top-20 left-4 p-3 rounded-2xl bg-gradient-to-br from-[#101540] to-[#1a2060] text-white shadow-xl shadow-[rgba(16,21,64,0.4)] hover:shadow-2xl hover:shadow-[rgba(16,21,64,0.6)] transition-all duration-300 hover:scale-110 active:scale-95"
         aria-label="Toggle sidebar"
       >
         <div className="relative w-6 h-6">
@@ -88,7 +88,7 @@ const AdminDashBoardNav = () => {
 
       {/* Sidebar */}
       <aside
-        className={`sticky top-0 left-0 h-screen bg-white border-r border-[rgba(16,21,64,0.1)] shadow-2xl shadow-[rgba(16,21,64,0.1)] transition-all duration-500 ease-in-out ${
+        className={` h-screen bg-white border-r border-[rgba(16,21,64,0.1)] shadow-2xl shadow-[rgba(16,21,64,0.1)] transition-all duration-500 ease-in-out ${
           isSidebarOpen
             ? "fixed inset-0 z-40 translate-x-0"
             : "fixed -translate-x-full z-40"
@@ -126,7 +126,7 @@ const AdminDashBoardNav = () => {
               return (
                 <Link
                   key={link.path}
-                 to={link.path}
+                  to={link.path}
                   onClick={() => {
                     if (window.innerWidth < 1024) setSidebarOpen(false);
                   }}

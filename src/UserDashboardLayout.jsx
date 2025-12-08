@@ -9,9 +9,9 @@ const UserDashboardLayout = () => {
   return (
     <div className="dashboard-layout">
       <Header />
-      <div className="userDashContainer flex">
+      <div className="userDashContainer flex justify-center items-center">
       <UserDashBoardNav/>
-      <div className="dashboard-content flex items-center justify-center">
+      <div className=" w-full">
         <Outlet /> {/* This will render the specific dashboard page content */}
       </div>
       </div>
