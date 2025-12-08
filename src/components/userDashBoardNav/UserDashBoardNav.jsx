@@ -1,78 +1,69 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
-import {
-  FaUtensils,
-  FaPlusCircle,
-  FaUsersCog,
-  FaDeviantart,
-  FaBars,
-  FaTimes,
-  FaUserCircle,
-} from "react-icons/fa";
 
-const AdminDashBoardNav = () => {
-  const user = useSelector((state) => state.auth.user);
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const pathname = useLocation().pathname;
+import { useState } from "react"
+import { NavLink, useLocation } from "react-router-dom"
+import { FaUser, FaCog, FaBell, FaBoxOpen, FaBars, FaTimes, FaUserCircle } from "react-icons/fa"
+import useUser from "../../hooks/useUser"
+
+
+const UserDashBoardNav = () => {
+  const { user } = useUser()
+  const numberOfNotifications = 120
+  const [isSidebarOpen, setSidebarOpen] = useState(false)
+  const pathname = useLocation().pathname
 
   const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
-  };
+    setSidebarOpen(!isSidebarOpen)
+  }
 
   const navLinks = [
     {
-      name: "Add Product",
-      path: "/admin/dashboard/add-product",
-      icon: <FaUtensils />,
+      name: "Profile",
+      path: "profile",
+      icon: <FaUser />,
+      tooltip: "View your profile",
     },
     {
-      name: "Manage Product",
-      path: "/admin/dashboard/manage-product",
-      icon: <FaPlusCircle />,
+      name: "Stats",
+      path: "stats",
+      icon: <FaCog />,
+      tooltip: "Adjust your settings",
     },
     {
-      name: "Manage Users",
-      path: "/admin/dashboard/manage-users",
-      icon: <FaUsersCog />,
+      name: "Notifications",
+      path: "notifications",
+      icon: <FaBell />,
+      tooltip: "Check your notifications",
+      badge: numberOfNotifications,
     },
     {
-      name: "My details",
-      path: "/admin/dashboard/my-details",
-      icon: <FaDeviantart />,
+      name: "MyProduct",
+      path: "my-product",
+      icon: <FaBoxOpen />,
+      tooltip: "View your products",
     },
-    {
-      name: "Manage booked product",
-      path: "/admin/dashboard/manage-booked-product",
-      icon: <FaDeviantart />,
-    },
-  ];
+  ]
 
-  const isActive = (path) => pathname === path;
+  const isActive = (path) => pathname.includes(path)
 
   return (
-    <div>
+    <div className="sticky top-0 left-0">
       {/* Mobile Toggle Button */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden fixed top-20 left-4 p-3 rounded-2xl bg-gradient-to-br from-[#101540] to-[#1a2060] text-white shadow-xl shadow-[rgba(16,21,64,0.4)] hover:shadow-2xl hover:shadow-[rgba(16,21,64,0.6)] transition-all duration-300 hover:scale-110 active:scale-95"
+        className="lg:hidden fixed top-20 left-4 z-50 p-3 rounded-2xl bg-gradient-to-br from-[#101540] to-[#1a2060] text-white shadow-xl shadow-[rgba(16,21,64,0.4)] hover:shadow-2xl hover:shadow-[rgba(16,21,64,0.6)] transition-all duration-300 hover:scale-110 active:scale-95"
         aria-label="Toggle sidebar"
       >
         <div className="relative w-6 h-6">
           <FaBars
             size={24}
             className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-              isSidebarOpen
-                ? "opacity-0 rotate-180 scale-0"
-                : "opacity-100 rotate-0 scale-100"
+              isSidebarOpen ? "opacity-0 rotate-180 scale-0" : "opacity-100 rotate-0 scale-100"
             }`}
           />
           <FaTimes
             size={24}
             className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-              isSidebarOpen
-                ? "opacity-100 rotate-0 scale-100"
-                : "opacity-0 -rotate-180 scale-0"
+              isSidebarOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-180 scale-0"
             }`}
           />
         </div>
@@ -88,10 +79,8 @@ const AdminDashBoardNav = () => {
 
       {/* Sidebar */}
       <aside
-        className={` h-screen bg-white border-r border-[rgba(16,21,64,0.1)] shadow-2xl shadow-[rgba(16,21,64,0.1)] transition-all duration-500 ease-in-out ${
-          isSidebarOpen
-            ? "fixed inset-0 z-40 translate-x-0"
-            : "fixed -translate-x-full z-40"
+        className={`sticky top-0 left-0 h-screen bg-white border-r border-[rgba(16,21,64,0.1)] shadow-2xl shadow-[rgba(16,21,64,0.1)] transition-all duration-500 ease-in-out ${
+          isSidebarOpen ? "fixed inset-0 z-40 translate-x-0" : "fixed -translate-x-full z-40"
         } lg:relative lg:translate-x-0 lg:z-auto w-[280px] sm:w-[320px] lg:w-[280px] xl:w-[300px]`}
       >
         <div className="flex flex-col h-full">
@@ -104,17 +93,23 @@ const AdminDashBoardNav = () => {
             <div className="relative z-10 flex items-center gap-4">
               <div className="relative group">
                 <div className="absolute -inset-1 bg-white/30 rounded-full blur-md group-hover:blur-lg transition-all duration-300" />
-                <div className="relative h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20 shadow-lg group-hover:scale-110 transition-all duration-300">
-                  <FaUserCircle className="text-white text-3xl sm:text-4xl" />
+                <div className="relative h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20 shadow-lg group-hover:scale-110 transition-all duration-300 overflow-hidden">
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar || "/placeholder.svg"}
+                      alt="User avatar"
+                      className="w-full h-full object-cover rounded-2xl"
+                    />
+                  ) : (
+                    <FaUserCircle className="text-white text-3xl sm:text-4xl" />
+                  )}
                 </div>
               </div>
               <div className="flex-1 min-w-0">
                 <h2 className="text-white font-bold text-lg sm:text-xl truncate mb-1">
-                  {user?.fullName || "Admin"}
+                  Welcome, {user?.fullName || "User"}
                 </h2>
-                <p className="text-white/70 text-xs sm:text-sm font-medium">
-                  Administrator
-                </p>
+                <p className="text-white/70 text-xs sm:text-sm font-medium">User Dashboard</p>
               </div>
             </div>
           </div>
@@ -122,14 +117,15 @@ const AdminDashBoardNav = () => {
           {/* Navigation Links */}
           <nav className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-2">
             {navLinks.map((link, index) => {
-              const active = isActive(link.path);
+              const active = isActive(link.path)
               return (
-                <Link
+                <NavLink
                   key={link.path}
                   to={link.path}
                   onClick={() => {
-                    if (window.innerWidth < 1024) setSidebarOpen(false);
+                    if (window.innerWidth < 1024) setSidebarOpen(false)
                   }}
+                  title={link.tooltip}
                   className={`group flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-2xl transition-all duration-300 relative overflow-hidden ${
                     active
                       ? "bg-gradient-to-br from-[#101540] to-[#1a2060] text-white shadow-lg shadow-[rgba(16,21,64,0.3)]"
@@ -151,21 +147,24 @@ const AdminDashBoardNav = () => {
                   {/* Icon */}
                   <span
                     className={`relative z-10 text-xl sm:text-2xl transition-all duration-300 ${
-                      active
-                        ? "scale-110"
-                        : "group-hover:scale-125 group-hover:rotate-12 group-hover:text-[#101540]"
+                      active ? "scale-110" : "group-hover:scale-125 group-hover:rotate-12 group-hover:text-[#101540]"
                     }`}
                   >
                     {link.icon}
                   </span>
 
                   {/* Link Text */}
-                  <span className="relative z-10 font-semibold text-sm sm:text-base flex-1">
-                    {link.name}
-                  </span>
+                  <span className="relative z-10 font-semibold text-sm sm:text-base flex-1">{link.name}</span>
+
+                  {/* Notification Badge */}
+                  {link.badge && link.badge > 0 && (
+                    <span className="relative z-10 flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-red-500 text-white text-xs font-bold shadow-lg shadow-red-500/50 animate-pulse">
+                      {link.badge > 99 ? "99+" : link.badge}
+                    </span>
+                  )}
 
                   {/* Active indicator */}
-                  {active && (
+                  {active && !link.badge && (
                     <div className="relative z-10 w-2 h-2 rounded-full bg-white shadow-lg shadow-white/50 animate-pulse" />
                   )}
 
@@ -173,8 +172,8 @@ const AdminDashBoardNav = () => {
                   {!active && (
                     <div className="absolute inset-0 bg-gradient-to-r from-[rgba(16,21,64,0.05)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   )}
-                </Link>
-              );
+                </NavLink>
+              )
             })}
           </nav>
 
@@ -182,12 +181,8 @@ const AdminDashBoardNav = () => {
           <div className="p-4 sm:p-6 border-t border-[rgba(16,21,64,0.1)]">
             <div className="p-4 rounded-2xl bg-gradient-to-br from-[rgba(16,21,64,0.05)] to-[rgba(16,21,64,0.02)] border border-[rgba(16,21,64,0.1)] relative overflow-hidden group hover:shadow-lg transition-all duration-300">
               <div className="absolute top-0 right-0 w-20 h-20 bg-[rgba(16,21,64,0.05)] rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
-              <p className="relative z-10 text-xs text-gray-600 font-medium">
-                Admin Dashboard v1.0
-              </p>
-              <p className="relative z-10 text-xs text-gray-400 mt-1">
-                © 2025 Inventory System
-              </p>
+              <p className="relative z-10 text-xs text-gray-600 font-medium">User Dashboard v1.0</p>
+              <p className="relative z-10 text-xs text-gray-400 mt-1">© 2025 Inventory System</p>
             </div>
           </div>
         </div>
@@ -227,7 +222,7 @@ const AdminDashBoardNav = () => {
         }
       `}</style>
     </div>
-  );
-};
+  )
+}
 
-export default AdminDashBoardNav;
+export default UserDashBoardNav

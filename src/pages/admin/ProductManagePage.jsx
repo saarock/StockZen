@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 
 import "./AdminPages.css";
-import ShowAndManageProductComponent from '../../components/adminDashComponents/ShowAndManageProductComponent';
+
 import ProductManageNav from '../../components/adminDashComponents/productManageNav';
+import ShowAndManageProductComponent from '../../components/adminDashComponents/ShowAndManageProductComponent';
 
 const ProductManagePage = () => {
   const [userWant, setWhatUserWant] = useState("2");
