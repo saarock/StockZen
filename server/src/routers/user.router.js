@@ -10,6 +10,7 @@ import {
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import User from "../models/user.model.js";
 const router = express.Router();
 
 router.post("/send_mail", sendMailToTheUser);
@@ -19,7 +20,7 @@ router.post("/login", loginUser);
 router.post("/refresh", refreshAccessToken);
 
 // first manage this things and do all the stup
-router.post("/verifyToken", verifyJWT, (req, res) => {
+router.post("/verifyToken", verifyJWT, async (req, res) => {
   try {
     // const { totalNotifications, _id } = req.user;
     // if (io && parseInt(totalNotifications) > 0) {
@@ -27,8 +28,23 @@ router.post("/verifyToken", verifyJWT, (req, res) => {
     //     console.log(userSocketId + " user socket id ")
     //     io.to(userSocketId).emit("notification", { totalNotifications });
     // }
-    
-    return res.status(201).json(new ApiResponse(200, null, "Verified"));
+
+    const userData = await User.findById(req.user._id)
+      .select("-password -__v -refreshToken")
+      .exec();
+
+    if (!userData) {
+      throw new Error("User not found");
+    }
+    return res.status(201).json(
+      new ApiResponse(
+        200,
+        {
+          userData,
+        },
+        "Verified"
+      )
+    );
   } catch (eror) {
     throw new ApiError(
       500,

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Product.css';
 import { FaCheckCircle, FaTimesCircle, FaTrashAlt, FaToggleOn, FaToggleOff, FaEdit } from 'react-icons/fa';
+import { X } from 'lucide-react';
 
 const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user, handleFormSubmit, addToCart, setTotalItem }) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -75,7 +76,7 @@ const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user,
         <td className="product-price">RS: {product.price.toFixed(2)}</td>
         <td className="product-stock">{product.stock}</td>
         {user?.role === 'admin' ? (
-          <td className="product-actions">
+          <td className="product-actions flex items-center">
             <button
               className={`toggle-availability-button ${product.isAvailable ? 'unavailable' : 'available'}`}
               onClick={() => handleToggleAvailability(product._id)}
@@ -226,8 +227,8 @@ const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user,
       {isDetailModalOpen && (
         <div className="modal-overlay" onClick={() => setDetailModalOpen(false)}>
           <div className="modal-container product-detail-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="close-btn" onClick={() => setDetailModalOpen(false)}>
-              X
+            <button className="close-btn flex justify-center items-center " onClick={() => setDetailModalOpen(false)}>
+              <X/>
             </button>
             <h2 className="modal-title">{product.name}</h2>
             <div className="product-detail">
