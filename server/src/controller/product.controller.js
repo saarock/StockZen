@@ -235,3 +235,102 @@ export const BuyProduct = asyncHandler(async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 });
+
+
+// Controller to manage booked products
+export const manageBookedProduct = asyncHandler(async (req, res) => {
+
+    // Extract query parameters (with default values)
+    const { page = 1, limit = 10, status, search = "", id } = req.query;
+
+
+    if (!id || id === undefined || id === "undefined") {
+
+        throw new Error("No id available")
+    }
+    // Find the user by id
+    const user = await User.findById(id);
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+
+    const skip = (page - 1) * limit; // Pagination skip logic
+
+
+    // Admin logic (fetch all booked products)
+    if (user.role === "admin") {
+        // Search filter based on the search term (username search)
+        const searchFilter = search
+            ? { user: await User.findOne({ userName: { $regex: search, $options: "i" } }).select("_id") } // Find user by username
+            : {}; // If no search term, no filter is applied
+
+
+        const bookedProducts = await BuyProducts.find({
+            ...searchFilter,
+            status: status || { $in: ["pending", "completed", "cancelled"] },
+
+        })
+            .populate("user", "userName") // Populate with the username of the user who made the booking
+            .populate("product", "name")
+            .skip(skip)
+            .limit(Number(limit))
+            .sort({ createdAt: -1 }); // Sort by newest bookings
+
+        // Count the total number of booked products for pagination
+        const total = await BuyProducts.countDocuments({
+            ...searchFilter,
+
+            status: status || { $in: ["pending", "completed", "cancelled"] },
+
+        });
+
+        return res.status(200).json({
+            success: true,
+            data: bookedProducts,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit), // Calculate total pages
+            },
+        });
+    }
+
+    // User logic (fetch only the logged-in user's booked products)
+    else {
+
+        // Search filter based on the search term (username search)
+        const searchFilter = search
+            ? { product: await Product.findOne({ name: { $regex: search, $options: "i" } }).select("_id") }
+            : {}; // If no search term, no filter is applied
+
+
+        const bookedProducts = await BuyProducts.find({
+            user: user._id,
+            status: status || { $in: ["pending", "completed", "cancelled"] },
+            ...searchFilter,
+        })
+            .skip(skip)
+            .populate("product", "name")
+            .limit(Number(limit))
+            .sort({ createdAt: -1 }); // Sort by newest bookings
+
+        // Count the total number of bookings for the user
+        const total = await BuyProducts.countDocuments({
+            user: user._id,
+            status: status || { $in: ["pending", "completed", "cancelled"] },
+            ...searchFilter,
+        });
+
+        return res.status(200).json({
+            success: true,
+            data: bookedProducts,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit), // Calculate total pages
+            },
+        });
+    }
+});

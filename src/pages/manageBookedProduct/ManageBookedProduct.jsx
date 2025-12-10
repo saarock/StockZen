@@ -1,5 +1,6 @@
 import React from 'react'
-import BookedProductComp from '../../components/bookedProduct/BookedProductComp'
+import BookedProductComp from '../../components/bookedProduct/BookedProductComp';
+
 
 const ManageBookedProduct = () => {
   return (

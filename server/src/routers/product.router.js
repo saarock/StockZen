@@ -6,6 +6,7 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 import {
   BuyProduct,
   getAllProducts,
+  manageBookedProduct,
   saveProduct,
 } from "../controller/product.controller.js";
 import CryptoJS from "crypto-js";
@@ -68,6 +69,7 @@ router.post("/create-esewa-payment", (req, res) => {
 });
 
 router.post("/buy-products", verifyJWT, BuyProduct);
+router.get("/manage-booked-product", verifyJWT, manageBookedProduct);
 
 
 export default router;

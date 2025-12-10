@@ -51,7 +51,7 @@ const AdminDashBoardNav = () => {
   const isActive = (path) => pathname === path;
 
   return (
-    <div>
+    <div className="sticky top-0">
       {/* Mobile Toggle Button */}
       <button
         onClick={toggleSidebar}
