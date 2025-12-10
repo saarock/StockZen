@@ -353,7 +353,13 @@ export const generateBill = asyncHandler(async (req, res) => {
 
     const allTheDetails = products.map((product) => {
         totalPrice += Number(product.price);
-        product.status = status;
+        if (product.status !== "completed") {
+          throw new ApiError(400, "Product is not completed");
+        }
+        // product.status = status;
+      
+
+        
         return {
             name: product.product.name,
             perPPrice: product.product.price,

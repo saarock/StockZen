@@ -250,9 +250,10 @@ const BookedProductComp = () => {
   const generateTotalBill = async (userId, status) => {
     try {
       const billData = await productService.generateBill(userId, status)
-      console.log(billData)
+
       handleGenerateFullBill(billData.data)
     } catch (error) {
+  
       setError(error.message)
     }
   }
