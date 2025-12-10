@@ -390,3 +390,33 @@ export const generateBill = asyncHandler(async (req, res) => {
 
 
 });
+
+
+
+
+export const changeStatusOfTheBookeditems = asyncHandler(async (req, res) => {
+    const { productId, newStatus } = req.body;
+
+    if (!productId || !newStatus) {
+        throw new Error("Product id and status were required");
+    }
+    const product = await BuyProducts.findById(productId);
+    if (!product) {
+        throw new Error("No product found");
+    }
+
+    product.status = newStatus;
+    await product.save();
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            product,
+            "Product status changed successfull"
+        )
+    );
+
+
+
+});
+
