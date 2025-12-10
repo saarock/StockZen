@@ -5,6 +5,7 @@ import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import {
   BuyProduct,
+  generateBill,
   getAllProducts,
   manageBookedProduct,
   saveProduct,
@@ -70,6 +71,7 @@ router.post("/create-esewa-payment", (req, res) => {
 
 router.post("/buy-products", verifyJWT, BuyProduct);
 router.get("/manage-booked-product", verifyJWT, manageBookedProduct);
+router.get("/generate-bill", verifyJWT, generateBill)
 
 
 export default router;

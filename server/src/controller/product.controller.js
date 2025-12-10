@@ -334,3 +334,53 @@ export const manageBookedProduct = asyncHandler(async (req, res) => {
         });
     }
 });
+
+
+
+
+// Controller to generate the bill for a user
+export const generateBill = asyncHandler(async (req, res) => {
+    const { userId, status } = req.query;
+
+    const products = await BuyProducts.find({ user: userId }).populate("product", "name price payment_gateway").populate("user", "userName");
+
+    if (products.length <= 0) {
+        throw new Error("No products found");
+    }
+
+    let totalPrice = 0;
+
+
+    const allTheDetails = products.map((product) => {
+        totalPrice += Number(product.price);
+        product.status = status;
+        return {
+            name: product.product.name,
+            perPPrice: product.product.price,
+            totalItems: product.totalItems,
+            soTheMultiPrice: product.price,
+            status: product.status,
+            payment_gateway: product.payment_gateway
+        }
+    });
+
+    console.log(allTheDetails);
+    
+
+    let anotherPrice = totalPrice;
+
+
+    if (status) {
+        await Promise.all(products.map(p => p.save()));
+    }
+    return res.status(200).json(
+        new ApiResponse(200, {
+            allTheDetails,
+            anotherPrice,
+            userName: products[0].user.userName
+        })
+    )
+
+
+
+});
