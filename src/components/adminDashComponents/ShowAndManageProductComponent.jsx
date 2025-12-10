@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import productService from "../../services/productService"
 import { useDispatch } from "react-redux"
@@ -126,7 +124,6 @@ const ShowAndManageProductComponent = ({ adminWant = "1", refresh }) => {
       imageUrl,
       productName: name,
     }
-    console.log(product)
 
     dispatch(addToCart(product))
   }

@@ -84,11 +84,11 @@ const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user,
             >
               {product.isAvailable ? (
                 <>
-                  <FaToggleOff /> Make Un-Available
+                  <FaToggleOff  className='size-4'/> Make Un-Available
                 </>
               ) : (
                 <>
-                  <FaToggleOn /> Make Available
+                  <FaToggleOn className='size-4'/> Make Available
                 </>
               )}
             </button>
@@ -98,7 +98,7 @@ const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user,
               onClick={() => handleDeleteProduct(product._id)}
               aria-label={`Delete ${product.name}`}
             >
-              <FaTrashAlt /> Delete
+              <FaTrashAlt className='size-3' /> Delete
             </button>
 
             <button
@@ -109,7 +109,7 @@ const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user,
               }}
               aria-label={`Edit ${product.name}`}
             >
-              <FaEdit /> Edit Product
+              <FaEdit className='size-4'/> Edit Product
             </button>
           </td>
         ) : (

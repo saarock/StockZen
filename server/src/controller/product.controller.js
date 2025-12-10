@@ -1,3 +1,4 @@
+import BuyProducts from "../models/buyProduct.model.js";
 import Product from "../models/product.model.js";
 import User from "../models/user.model.js";
 import ApiError from "../utils/apiError.js";
@@ -177,4 +178,60 @@ export const getAllProducts = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+});
+
+
+
+
+export const BuyProduct = asyncHandler(async (req, res) => {
+    try {
+        const products = req.body;
+        console.log(products);
+
+        if (!products || products.length <= 0) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+
+
+
+        // Use a for...of loop instead of forEach to handle async/await properly
+        for (const product of products) {
+
+            const alreadySavedProduct = await Product.findById(product.productId);
+            if (!alreadySavedProduct) {
+                throw new Error("No product found while buying Product");
+            }
+
+            if (alreadySavedProduct.stock <= 0) {
+                return res.status(500).json({ message: "No stock available" });
+            }
+
+            // Update product stock
+            alreadySavedProduct.stock -= parseInt(product.totalItem);
+
+            // Save the updated product
+            await alreadySavedProduct.save();
+
+            // Record the purchase in BuyProducts
+            await BuyProducts.create({
+                user: product.userId,
+                product: product.productId,
+                price: parseInt(product.totalPrice),
+                totalItems: parseInt(product.totalItem),
+                payment_gateway: "Cash",
+
+            });
+            // await Notification.create({
+            //     user: product.userId,
+            //     message: `You have purchase ${product.productName},  ${product.totalItem} items.`
+            // });
+        }
+
+        return res.status(200).json(new ApiResponse(200, null, "Product bought successfully"));
+
+    } catch (error) {
+        console.error("Error during product purchase:", error);
+        return res.status(500).json({ message: error.message });
+    }
 });
