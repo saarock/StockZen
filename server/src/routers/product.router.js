@@ -73,7 +73,8 @@ router.post("/create-esewa-payment", (req, res) => {
 router.post("/buy-products", verifyJWT, BuyProduct);
 router.get("/manage-booked-product", verifyJWT, manageBookedProduct);
 router.get("/generate-bill", verifyJWT, generateBill)
-router.post("/change-status-of-booked-items", verifyJWT, changeStatusOfTheBookeditems)
+router.post("/change-status-of-booked-items", verifyJWT, changeStatusOfTheBookeditems);
+
 
 
 export default router;

@@ -5,6 +5,7 @@ import useUser from "../../hooks/useUser"
 
 import { FaCheckCircle, FaTimesCircle, FaCog } from "react-icons/fa" // Import icons
 import { toast } from "react-toastify"
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"
 
 const BookedProductComp = () => {
   const [bookedProducts, setBookedProducts] = useState([]) // Holds the booked products
@@ -529,11 +530,8 @@ const BookedProductComp = () => {
       </div>
 
       {/* Loading and Error Handling */}
-      {loading && (
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1a2250]"></div>
-        </div>
-      )}
+      {loading && <LoadingSpinner/>
+      }
       {error && <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">{error}</div>}
 
       {/* Displaying Booked Products */}
