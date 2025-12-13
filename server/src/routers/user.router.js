@@ -2,6 +2,7 @@ import express from "express";
 import {
   getAllUsers,
   loginUser,
+  logoutUser,
   refreshAccessToken,
   registerUser,
   sendMailToTheUser,
@@ -15,7 +16,6 @@ import ApiResponse from "../utils/apiResponse.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import User from "../models/user.model.js";
 
-
 const router = express.Router();
 
 router.post("/send_mail", sendMailToTheUser);
@@ -26,6 +26,7 @@ router.post("/refresh", refreshAccessToken);
 router.get("/get-users", verifyJWT, getAllUsers);
 router.put("/deactivate-activate-user", verifyJWT, updateUserStatus);
 router.patch("/update-user-role", verifyJWT, updateUserRole);
+router.post("/logout", verifyJWT, logoutUser);
 
 // first manage this things and do all the stup
 router.post("/verifyToken", verifyJWT, async (req, res) => {

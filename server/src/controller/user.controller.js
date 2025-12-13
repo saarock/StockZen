@@ -311,3 +311,28 @@ export const updateUserRole = asyncHandler(async (req, res) => {
     );
   }
 });
+
+
+export const logoutUser = asyncHandler(async (req, res) => {
+  try {
+    if (!req.body.user) {
+      throw new ApiError(400, "User doesnot found");
+    }
+    await User.findByIdAndUpdate(
+      req.body.user._id,
+      {
+        $set: { refreshToken: undefined },
+      },
+      {
+        new: true,
+      }
+    );
+
+    return res.status(200).json(new ApiResponse(200, {}, "User logged Out"));
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while logout"
+    );
+  }
+});
