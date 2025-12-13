@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from "react-toastify";
-import { userService } from '../../services';
+import userService from "../../services/userService";
 import { FaArrowLeft, FaArrowRight, FaCheckCircle, FaTimesCircle, FaToggleOn, FaToggleOff } from 'react-icons/fa'; // React Icons
 import useUser from '../../hooks/useUser';
 const ManageUsersComponent = () => {
