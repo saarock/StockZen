@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import ApiError from "../utils/apiError.js";
 
-
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -26,9 +25,6 @@ const generateAccessAndRefreshTokens = async (userId) => {
     );
   }
 };
-
-
-
 
 /**
  * sends mail to the user to confrim the email
@@ -59,8 +55,7 @@ export const verifyUserMail = asyncHandler(async (req, res) => {
   const isCorrectOpt = mailOtpStore.verifyOtp(email, otp);
   console.log(isCorrectOpt);
   console.log("Main verify");
-  
-  
+
   if (!isCorrectOpt) {
     throw new ApiError(400, "Wrong otp");
   }
@@ -116,8 +111,6 @@ export const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 export const loginUser = asyncHandler(async (req, res) => {
   try {
     const { userName, email, password } = req.body;
@@ -158,15 +151,13 @@ export const loginUser = asyncHandler(async (req, res) => {
       ...userWithoutSensativeData
     } = user.toObject();
 
-    return res
-      .status(201)
-      .json(
-        new ApiResponse(200, {
-          userWithoutSensativeData,
-          accessToken,
-          refreshToken,
-        })
-      );
+    return res.status(201).json(
+      new ApiResponse(200, {
+        userWithoutSensativeData,
+        accessToken,
+        refreshToken,
+      })
+    );
   } catch (error) {
     throw new ApiError(
       500,
@@ -174,8 +165,6 @@ export const loginUser = asyncHandler(async (req, res) => {
     );
   }
 });
-
-
 
 export const refreshAccessToken = asyncHandler(async (req, res) => {
   const { refreshToken } = req.body;
@@ -207,5 +196,143 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, newAccessToken, "Register Successfull"));
   } catch (error) {
     return res.status(401).json({ message: error.message });
+  }
+});
+
+export const getAllUsers = asyncHandler(async (req, res) => {
+  try {
+    const { page = 1, limit = 4 } = req.query; // Default to page 1 and 4 items per page
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+    const skip = (pageNumber - 1) * limitNumber;
+
+    const users = await User.find().skip(skip).limit(limit);
+
+    const totalUsers = await User.countDocuments(); // Get the total number of Users
+    const totalPages = Math.ceil(totalUsers / limitNumber); // Calculate total pages
+
+    res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          users,
+          currentPage: pageNumber,
+          totalPages,
+          totalUsers,
+        },
+        "Users fetched successfully",
+        ``
+      )
+    );
+    console.log("user send success");
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while fetching users"
+    );
+  }
+});
+
+export const updateUserStatus = asyncHandler(async (req, res) => {
+  try {
+    const { userId, updatedStatus } = req.body;
+    if (!userId) {
+      throw new ApiError(400, "Pleased Provide the userId");
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new ApiError(
+        500,
+        error?.message || "Something went wrong while fetching users"
+      );
+    }
+
+    // if (user.role === "user") {
+    //     throw new ApiError(500, "Accessible to Admin");
+    // }
+
+    console.log(updatedStatus);
+    // user?.isActive = !updatedStatus;
+    user.isActive = updatedStatus;
+
+    await user.save();
+
+    res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          user,
+        },
+        "Users fetched successfully"
+      )
+    );
+    console.log("user send success");
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while fetching users"
+    );
+  }
+});
+
+export const updateUserRole = asyncHandler(async (req, res) => {
+  try {
+    const { currentUserId, updatedRole } = req.body;
+    if (!currentUserId) {
+      throw new ApiError(400, "Pleased Provide the currentUserId");
+    }
+
+    const user = await User.findById(currentUserId);
+    if (!user) {
+      throw new ApiError(
+        500,
+        error?.message || "Something went wrong while fetching users"
+      );
+    }
+
+    user.role = updatedRole;
+
+    await user.save();
+
+    res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          user,
+        },
+        "Users fetched successfully"
+      )
+    );
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while fetching users"
+    );
+  }
+});
+
+
+export const logoutUser = asyncHandler(async (req, res) => {
+  try {
+    if (!req.body.user) {
+      throw new ApiError(400, "User doesnot found");
+    }
+    await User.findByIdAndUpdate(
+      req.body.user._id,
+      {
+        $set: { refreshToken: undefined },
+      },
+      {
+        new: true,
+      }
+    );
+
+    return res.status(200).json(new ApiResponse(200, {}, "User logged Out"));
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while logout"
+    );
   }
 });
