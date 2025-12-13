@@ -20,6 +20,8 @@ const ManageUsersComponent = () => {
   const [users, setUsers] = useState([])
   const { user } = useUser()
   const usersPerPage = 10
+  const [loadingStatus, setLoadingStatus] = useState({})
+  const [loadingRole, setLoadingRole] = useState({})
 
   useEffect(() => {
     async function getUsers() {
@@ -44,6 +46,7 @@ const ManageUsersComponent = () => {
 
   // Toggle user active status
   const handleToggleStatus = async (userId, currentStatus) => {
+    setLoadingStatus((prev) => ({ ...prev, [userId]: true }))
     try {
       const updatedStatus = !currentStatus
       await userService.updateUserStatus(userId, updatedStatus)
@@ -51,10 +54,13 @@ const ManageUsersComponent = () => {
       toast.success(`User account ${updatedStatus ? "enabled" : "disabled"} successfully`)
     } catch (error) {
       toast.error(error.message || "Failed to update user status")
+    } finally {
+      setLoadingStatus((prev) => ({ ...prev, [userId]: false }))
     }
   }
 
   const handleToggleAdminRole = async (userId, currentRole) => {
+    setLoadingRole((prev) => ({ ...prev, [userId]: true }))
     try {
       const newRole = currentRole === "admin" ? "user" : "admin"
       await userService.updateUserRole(userId, newRole)
@@ -62,6 +68,8 @@ const ManageUsersComponent = () => {
       toast.success(`User role updated to ${newRole} successfully`)
     } catch (error) {
       toast.error(error.message || "Failed to update user role")
+    } finally {
+      setLoadingRole((prev) => ({ ...prev, [userId]: false }))
     }
   }
 
@@ -162,39 +170,66 @@ const ManageUsersComponent = () => {
                           {/* Toggle Status Button */}
                           <button
                             onClick={() => handleToggleStatus(_user._id, _user.isActive)}
-                            disabled={user?._id === _user._id}
+                            disabled={user?._id === _user._id || loadingStatus[_user._id]}
                             className={`group/btn relative inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg shadow-md transition-all duration-300 ${
                               _user.isActive
                                 ? "bg-red-500 hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/30"
                                 : "bg-green-500 hover:bg-green-600 hover:shadow-lg hover:shadow-green-500/30"
                             } text-white ${
-                              user?._id === _user._id ? "opacity-50 cursor-not-allowed" : "hover:scale-105"
+                              user?._id === _user._id || loadingStatus[_user._id]
+                                ? "opacity-50 cursor-not-allowed"
+                                : "hover:scale-105"
                             }`}
                           >
-                            {_user.isActive ? <FaToggleOff className="text-sm" /> : <FaToggleOn className="text-sm" />}
-                            <span className="hidden sm:inline">{_user.isActive ? "Disable" : "Enable"}</span>
+                            {loadingStatus[_user._id] ? (
+                              <>
+                                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                <span>Loading...</span>
+                              </>
+                            ) : (
+                              <>
+                                {_user.isActive ? (
+                                  <FaToggleOff className="text-sm" />
+                                ) : (
+                                  <FaToggleOn className="text-sm" />
+                                )}
+                                <span className="hidden sm:inline">{_user.isActive ? "Disable" : "Enable"}</span>
+                              </>
+                            )}
                           </button>
 
+                          {/* Toggle Admin Role Button */}
                           <button
                             onClick={() => handleToggleAdminRole(_user._id, _user.role)}
-                            disabled={user?._id === _user._id}
+                            disabled={user?._id === _user._id || loadingRole[_user._id]}
                             className={`group/btn relative inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg shadow-md transition-all duration-300 ${
                               _user.role === "admin"
                                 ? "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 hover:shadow-lg hover:shadow-orange-500/30"
                                 : "bg-gradient-to-r from-[#101540] to-[#101540]/80 hover:shadow-lg hover:shadow-[#101540]/30"
                             } text-white ${
-                              user?._id === _user._id ? "opacity-50 cursor-not-allowed" : "hover:scale-105"
+                              user?._id === _user._id || loadingRole[_user._id]
+                                ? "opacity-50 cursor-not-allowed"
+                                : "hover:scale-105"
                             }`}
                             title={user?._id === _user._id ? "You cannot change your own role" : ""}
                           >
-                            {_user.role === "admin" ? (
-                              <FaUserMinus className="text-sm" />
+                            {loadingRole[_user._id] ? (
+                              <>
+                                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                <span>Loading...</span>
+                              </>
                             ) : (
-                              <FaUserShield className="text-sm" />
+                              <>
+                                {_user.role === "admin" ? (
+                                  <FaUserMinus className="text-sm" />
+                                ) : (
+                                  <FaUserShield className="text-sm" />
+                                )}
+                                <span className="hidden sm:inline">
+                                  {_user.role === "admin" ? "Remove Admin" : "Make Admin"}
+                                </span>
+                              </>
                             )}
-                            <span className="hidden sm:inline">
-                              {_user.role === "admin" ? "Remove Admin" : "Make Admin"}
-                            </span>
                           </button>
                         </div>
                       </td>

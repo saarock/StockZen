@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import ApiError from "../utils/apiError.js";
 
-
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -26,9 +25,6 @@ const generateAccessAndRefreshTokens = async (userId) => {
     );
   }
 };
-
-
-
 
 /**
  * sends mail to the user to confrim the email
@@ -59,8 +55,7 @@ export const verifyUserMail = asyncHandler(async (req, res) => {
   const isCorrectOpt = mailOtpStore.verifyOtp(email, otp);
   console.log(isCorrectOpt);
   console.log("Main verify");
-  
-  
+
   if (!isCorrectOpt) {
     throw new ApiError(400, "Wrong otp");
   }
@@ -116,8 +111,6 @@ export const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 export const loginUser = asyncHandler(async (req, res) => {
   try {
     const { userName, email, password } = req.body;
@@ -158,15 +151,13 @@ export const loginUser = asyncHandler(async (req, res) => {
       ...userWithoutSensativeData
     } = user.toObject();
 
-    return res
-      .status(201)
-      .json(
-        new ApiResponse(200, {
-          userWithoutSensativeData,
-          accessToken,
-          refreshToken,
-        })
-      );
+    return res.status(201).json(
+      new ApiResponse(200, {
+        userWithoutSensativeData,
+        accessToken,
+        refreshToken,
+      })
+    );
   } catch (error) {
     throw new ApiError(
       500,
@@ -174,8 +165,6 @@ export const loginUser = asyncHandler(async (req, res) => {
     );
   }
 });
-
-
 
 export const refreshAccessToken = asyncHandler(async (req, res) => {
   const { refreshToken } = req.body;
@@ -210,8 +199,6 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 export const getAllUsers = asyncHandler(async (req, res) => {
   try {
     const { page = 1, limit = 4 } = req.query; // Default to page 1 and 4 items per page
@@ -245,7 +232,6 @@ export const getAllUsers = asyncHandler(async (req, res) => {
     );
   }
 });
-
 
 export const updateUserStatus = asyncHandler(async (req, res) => {
   try {
@@ -282,6 +268,42 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
       )
     );
     console.log("user send success");
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong while fetching users"
+    );
+  }
+});
+
+export const updateUserRole = asyncHandler(async (req, res) => {
+  try {
+    const { currentUserId, updatedRole } = req.body;
+    if (!currentUserId) {
+      throw new ApiError(400, "Pleased Provide the currentUserId");
+    }
+
+    const user = await User.findById(currentUserId);
+    if (!user) {
+      throw new ApiError(
+        500,
+        error?.message || "Something went wrong while fetching users"
+      );
+    }
+
+    user.role = updatedRole;
+
+    await user.save();
+
+    res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          user,
+        },
+        "Users fetched successfully"
+      )
+    );
   } catch (error) {
     throw new ApiError(
       500,
