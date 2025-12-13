@@ -12,6 +12,7 @@ import ProductManagePage from "./pages/admin/ProductManagePage";
 import { Profile } from "./components";
 import UserDashboardLayout from "./UserDashboardLayout";
 import Products from "./pages/products/Products";
+import ManageBookedProduct from "./pages/manageBookedProduct/ManageBookedProduct";
 
 function App() {
   return (
@@ -81,6 +82,8 @@ function App() {
                 </ProtectedPage>
               }
             />
+            <Route path='manage-booked-product' index element={<ProtectedPage><ManageBookedProduct /></ProtectedPage>} />
+
           </Route>
 
           {/* User Dashboard Layout */}
@@ -94,9 +97,7 @@ function App() {
                 </ProtectedPage>
               }
             />
-            {/* <Route path="notifications" element={<ProtectedPage><Notificatoins /></ProtectedPage>} /> */}
-            {/* <Route path="stats" element={<ProtectedPage><Stats /></ProtectedPage>} /> */}
-            {/* <Route path="my-product" element={<ProtectedPage><MyProduct/></ProtectedPage>} /> */}
+
           </Route>
         </Routes>
       </BrowserRouter>

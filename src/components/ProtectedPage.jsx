@@ -10,6 +10,7 @@ import { handleResponse } from "../utils";
 import Cookie from "../utils/cookie";
 
 const PUBLIC_ROUTES = ["/", "/login", "/register"]; // Define all public routes
+const FREE_ROUTE = ["/login", "/register"]; // Define all public routes
 
 const ProtectedPage = ({ children }) => {
   const auth = useSelector((state) => state.auth);
@@ -25,6 +26,7 @@ const ProtectedPage = ({ children }) => {
    */
 
   const isPublicPage = PUBLIC_ROUTES.includes(location.pathname);
+  const isFree = FREE_ROUTE.includes(location.pathname);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -34,18 +36,6 @@ const ProtectedPage = ({ children }) => {
         if (response.data?.userData) {
           const userStateResponseData = response.data.userData;
           LocalStorage.setItem("userData", userStateResponseData);
-          const dupUserStateResponseData = {
-            token: Cookie.get(ACCESS_TOKEN_COOKIE_NAME),
-            ...userStateResponseData,
-          };
-          if (!auth.isAuthenticated) {
-            dispatch(login(dupUserStateResponseData));
-            /**
-             * removed all the errors at the last
-             */
-            dispatch(setError(""));
-            return;
-          }
         }
 
         if (response.error) {
@@ -110,6 +100,9 @@ const ProtectedPage = ({ children }) => {
     return <div>Error: {error}</div>; // Display error message if error exists
   }
 
+  if (isFree && auth.isAuthenticated) {
+    navigate("/");
+  }
   return <>{children}</>; // Render children when everything is fine
 };
 

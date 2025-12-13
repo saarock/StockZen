@@ -76,13 +76,12 @@
 }
 
 .toggle-availability-button,
-.delete-button,
 .edit-button,
 .add-to-cart-button {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   font-weight: 500;
   padding: 0.5rem 1rem;
   border: none;
