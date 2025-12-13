@@ -5,6 +5,7 @@ import ApiResponse from "../utils/apiResponse.js";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import ApiError from "../utils/apiError.js";
+import { generateRandomToken, randomString } from "../utils/randomString.js";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -136,7 +137,7 @@ export const loginUser = asyncHandler(async (req, res) => {
       );
     }
 
-    const passwordCorrect = user.isPasswordCorrect(password);
+    const passwordCorrect = await user.isPasswordCorrect(password);
     if (!passwordCorrect) {
       throw new ApiError(401, "Incorrect Password.");
     }
@@ -312,7 +313,6 @@ export const updateUserRole = asyncHandler(async (req, res) => {
   }
 });
 
-
 export const logoutUser = asyncHandler(async (req, res) => {
   try {
     if (!req.body.user) {
@@ -335,4 +335,54 @@ export const logoutUser = asyncHandler(async (req, res) => {
       error?.message || "Something went wrong while logout"
     );
   }
+});
+
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  if (!email || email.trim() === "") {
+    throw new ApiError(400, "Email is required");
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const resetToken = generateRandomToken(20);
+  await nodeMailer.sendPasswordResetEmail({
+    to: email,
+    resetUrl: `http://localhost:5173/reset-password?token=${resetToken}`,
+    name: user.fullName,
+  });
+  user.resetToken = resetToken;
+  user.passwordResetExpires = Date.now() + 15 * 60 * 1000; // 15 min
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password reset email sent"));
+});
+
+export const resetNewPassowrd = asyncHandler(async (req, res) => {
+  const { password, token } = req.body;
+  console.log(token);
+  
+  const user = await User.findOne({
+    resetToken: token,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return res.status(400).json({ message: "Token is invalid or expired" });
+  }
+
+  user.password = password;
+  user.resetToken = undefined;
+  user.passwordResetExpires = undefined;
+
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password reset success"));
 });

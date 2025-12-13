@@ -5,6 +5,8 @@ import {
   logoutUser,
   refreshAccessToken,
   registerUser,
+  resetNewPassowrd,
+  resetPassword,
   sendMailToTheUser,
   updateUserRole,
   updateUserStatus,
@@ -27,6 +29,9 @@ router.get("/get-users", verifyJWT, getAllUsers);
 router.put("/deactivate-activate-user", verifyJWT, updateUserStatus);
 router.patch("/update-user-role", verifyJWT, updateUserRole);
 router.post("/logout", verifyJWT, logoutUser);
+router.post("/forget-password", resetPassword);
+router.post("/reset-password", resetNewPassowrd)
+
 
 // first manage this things and do all the stup
 router.post("/verifyToken", verifyJWT, async (req, res) => {
