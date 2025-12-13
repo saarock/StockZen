@@ -1,9 +1,11 @@
 import express from "express";
 import {
+  getAllUsers,
   loginUser,
   refreshAccessToken,
   registerUser,
   sendMailToTheUser,
+  updateUserStatus,
   verifyUserMail,
 } from "../controller/user.controller.js";
 // import connectedUsers from "../utils/connectedUsers.js";
@@ -18,6 +20,8 @@ router.post("/mail_verify", verifyUserMail);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/refresh", refreshAccessToken);
+router.get("/get-users", verifyJWT, getAllUsers);
+router.put("/deactivate-activate-user", verifyJWT, updateUserStatus);
 
 // first manage this things and do all the stup
 router.post("/verifyToken", verifyJWT, async (req, res) => {
