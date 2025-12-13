@@ -13,6 +13,7 @@ import { Profile } from "./components";
 import UserDashboardLayout from "./UserDashboardLayout";
 import Products from "./pages/products/Products";
 import ManageBookedProduct from "./pages/manageBookedProduct/ManageBookedProduct";
+import ManageUser from "./pages/admin/ManageUser copy";
 
 function App() {
   return (
@@ -83,6 +84,7 @@ function App() {
               }
             />
             <Route path='manage-booked-product' index element={<ProtectedPage><ManageBookedProduct /></ProtectedPage>} />
+            <Route path='manage-users' index element={<ProtectedPage><ManageUser /></ProtectedPage>} />
 
           </Route>
 
