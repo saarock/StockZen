@@ -7,6 +7,8 @@ import {
   BuyProduct,
   ChangeProdutAvailableSatus,
   changeStatusOfTheBookeditems,
+  deleteProducts,
+  editTheProducts,
   generateBill,
   getAllProducts,
   manageBookedProduct,
@@ -29,6 +31,8 @@ router.get("/manage-booked-product", verifyJWT, manageBookedProduct);
 router.get("/generate-bill", verifyJWT, generateBill)
 router.post("/change-status-of-booked-items", verifyJWT, changeStatusOfTheBookeditems);
 router.delete("/change-available", verifyJWT, ChangeProdutAvailableSatus);
+router.put("/edit-product", verifyJWT, editTheProducts);
+router.delete("/deleteProduct", verifyJWT, deleteProducts);
 
 
 
