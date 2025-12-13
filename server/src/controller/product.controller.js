@@ -420,3 +420,32 @@ export const changeStatusOfTheBookeditems = asyncHandler(async (req, res) => {
 
 });
 
+
+
+export const ChangeProdutAvailableSatus = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.body;  // The product ID should be in the request body
+
+
+        // Check if the product exists
+        const product = await Product.findById(id);
+        if (!product) {
+            // If no product was found, return a 404 error
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+
+        product.isAvailable = !product.isAvailable;
+
+        await product.save();
+
+
+
+        res.status(200).json(new ApiResponse(200, product
+            , "Unavailable successfully",
+        ));
+    } catch (error) {
+        // In case of an error, send a 500 status with the error message
+        res.status(500).json({ message: 'Error deleting product', error: error.message });
+    }
+});
