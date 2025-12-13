@@ -25,8 +25,6 @@ class UserService {
 
     async getNotifications(currentPage, productsPerPage, isRead, userId) {
         try {
-
-            console.log(currentPage, productsPerPage, isRead, userId)
             const response = await protectedApi.get(`/get-notifications?page=${currentPage}&limit=${productsPerPage}&isRead=${isRead}&userId=${userId}`);
             const data = await response.data;
             return data;
@@ -36,6 +34,16 @@ class UserService {
         }
     }
 
+
+    async updateUserRole (currentUserId) {
+        try {
+            const response = await protectedApi.put(`/update-user-role`, { currentUserId });
+            const data = await response.data;
+            return data;
+        } catch (error) {
+            throw new Error(error.response.data.message);
+        }
+    }
 
 
 }
