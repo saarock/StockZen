@@ -1,7 +1,7 @@
 
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { changeNotificationStatus } from "../controller/notification.controller.js";
+import { changeNotificationStatus, getNotifications } from "../controller/notification.controller.js";
 
 const router = Router();
 
