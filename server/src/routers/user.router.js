@@ -8,6 +8,7 @@ import {
   resetNewPassowrd,
   resetPassword,
   sendMailToTheUser,
+  subscribeToNewsLetter,
   updateUserRole,
   updateUserStatus,
   verifyUserMail,
@@ -31,6 +32,7 @@ router.patch("/update-user-role", verifyJWT, updateUserRole);
 router.post("/logout", verifyJWT, logoutUser);
 router.post("/forget-password", resetPassword);
 router.post("/reset-password", resetNewPassowrd)
+router.post("/subscribe", subscribeToNewsLetter);
 
 
 // first manage this things and do all the stup

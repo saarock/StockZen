@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import UserDashBoardNav from './components/userDashBoardNav/UserDashBoardNav';
 import Header from './components/header/header';
-import Footer from './components/footer/footer';
+import Footer from './components/footer/footer.jsx';
 
 
 const UserDashboardLayout = () => {

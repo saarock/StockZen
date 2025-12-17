@@ -71,6 +71,16 @@ class UserService {
       throw new Error(error.response.data.message);
     }
   };
+
+  subscribe = async (email) => {
+    try {
+      const response = await api.post("/subscribe", { email });
+      const data = await response.data;
+      return data;
+    } catch (error) {
+      throw new Error(error.response.data.message);
+    }
+  };
 }
 
 const userService = new UserService();

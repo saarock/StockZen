@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import ApiError from "../utils/apiError.js";
 import { generateRandomToken, randomString } from "../utils/randomString.js";
+import Subscriber from "../models/subscriber.js";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -385,4 +386,21 @@ export const resetNewPassowrd = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, {}, "Password reset success"));
+});
+
+export const subscribeToNewsLetter = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  if (!email || email.trim() === "") {
+    throw new ApiError(400, "Email is required");
+  } else {
+    const mail = await Subscriber.findOne({ email });
+    if (mail) {
+      throw new ApiError(400, "Already Subscribed");
+    }
+
+    await Subscriber.create({ email });
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "Subscribed to news letter"));
+  }
 });
