@@ -1,7 +1,29 @@
-import { useState } from "react"
+import { useState } from "react";
+import userService from "../../services/userService";
+import { toast } from "react-toastify";
 
 const Footer = () => {
-  const [hoveredSocial, setHoveredSocial] = useState<string | null>(null)
+  const [hoveredSocial, setHoveredSocial] = useState(null);
+
+  const subscribe = async (e) => {
+    try {
+      const wrapper = e.target.closest("div");
+      const input = wrapper.querySelector("input");
+      const email = input.value;
+
+      const response = await userService.subscribe(email);
+
+      if (response?.message) {
+        toast.success(response.message);
+      }
+
+      input.value = ""; 
+    } catch (error) {
+      toast.error(error.message);
+      input.value = ""; 
+
+    }
+  };
 
   return (
     <footer className="relative bg-gradient-to-b from-gray-50 via-white to-gray-50 border-t border-gray-200 overflow-hidden">
@@ -30,19 +52,24 @@ const Footer = () => {
               </h3>
             </div>
             <p className="text-sm text-gray-600 leading-relaxed">
-              Modern inventory management solution for businesses of all sizes. Streamline your operations with powerful
-              tools.
+              Modern inventory management solution for businesses of all sizes.
+              Streamline your operations with powerful tools.
             </p>
             {/* Newsletter signup */}
             <div className="space-y-3">
-              <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Stay Updated</p>
+              <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                Stay Updated
+              </p>
               <div className="flex gap-2">
                 <input
                   type="email"
                   placeholder="Enter your email"
                   className="flex-1 px-4 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[rgba(16,21,64,0.2)] focus:border-[#101540] transition-all duration-300"
                 />
-                <button className="px-4 py-2 bg-[#101540] text-white text-sm font-medium rounded-lg hover:bg-[#1a2260] transition-all duration-300 hover:scale-105 active:scale-95">
+                <button
+                  onClick={subscribe}
+                  className="px-4 py-2 bg-[#101540] text-white text-sm font-medium rounded-lg hover:bg-[#1a2260] transition-all duration-300 hover:scale-105 active:scale-95"
+                >
                   Subscribe
                 </button>
               </div>
@@ -56,14 +83,26 @@ const Footer = () => {
               Product
             </h4>
             <ul className="space-y-3">
-              {["Features", "Pricing", "Documentation", "API", "Integrations"].map((item, index) => (
-                <li key={item} style={{ animationDelay: `${index * 50}ms` }} className="opacity-0 animate-fade-in-up">
+              {[
+                "Features",
+                "Pricing",
+                "Documentation",
+                "API",
+                "Integrations",
+              ].map((item, index) => (
+                <li
+                  key={item}
+                  style={{ animationDelay: `${index * 50}ms` }}
+                  className="opacity-0 animate-fade-in-up"
+                >
                   <a
                     href="#"
                     className="group/link text-sm text-gray-600 hover:text-[#101540] transition-all duration-300 flex items-center gap-2"
                   >
                     <span className="w-0 h-0.5 bg-[#101540] group-hover/link:w-4 transition-all duration-300" />
-                    <span className="group-hover/link:translate-x-1 transition-transform duration-300">{item}</span>
+                    <span className="group-hover/link:translate-x-1 transition-transform duration-300">
+                      {item}
+                    </span>
                   </a>
                 </li>
               ))}
@@ -77,17 +116,25 @@ const Footer = () => {
               Company
             </h4>
             <ul className="space-y-3">
-              {["About", "Blog", "Careers", "Contact", "Partners"].map((item, index) => (
-                <li key={item} style={{ animationDelay: `${index * 50}ms` }} className="opacity-0 animate-fade-in-up">
-                  <a
-                    href="#"
-                    className="group/link text-sm text-gray-600 hover:text-[#101540] transition-all duration-300 flex items-center gap-2"
+              {["About", "Blog", "Careers", "Contact", "Partners"].map(
+                (item, index) => (
+                  <li
+                    key={item}
+                    style={{ animationDelay: `${index * 50}ms` }}
+                    className="opacity-0 animate-fade-in-up"
                   >
-                    <span className="w-0 h-0.5 bg-[#101540] group-hover/link:w-4 transition-all duration-300" />
-                    <span className="group-hover/link:translate-x-1 transition-transform duration-300">{item}</span>
-                  </a>
-                </li>
-              ))}
+                    <a
+                      href="#"
+                      className="group/link text-sm text-gray-600 hover:text-[#101540] transition-all duration-300 flex items-center gap-2"
+                    >
+                      <span className="w-0 h-0.5 bg-[#101540] group-hover/link:w-4 transition-all duration-300" />
+                      <span className="group-hover/link:translate-x-1 transition-transform duration-300">
+                        {item}
+                      </span>
+                    </a>
+                  </li>
+                )
+              )}
             </ul>
           </div>
 
@@ -98,14 +145,26 @@ const Footer = () => {
               Legal
             </h4>
             <ul className="space-y-3">
-              {["Privacy", "Terms", "Cookie Policy", "Licenses", "Security"].map((item, index) => (
-                <li key={item} style={{ animationDelay: `${index * 50}ms` }} className="opacity-0 animate-fade-in-up">
+              {[
+                "Privacy",
+                "Terms",
+                "Cookie Policy",
+                "Licenses",
+                "Security",
+              ].map((item, index) => (
+                <li
+                  key={item}
+                  style={{ animationDelay: `${index * 50}ms` }}
+                  className="opacity-0 animate-fade-in-up"
+                >
                   <a
                     href="#"
                     className="group/link text-sm text-gray-600 hover:text-[#101540] transition-all duration-300 flex items-center gap-2"
                   >
                     <span className="w-0 h-0.5 bg-[#101540] group-hover/link:w-4 transition-all duration-300" />
-                    <span className="group-hover/link:translate-x-1 transition-transform duration-300">{item}</span>
+                    <span className="group-hover/link:translate-x-1 transition-transform duration-300">
+                      {item}
+                    </span>
                   </a>
                 </li>
               ))}
@@ -182,18 +241,26 @@ const Footer = () => {
         {/* Additional info bar */}
         <div className="mt-8 pt-6 border-t border-gray-200">
           <div className="flex flex-wrap justify-center items-center gap-6 text-xs text-gray-500">
-            <span className="hover:text-[#101540] cursor-pointer transition-colors duration-300">Made with love</span>
+            <span className="hover:text-[#101540] cursor-pointer transition-colors duration-300">
+              Made with love
+            </span>
             <span className="w-1 h-1 bg-gray-300 rounded-full" />
-            <span className="hover:text-[#101540] cursor-pointer transition-colors duration-300">Version 2.0.1</span>
+            <span className="hover:text-[#101540] cursor-pointer transition-colors duration-300">
+              Version 2.0.1
+            </span>
             <span className="w-1 h-1 bg-gray-300 rounded-full" />
-            <span className="hover:text-[#101540] cursor-pointer transition-colors duration-300">Status</span>
+            <span className="hover:text-[#101540] cursor-pointer transition-colors duration-300">
+              Status
+            </span>
             <span className="w-1 h-1 bg-gray-300 rounded-full" />
-            <span className="hover:text-[#101540] cursor-pointer transition-colors duration-300">Changelog</span>
+            <span className="hover:text-[#101540] cursor-pointer transition-colors duration-300">
+              Changelog
+            </span>
           </div>
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

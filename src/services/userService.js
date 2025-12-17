@@ -1,3 +1,4 @@
+import api from "../instance/axiosInstance";
 import protectedApi from "../instance/axiosProtectedInstance";
 
 class UserService {
@@ -50,6 +51,36 @@ class UserService {
       throw new Error(error.response.data.message);
     }
   }
+
+  forgetPassword = async (email) => {
+    try {
+      const response = await api.post("/forget-password", { email });
+      const data = await response.data;
+      return data;
+    } catch (error) {
+      throw new Error(error.response.data.message);
+    }
+  };
+
+  resetPassword = async (token, password) => {
+    try {
+      const response = await api.post("/reset-password", { token, password });
+      const data = await response.data;
+      return data;
+    } catch (error) {
+      throw new Error(error.response.data.message);
+    }
+  };
+
+  subscribe = async (email) => {
+    try {
+      const response = await api.post("/subscribe", { email });
+      const data = await response.data;
+      return data;
+    } catch (error) {
+      throw new Error(error.response.data.message);
+    }
+  };
 }
 
 const userService = new UserService();

@@ -5,6 +5,8 @@ import ApiResponse from "../utils/apiResponse.js";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import ApiError from "../utils/apiError.js";
+import { generateRandomToken, randomString } from "../utils/randomString.js";
+import Subscriber from "../models/subscriber.js";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -41,12 +43,13 @@ export const sendMailToTheUser = asyncHandler(async (req, res) => {
   if (!storedOtp) {
     throw new Error("Failed to generate or stored otp");
   }
-  await nodeMailer.send(
-    "saarock200@gmail.com",
-    email,
-    "verify",
-    `<b>${storedOtp}</b>`
-  );
+  const name = email.split("@")[0];
+  await nodeMailer.sendOtpEmail({
+    otp: storedOtp,
+    to: email,
+    name,
+    purpose: "verification",
+  });
   res.status(200).json(new ApiResponse(200, null, "Mail send successfully"));
 });
 
@@ -114,7 +117,6 @@ export const registerUser = asyncHandler(async (req, res) => {
 export const loginUser = asyncHandler(async (req, res) => {
   try {
     const { userName, email, password } = req.body;
-    console.log("Login user");
 
     if (!(userName || email)) {
       throw new ApiError(400, "UserName or email requried");
@@ -125,7 +127,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     });
 
     if (!user) {
-      throw new ApiError(404, "User doesnot exit");
+      throw new ApiError(404, "Account doesnot exit please register first");
     }
 
     if (!user.isActive) {
@@ -136,7 +138,7 @@ export const loginUser = asyncHandler(async (req, res) => {
       );
     }
 
-    const passwordCorrect = user.isPasswordCorrect(password);
+    const passwordCorrect = await user.isPasswordCorrect(password);
     if (!passwordCorrect) {
       throw new ApiError(401, "Incorrect Password.");
     }
@@ -312,7 +314,6 @@ export const updateUserRole = asyncHandler(async (req, res) => {
   }
 });
 
-
 export const logoutUser = asyncHandler(async (req, res) => {
   try {
     if (!req.body.user) {
@@ -334,5 +335,72 @@ export const logoutUser = asyncHandler(async (req, res) => {
       500,
       error?.message || "Something went wrong while logout"
     );
+  }
+});
+
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  if (!email || email.trim() === "") {
+    throw new ApiError(400, "Email is required");
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const resetToken = generateRandomToken(20);
+  await nodeMailer.sendPasswordResetEmail({
+    to: email,
+    resetUrl: `http://localhost:5173/reset-password?token=${resetToken}`,
+    name: user.fullName,
+  });
+  user.resetToken = resetToken;
+  user.passwordResetExpires = Date.now() + 15 * 60 * 1000; // 15 min
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password reset email sent"));
+});
+
+export const resetNewPassowrd = asyncHandler(async (req, res) => {
+  const { password, token } = req.body;
+  console.log(token);
+
+  const user = await User.findOne({
+    resetToken: token,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return res.status(400).json({ message: "Token is invalid or expired" });
+  }
+
+  user.password = password;
+  user.resetToken = undefined;
+  user.passwordResetExpires = undefined;
+
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password reset success"));
+});
+
+export const subscribeToNewsLetter = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  if (!email || email.trim() === "") {
+    throw new ApiError(400, "Email is required");
+  } else {
+    const mail = await Subscriber.findOne({ email });
+    if (mail) {
+      throw new ApiError(400, "Already Subscribed");
+    }
+
+    await Subscriber.create({ email });
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "Subscribed to news letter"));
   }
 });

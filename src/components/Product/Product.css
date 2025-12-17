@@ -77,6 +77,7 @@
 
 .toggle-availability-button,
 .edit-button,
+.delete-button,
 .add-to-cart-button {
   display: flex;
   align-items: center;
@@ -116,12 +117,12 @@
 }
 
 .edit-button {
-  background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+  background: #1a2060;
   color: #ffffff;
 }
 
 .edit-button:hover {
-  background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%);
+  background: linear-gradient(90deg, #1a2060 0%, #0b2252 100%);
   transform: translateY(-2px);
 }
 

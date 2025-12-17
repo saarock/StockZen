@@ -46,7 +46,7 @@ const UserDashBoardNav = () => {
   const isActive = (path) => pathname.includes(path)
 
   return (
-    <div className="sticky top-0 left-0">
+    <div className="sticky top-0">
       {/* Mobile Toggle Button */}
       <button
         onClick={toggleSidebar}

@@ -3,7 +3,8 @@ import { Outlet } from 'react-router';
 import { ToastContainer } from 'react-toastify';
 import {useSaarockToast} from "./hooks";
 import Header from './components/header/header';
-import Footer from './components/footer/footer';
+import Footer from './components/footer/footer.jsx';
+
 
 
 const Layout = () => {

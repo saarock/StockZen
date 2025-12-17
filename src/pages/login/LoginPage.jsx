@@ -4,9 +4,12 @@ import EntryComponent from "../../components/entryComponent";
 import "./LoginPage.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { ACCESS_TOKEN_COOKIE_NAME, REFRESH_TOKEN_COOKIE_NAME } from "../../constant";
+import {
+  ACCESS_TOKEN_COOKIE_NAME,
+  REFRESH_TOKEN_COOKIE_NAME,
+} from "../../constant";
 import { Auth } from "../../services";
-import {toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { handleResponse } from "../../utils";
 import Cookie from "../../utils/cookie";
 import LocalStorage from "../../utils/localStorage";
@@ -17,11 +20,11 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
-    const dispatch = useDispatch();
-  const auth = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
-
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
@@ -32,7 +35,7 @@ const LoginPage = () => {
   };
   const signIn = async (e) => {
     e.preventDefault();
-    console.log(userLoginFormData);
+    setLoading(true);
 
     try {
       const response = await handleResponse(Auth.login(userLoginFormData));
@@ -57,6 +60,8 @@ const LoginPage = () => {
       }
     } catch (error) {
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,12 +69,13 @@ const LoginPage = () => {
     <div className="login-page">
       <div className="login-page-container">
         <div className="login-content">
-          <div className="login-left">
-            <LoginComponent onSubmit={signIn} onChange={onInputChange} />
-          </div>
-          <div className="login-right">
+                <div className="login-right">
             <EntryComponent />
           </div>
+          <div className="login-left">
+            <LoginComponent onSubmit={signIn} onChange={onInputChange} loading={loading} />
+          </div>
+    
         </div>
       </div>
     </div>

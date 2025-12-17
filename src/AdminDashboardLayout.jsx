@@ -4,7 +4,8 @@ import AdminDashBoardNav from "./components/adminDashBoardNav/AdminDashBoardNav"
 
 import { ToastContainer } from "react-toastify";
 import Header from "./components/header/header";
-import Footer from "./components/footer/footer";
+import Footer from "./components/footer/footer.jsx";
+
 const AdminDashboardLayout = () => {
   return (
     <div className="dashboard-layout">

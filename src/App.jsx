@@ -14,6 +14,9 @@ import UserDashboardLayout from "./UserDashboardLayout";
 import Products from "./pages/products/Products";
 import ManageBookedProduct from "./pages/manageBookedProduct/ManageBookedProduct";
 import ManageUser from "./pages/admin/ManageUser copy";
+import ResetPassword from "./pages/login/ResetPassword";
+import MyProduct from "./pages/myProduct/MyProduct";
+import Stats from "./pages/stats/Stats";
 
 function App() {
   return (
@@ -57,9 +60,18 @@ function App() {
               }
             />
 
-            <Route path="/products" element={<ProtectedPage><Products /> </ProtectedPage>} />
 
+              <Route path="/reset-password" element={<ResetPassword />} />
+          
 
+            <Route
+              path="/products"
+              element={
+                <ProtectedPage>
+                  <Products />{" "}
+                </ProtectedPage>
+              }
+            />
           </Route>
 
           {/* Admin Dashboard layout */}
@@ -83,9 +95,24 @@ function App() {
                 </ProtectedPage>
               }
             />
-            <Route path='manage-booked-product' index element={<ProtectedPage><ManageBookedProduct /></ProtectedPage>} />
-            <Route path='manage-users' index element={<ProtectedPage><ManageUser /></ProtectedPage>} />
-
+            <Route
+              path="manage-booked-product"
+              index
+              element={
+                <ProtectedPage>
+                  <ManageBookedProduct />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="manage-users"
+              index
+              element={
+                <ProtectedPage>
+                  <ManageUser />
+                </ProtectedPage>
+              }
+            />
           </Route>
 
           {/* User Dashboard Layout */}
@@ -99,6 +126,8 @@ function App() {
                 </ProtectedPage>
               }
             />
+            <Route path="my-product" element={<ProtectedPage><MyProduct/></ProtectedPage>} />
+            <Route path="stats" element={<ProtectedPage><Stats /></ProtectedPage>} />
 
           </Route>
         </Routes>

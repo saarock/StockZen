@@ -1,30 +1,30 @@
+import { useState, useEffect } from "react";
+import productService from "../../services/productService";
+import useUser from "../../hooks/useUser";
 
-import { useState, useEffect } from "react"
-import productService from "../../services/productService"
-import useUser from "../../hooks/useUser"
-
-import { FaCheckCircle, FaTimesCircle, FaCog } from "react-icons/fa" // Import icons
-import { toast } from "react-toastify"
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"
+import { FaCheckCircle, FaTimesCircle, FaCog } from "react-icons/fa"; // Import icons
+import { toast } from "react-toastify";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 const BookedProductComp = () => {
-  const [bookedProducts, setBookedProducts] = useState([]) // Holds the booked products
-  const [loading, setLoading] = useState(false) // Loading state for UI
-  const [error, setError] = useState(null) // Error state
-  const [page, setPage] = useState(1) // Current page
-  const [limit, setLimit] = useState(10) // Number of products per page
-  const [status, setStatus] = useState("pending") // Status filter (pending, completed, etc.)
-  const [search, setSearch] = useState("") // Search term for product names
-  const { user } = useUser() // Assuming useUser hook provides the logged-in user
-  const [totalPages, setTotalPages] = useState(1) // Total pages for pagination
-  const [prevStatus, setPreStatus] = useState("")
+  const [bookedProducts, setBookedProducts] = useState([]); // Holds the booked products
+  const [loading, setLoading] = useState(false); // Loading state for UI
+  const [error, setError] = useState(null); // Error state
+  const [page, setPage] = useState(1); // Current page
+  const [limit, setLimit] = useState(10); // Number of products per page
+  const [status, setStatus] = useState("pending"); // Status filter (pending, completed, etc.)
+  const [search, setSearch] = useState(""); // Search term for product names
+  const { user } = useUser(); // Assuming useUser hook provides the logged-in user
+  const [totalPages, setTotalPages] = useState(1); // Total pages for pagination
+  const [prevStatus, setPreStatus] = useState("");
+  const [refetch, setRefetchTime] = useState(0);
 
   useEffect(() => {
     const fetchBookedProducts = async () => {
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
       if (status !== prevStatus) {
-        setPage(1)
+        setPage(1);
       }
 
       try {
@@ -33,37 +33,55 @@ const BookedProductComp = () => {
           limit,
           status,
           search,
-          user?._id,
-        ) // Using user._id here
-        setBookedProducts(data.data)
-        setTotalPages(data.pagination.totalPages) // Set total pages for pagination
+          user?._id
+        ); // Using user._id here
+        setBookedProducts(data.data);
+        setTotalPages(data.pagination.totalPages); // Set total pages for pagination
       } catch (err) {
-        setError(err.message || "Something went wrong")
+        setError(err.message || "Something went wrong");
       } finally {
-        setLoading(false)
-        setPreStatus(status)
+        setLoading(false);
+        setPreStatus(status);
       }
-    }
+    };
 
-    fetchBookedProducts()
-  }, [page, limit, status, search, user?._id]) // Fetch data on page change, status, etc.
+    fetchBookedProducts();
+  }, [page, limit, status, search, user?._id, refetch]); // Fetch data on page change, status, etc.
 
-  const handleChangeStatus = async (productId, newStatus) => {
+  const handleChangeStatus = async (
+    productId,
+    newStatus,
+    productStock,
+    productOriginalId
+  ) => {
     try {
-      await productService.updateProductStatus(productId, newStatus) // Call API to update the status
+      const response = await productService.updateProductStatus(
+        productId,
+        newStatus,
+        productStock,
+        productOriginalId
+      ); // Call API to update the status
+
+      if (response.statusCode !== 200)
+        throw new Error("Failed to update status");
       setBookedProducts((prevProducts) =>
-        prevProducts.map((product) => (product._id === productId ? { ...product, status: newStatus } : product)),
-      )
-      toast.success(`Status updated to ${newStatus}`)
+        prevProducts.map((product) =>
+          product._id === productId
+            ? { ...product, status: newStatus }
+            : product
+        )
+      );
+      setRefetchTime((prev) => prev + 1);
+      toast.success(`Status updated to ${newStatus}`);
     } catch (err) {
-      setError(err.message || "Failed to update status")
+      setError(err.message || "Failed to update status");
     }
-  }
+  };
 
   const handleGenerateBill = (product) => {
     if (product && product.status === "pending") {
-      toast.error("You cannot generate a bill for a pending product.")
-      return
+      toast.error("You cannot generate a bill for a pending product.");
+      return;
     }
     const billContent = `
             <html>
@@ -203,11 +221,15 @@ const BookedProductComp = () => {
                         <div class="bill-body">
                             <div class="bill-row">
                                 <span class="bill-label">Product Name</span>
-                                <span class="bill-value">${product.product.name}</span>
+                                <span class="bill-value">${
+                                  product.product.name
+                                }</span>
                             </div>
                             <div class="bill-row">
                                 <span class="bill-label">Booked By</span>
-                                <span class="bill-value">${product.user?.userName}</span>
+                                <span class="bill-value">${
+                                  product.user?.userName
+                                }</span>
                             </div>
                             ${
                               product.payment_gateway
@@ -221,15 +243,21 @@ const BookedProductComp = () => {
                             }
                             <div class="bill-row">
                                 <span class="bill-label">Total Items</span>
-                                <span class="bill-value">${product.totalItems || 1}</span>
+                                <span class="bill-value">${
+                                  product.totalItems || 1
+                                }</span>
                             </div>
                             <div class="bill-row">
                                 <span class="bill-label">Status</span>
-                                <span class="status-badge status-${product.status}">${product.status}</span>
+                                <span class="status-badge status-${
+                                  product.status
+                                }">${product.status}</span>
                             </div>
                             <div class="bill-total">
                                 <span class="bill-total-label">Total Amount</span>
-                                <span class="bill-total-value">Rs. ${product.price}</span>
+                                <span class="bill-total-value">Rs. ${
+                                  product.price
+                                }</span>
                             </div>
                         </div>
                         <div class="bill-footer">
@@ -240,27 +268,26 @@ const BookedProductComp = () => {
                     </div>
                 </body>
             </html>
-        `
+        `;
 
-    const printWindow = window.open("", "_blank")
-    printWindow.document.write(billContent)
-    printWindow.document.close()
-    printWindow.print()
-  }
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(billContent);
+    printWindow.document.close();
+    printWindow.print();
+  };
 
   const generateTotalBill = async (userId, status) => {
     try {
-      const billData = await productService.generateBill(userId, status)
+      const billData = await productService.generateBill(userId, status);
 
-      handleGenerateFullBill(billData.data)
+      handleGenerateFullBill(billData.data);
     } catch (error) {
-  
-      setError(error.message)
+      setError(error.message);
     }
-  }
+  };
 
   const handleGenerateFullBill = (billData) => {
-    const { allTheDetails, anotherPrice, userName } = billData
+    const { allTheDetails, anotherPrice, userName } = billData;
 
     const itemRows = allTheDetails
       .map(
@@ -270,11 +297,13 @@ const BookedProductComp = () => {
                 <td>Rs. ${item.perPPrice}</td>
                 <td>${item.totalItems}</td>
                 <td>Rs. ${item.soTheMultiPrice}</td>
-                <td><span class="status-badge status-${item.status}">${item.status}</span></td>
+                <td><span class="status-badge status-${item.status}">${
+          item.status
+        }</span></td>
             </tr>
-        `,
+        `
       )
-      .join("")
+      .join("");
 
     const billContent = `
             <html>
@@ -461,16 +490,24 @@ const BookedProductComp = () => {
                     </div>
                 </body>
             </html>
-        `
+        `;
 
-    const printWindow = window.open("", "_blank")
-    printWindow.document.write(billContent)
-    printWindow.document.close()
-    printWindow.print()
-  }
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(billContent);
+    printWindow.document.close();
+    printWindow.print();
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+      {/* Loading and Error Handling */}
+      {loading && <LoadingSpinner />}
+      {error && (
+        <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          {error}
+        </div>
+      )}
+
       {/* Search Bar */}
       <div className="mb-6 bg-white rounded-lg shadow-md p-4 md:p-6">
         {user && user?.role === "admin" ? (
@@ -494,17 +531,20 @@ const BookedProductComp = () => {
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={() => {
-              setStatus("pending")
+              setStatus("pending");
             }}
             className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-              status === "pending" ? "bg-[#1a2250] text-white shadow-lg" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              status === "pending"
+                ? "bg-[#1a2250] text-white shadow-lg"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
             Pending
           </button>
+
           <button
             onClick={() => {
-              setStatus("completed")
+              setStatus("completed");
             }}
             className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
               status === "completed"
@@ -516,7 +556,7 @@ const BookedProductComp = () => {
           </button>
           <button
             onClick={() => {
-              setStatus("cancelled")
+              setStatus("cancelled");
             }}
             className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
               status === "cancelled"
@@ -528,11 +568,6 @@ const BookedProductComp = () => {
           </button>
         </div>
       </div>
-
-      {/* Loading and Error Handling */}
-      {loading && <LoadingSpinner/>
-      }
-      {error && <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">{error}</div>}
 
       {/* Displaying Booked Products */}
       <div className="space-y-4">
@@ -546,16 +581,21 @@ const BookedProductComp = () => {
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                   {/* Product Info */}
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-[#1a2250] mb-2">{product.productName}</h3>
+                    <h3 className="text-xl font-bold text-[#1a2250] mb-2">
+                      {product.productName}
+                    </h3>
                     <div className="space-y-1 text-gray-600">
                       <p>
-                        <span className="font-medium">Booked by:</span> {product.user?.userName}
+                        <span className="font-medium">Booked by:</span>{" "}
+                        {product.user?.userName}
                       </p>
                       <p>
-                        <span className="font-medium">Total Items:</span> {product.totalItems}
+                        <span className="font-medium">Total Items:</span>{" "}
+                        {product.totalItems}
                       </p>
                       <p>
-                        <span className="font-medium">Product Name:</span> {product.product?.name}
+                        <span className="font-medium">Product Name:</span>{" "}
+                        {product.product?.name}
                       </p>
                       <p>
                         <span className="font-medium">Status:</span>{" "}
@@ -564,8 +604,8 @@ const BookedProductComp = () => {
                             product.status === "completed"
                               ? "bg-green-100 text-green-800"
                               : product.status === "cancelled"
-                                ? "bg-red-100 text-red-800"
-                                : "bg-yellow-100 text-yellow-800"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-yellow-100 text-yellow-800"
                           }`}
                         >
                           {product.status}
@@ -576,9 +616,39 @@ const BookedProductComp = () => {
 
                   {/* Product Price */}
                   <div className="lg:text-right">
-                    <span className="text-2xl font-bold text-[#1a2250]">Rs: {product.price}</span>
+                    <span className="text-2xl font-bold text-[#1a2250]">
+                      Rs: {product.price}
+                    </span>
                   </div>
                 </div>
+
+                {user &&
+                  user?.role === "user" &&
+                  user._id === product.user &&
+                  status === "pending" && (
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
+                        <button
+                          disabled={status === "cancelled"}
+                          style={{
+                            cursor:
+                              status === "cancelled" ? "no-drop" : "pointer",
+                          }}
+                          onClick={() =>
+                            handleChangeStatus(
+                              product._id,
+                              "cancelled",
+                              product.totalItems,
+                              product.product._id
+                            )
+                          }
+                          className="flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                        >
+                          <FaTimesCircle /> Cancelled
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
                 {/* Admin Actions */}
                 {user?.role === "admin" && (
@@ -586,24 +656,38 @@ const BookedProductComp = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
                       <button
                         disabled={status === "pending"}
-                        style={{ cursor: status === "pending" ? "no-drop" : "pointer" }}
-                        onClick={() => handleChangeStatus(product._id, "pending")}
+                        style={{
+                          cursor: status === "pending" ? "no-drop" : "pointer",
+                        }}
+                        onClick={() =>
+                          handleChangeStatus(product._id, "pending")
+                        }
                         className="flex items-center justify-center gap-2 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                       >
                         <FaCog /> Pending
                       </button>
                       <button
                         disabled={status === "completed"}
-                        style={{ cursor: status === "completed" ? "no-drop" : "pointer" }}
-                        onClick={() => handleChangeStatus(product._id, "completed")}
+                        style={{
+                          cursor:
+                            status === "completed" ? "no-drop" : "pointer",
+                        }}
+                        onClick={() =>
+                          handleChangeStatus(product._id, "completed")
+                        }
                         className="flex items-center justify-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                       >
                         <FaCheckCircle /> Completed
                       </button>
                       <button
                         disabled={status === "cancelled"}
-                        style={{ cursor: status === "cancelled" ? "no-drop" : "pointer" }}
-                        onClick={() => handleChangeStatus(product._id, "cancelled")}
+                        style={{
+                          cursor:
+                            status === "cancelled" ? "no-drop" : "pointer",
+                        }}
+                        onClick={() =>
+                          handleChangeStatus(product._id, "cancelled")
+                        }
                         className="flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                       >
                         <FaTimesCircle /> Cancelled
@@ -615,10 +699,13 @@ const BookedProductComp = () => {
                         <FaCheckCircle /> Generate Bill
                       </button>
                       <button
-                        onClick={() => generateTotalBill(product.user._id, product.status)}
+                        onClick={() =>
+                          generateTotalBill(product.user._id, product.status)
+                        }
                         className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1a2250] text-white rounded-lg hover:bg-[#233166] transition-colors duration-200 sm:col-span-2 lg:col-span-1"
                       >
-                        <FaCheckCircle /> Generate Total Bill for {product.user?.userName}
+                        <FaCheckCircle /> Generate Total Bill for{" "}
+                        {product.user?.userName}
                       </button>
                     </div>
                   </div>
@@ -642,7 +729,9 @@ const BookedProductComp = () => {
         >
           Previous
         </button>
-        <span className="px-4 py-2 bg-white rounded-lg shadow-md font-medium text-[#1a2250]">{page}</span>
+        <span className="px-4 py-2 bg-white rounded-lg shadow-md font-medium text-[#1a2250]">
+          {page}
+        </span>
         <button
           disabled={page === totalPages || bookedProducts?.length <= 0}
           onClick={() => setPage(page + 1)}
@@ -652,7 +741,7 @@ const BookedProductComp = () => {
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BookedProductComp
+export default BookedProductComp;
