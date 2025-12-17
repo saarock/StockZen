@@ -6,6 +6,7 @@ import ApiResponse from "../utils/apiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import fs from "fs";
+import moment from "moment";
 
 export const saveProduct = asyncHandler(async (req, res, next) => {
   const { name, description, price, expiryDate, stock, category, userId } =
@@ -555,4 +556,56 @@ export const editTheProducts = asyncHandler(async (req, res) => {
     // Handle unexpected errors
     res.status(500).json({ message: error.message });
   }
+});
+
+
+
+
+
+
+export const getPurchaseStats = asyncHandler(async (req, res) => {
+    try {
+        const { userId } = req.query;
+
+        // Ensure the userId is provided
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required." });
+        }
+
+        // Get the total number of completed purchases
+        const totalCompletedPurchases = await BuyProducts.countDocuments({ user: userId, status: "completed" });
+
+        // Get the total number of distinct users who have made purchases
+        const totalUsersCount = await BuyProducts.distinct('user'); // List of unique users who made purchases
+
+        // Get the total number of distinct products purchased
+        const totalProductsCount = await BuyProducts.distinct('product'); // List of unique products purchased
+
+        // Find all purchases for the user
+        const userPurchases = await BuyProducts.find({ user: userId }, { createdAt: 1 }); // Only retrieve createdAt field
+
+        // Extract the dates from the user purchases
+        const purchaseDates = userPurchases.map(purchase => moment(purchase.createdAt).format("YYYY-MM-DD"));
+
+        // If no purchases found, return empty stats
+        if (purchaseDates.length === 0) {
+            return res.status(200).json({
+                totalCompletedPurchases,
+                totalUsersCount: totalUsersCount.length, // Number of distinct users
+                totalProductsCount: totalProductsCount.length, // Number of distinct products
+                purchases: [] // Empty array if no data
+            });
+        }
+
+        // Return the aggregated data
+        return res.status(200).json({
+            totalCompletedPurchases,
+            totalUsersCount: totalUsersCount.length, // Total distinct users
+            totalProductsCount: totalProductsCount.length, // Total distinct products
+            purchases: purchaseDates // Only dates
+        });
+    } catch (error) {
+        console.error("Error fetching purchase stats:", error);
+        res.status(500).json({ message: error.message });
+    }
 });

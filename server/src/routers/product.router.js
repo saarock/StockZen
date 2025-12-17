@@ -11,6 +11,7 @@ import {
   editTheProducts,
   generateBill,
   getAllProducts,
+  getPurchaseStats,
   manageBookedProduct,
   saveProduct,
 } from "../controller/product.controller.js";
@@ -35,6 +36,7 @@ router.put("/edit-product", verifyJWT, editTheProducts);
 router.delete("/deleteProduct", verifyJWT, deleteProducts);
 
 
+router.get("/get-purchaseStats", verifyJWT, getPurchaseStats);
 
 router.post("/create-esewa-payment", (req, res) => {
   try {

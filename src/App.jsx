@@ -16,6 +16,7 @@ import ManageBookedProduct from "./pages/manageBookedProduct/ManageBookedProduct
 import ManageUser from "./pages/admin/ManageUser copy";
 import ResetPassword from "./pages/login/ResetPassword";
 import MyProduct from "./pages/myProduct/MyProduct";
+import Stats from "./pages/stats/Stats";
 
 function App() {
   return (
@@ -126,6 +127,7 @@ function App() {
               }
             />
             <Route path="my-product" element={<ProtectedPage><MyProduct/></ProtectedPage>} />
+            <Route path="stats" element={<ProtectedPage><Stats /></ProtectedPage>} />
 
           </Route>
         </Routes>
