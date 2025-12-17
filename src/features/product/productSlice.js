@@ -13,8 +13,8 @@ export const productSlice = createSlice({
             const newProduct = {
                 userId: action.payload.userId,
                 productId: action.payload.productId,
-                totalItem: action.payload.totalItem,
-                totalPrice: action.payload.totalPrice,
+                totalItem: parseInt(action.payload.totalItem),
+                totalPrice: parseInt(action.payload.totalPrice),
                 imageUrl: action.payload.imageUrl,
                 productName: action.payload.productName
             };
@@ -24,8 +24,8 @@ export const productSlice = createSlice({
             );
 
             if (existingProduct) {
-                existingProduct.totalItem += newProduct.totalItem;
-                existingProduct.totalPrice += newProduct.totalPrice;
+                existingProduct.totalItem += parseInt(newProduct.totalItem);
+                existingProduct.totalPrice +=parseInt( newProduct.totalPrice);
             } else {
                 state.unshift(newProduct); // Add only if it doesn't already exist
             }

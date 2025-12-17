@@ -25,6 +25,9 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
       req.user = decoded;
       console.log(decoded._id, "decoded");
       const user = await User.findById(decoded._id);
+      if (!user) {
+        return res.status(404).json({ message: "Invalid User" });
+      }
       if (!user.isActive) {
         return res
           .status(403)

@@ -377,10 +377,21 @@ export const generateBill = asyncHandler(async (req, res) => {
 });
 
 export const changeStatusOfTheBookeditems = asyncHandler(async (req, res) => {
-  const { productId, newStatus } = req.body;
+  const { productId, productOriginalId, newStatus, productStock } = req.body;
 
   if (!productId || !newStatus) {
     throw new Error("Product id and status were required");
+  }
+
+  if (newStatus === "cancelled") {
+    const product = await Product.findById(productOriginalId);
+    if (!product) {
+      throw new Error("No product found");
+    }
+    console.log(productStock);
+    
+    product.stock = product.stock + parseInt(productStock);
+    await product.save();
   }
   const product = await BuyProducts.findById(productId);
   if (!product) {
@@ -513,12 +524,13 @@ export const editTheProducts = asyncHandler(async (req, res) => {
     // Proceed with updating the product (replace the following line with your update logic)
 
     const existingProduct = await Product.findOne({
-      name: name.trim(),
+      name: name.trim().toLowerCase(),
+      _id: { $ne: id },
     });
     if (existingProduct) {
       throw new Error("Product with the same name already exists.");
     }
-    // Assuming you have a Product model and a method to update the product
+
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       {
@@ -544,5 +556,3 @@ export const editTheProducts = asyncHandler(async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-

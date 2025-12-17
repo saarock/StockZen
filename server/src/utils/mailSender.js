@@ -30,7 +30,9 @@ class NodeMailSender {
           
           <tr>
             <td style="padding:22px 26px;background:#101540;color:#fff;">
-              <div style="font-size:18px;font-weight:700;">${title || "Message"}</div>
+              <div style="font-size:18px;font-weight:700;">${
+                title || "Message"
+              }</div>
               <div style="font-size:13px;opacity:0.9;margin-top:4px;">Please read the details below</div>
             </td>
           </tr>
@@ -59,7 +61,10 @@ class NodeMailSender {
               <hr style="border:none;border-top:1px solid #eef0f4;margin:22px 0;" />
 
               <div style="font-size:12px;color:#667085;line-height:1.6;">
-                ${footer || "If you didn’t request this, you can safely ignore this email."}
+                ${
+                  footer ||
+                  "If you didn’t request this, you can safely ignore this email."
+                }
               </div>
             </td>
           </tr>
@@ -74,6 +79,56 @@ class NodeMailSender {
   </table>
 </body>
 </html>`;
+  }
+  // OTP email helper
+  async sendOtpEmail({ to, otp, name = "User", purpose = "verification" }) {
+    const subject = `Your OTP for ${purpose}`;
+
+    const html = this.buildTemplate({
+      title: "Your One-Time Password (OTP)",
+      message: `
+      <p style="margin:0 0 10px;">Hi <b>${name}</b>,</p>
+      <p style="margin:0 0 14px; line-height:1.6;">
+        Use the OTP below to complete your ${purpose}. This code will expire soon.
+      </p>
+
+      <div style="text-align:center; margin:18px 0 10px;">
+        <div style="
+          display:inline-block;
+          padding:14px 18px;
+          border-radius:12px;
+          border:1px dashed #cbd5e1;
+          background:#f8fafc;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+          font-size:28px;
+          letter-spacing:8px;
+          color:#101540;
+        ">
+          <b>${otp}</b>
+        </div>
+      </div>
+
+      <p style="margin:10px 0 0; font-size:12px; color:#667085; line-height:1.6;">
+        If you didn’t request this OTP, please ignore this email.
+      </p>
+    `,
+      footer:
+        "For your security, never share your OTP with anyone (including support).",
+    });
+
+    const text = `Hi ${name},
+
+Your OTP for ${purpose} is: ${otp}
+
+This code will expire soon. If you didn’t request this, ignore this email.`;
+
+    return this.send({
+      from: "saarock200@gmail.com",
+      to,
+      subject,
+      text,
+      html,
+    });
   }
 
   async send({ from, to, subject, text, html }) {

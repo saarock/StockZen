@@ -42,12 +42,13 @@ export const sendMailToTheUser = asyncHandler(async (req, res) => {
   if (!storedOtp) {
     throw new Error("Failed to generate or stored otp");
   }
-  await nodeMailer.send(
-    "saarock200@gmail.com",
-    email,
-    "verify",
-    `<b>${storedOtp}</b>`
-  );
+  const name = email.split("@")[0];
+  await nodeMailer.sendOtpEmail({
+    otp: storedOtp,
+    to: email,
+    name,
+    purpose: "verification",
+  });
   res.status(200).json(new ApiResponse(200, null, "Mail send successfully"));
 });
 
@@ -115,7 +116,6 @@ export const registerUser = asyncHandler(async (req, res) => {
 export const loginUser = asyncHandler(async (req, res) => {
   try {
     const { userName, email, password } = req.body;
-    console.log("Login user");
 
     if (!(userName || email)) {
       throw new ApiError(400, "UserName or email requried");
@@ -126,7 +126,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     });
 
     if (!user) {
-      throw new ApiError(404, "User doesnot exit");
+      throw new ApiError(404, "Account doesnot exit please register first");
     }
 
     if (!user.isActive) {
@@ -366,7 +366,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
 export const resetNewPassowrd = asyncHandler(async (req, res) => {
   const { password, token } = req.body;
   console.log(token);
-  
+
   const user = await User.findOne({
     resetToken: token,
     passwordResetExpires: { $gt: Date.now() },

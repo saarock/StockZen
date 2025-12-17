@@ -15,6 +15,7 @@ import Products from "./pages/products/Products";
 import ManageBookedProduct from "./pages/manageBookedProduct/ManageBookedProduct";
 import ManageUser from "./pages/admin/ManageUser copy";
 import ResetPassword from "./pages/login/ResetPassword";
+import MyProduct from "./pages/myProduct/MyProduct";
 
 function App() {
   return (
@@ -124,6 +125,8 @@ function App() {
                 </ProtectedPage>
               }
             />
+            <Route path="my-product" element={<ProtectedPage><MyProduct/></ProtectedPage>} />
+
           </Route>
         </Routes>
       </BrowserRouter>

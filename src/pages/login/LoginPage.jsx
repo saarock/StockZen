@@ -69,12 +69,13 @@ const LoginPage = () => {
     <div className="login-page">
       <div className="login-page-container">
         <div className="login-content">
+                <div className="login-right">
+            <EntryComponent />
+          </div>
           <div className="login-left">
             <LoginComponent onSubmit={signIn} onChange={onInputChange} loading={loading} />
           </div>
-          <div className="login-right">
-            <EntryComponent />
-          </div>
+    
         </div>
       </div>
     </div>

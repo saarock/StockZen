@@ -124,9 +124,9 @@ class ProductService {
         }
     }
 
-    async updateProductStatus(productId, newStatus) {
+    async updateProductStatus(productId, newStatus, productStock, productOriginalId) {
         try {
-            const response = await protectedApi.post(`/change-status-of-booked-items`, {productId, newStatus});
+            const response = await protectedApi.post(`/change-status-of-booked-items`, {productId, newStatus, productStock,  productOriginalId});
             const data = await response.data;
             return data;
         } catch(error) {
