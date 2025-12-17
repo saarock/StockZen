@@ -17,6 +17,7 @@ import ManageUser from "./pages/admin/ManageUser copy";
 import ResetPassword from "./pages/login/ResetPassword";
 import MyProduct from "./pages/myProduct/MyProduct";
 import Stats from "./pages/stats/Stats";
+import Notifications from "./pages/notifications/Notificatoins";
 
 function App() {
   return (
@@ -60,9 +61,7 @@ function App() {
               }
             />
 
-
-              <Route path="/reset-password" element={<ResetPassword />} />
-          
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             <Route
               path="/products"
@@ -126,8 +125,23 @@ function App() {
                 </ProtectedPage>
               }
             />
-            <Route path="my-product" element={<ProtectedPage><MyProduct/></ProtectedPage>} />
-            <Route path="stats" element={<ProtectedPage><Stats /></ProtectedPage>} />
+            <Route
+              path="my-product"
+              element={
+                <ProtectedPage>
+                  <MyProduct />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="stats"
+              element={
+                <ProtectedPage>
+                  <Stats />
+                </ProtectedPage>
+              }
+            />
+            <Route path="notifications" element={<ProtectedPage><Notifications /></ProtectedPage>} />
 
           </Route>
         </Routes>
