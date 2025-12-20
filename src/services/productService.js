@@ -88,12 +88,10 @@ class ProductService {
         }
     }
 
-    async getPurchaseStats(userId) {
+    async getPurchaseStats(userId, page = 1, limit = 10) {
         try {
-            const response = await protectedApi.get(`/get-purchaseStats?userId=${userId}`);
+            const response = await protectedApi.get(`/get-purchaseStats?userId=${userId}&page=${page}&limit=${limit}`);
             const data = await response.data;
-            console.log("hah")
-            console.log(data)
             return data;
         } catch (error) {
             throw new Error(error.response.data.message);

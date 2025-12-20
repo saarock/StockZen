@@ -13,6 +13,7 @@ import {
   FaUserMinus,
   FaSearch,
 } from "react-icons/fa"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import useUser from "../../hooks/useUser"
 
 const ManageUsersComponent = () => {
@@ -284,32 +285,38 @@ const ManageUsersComponent = () => {
           </div>
         </div>
 
-        {/* Pagination */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8 bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-          <button
-            onClick={handlePrevPage}
-            disabled={currentPage === 1}
-            className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#101540] to-[#101540]/80 text-white rounded-xl shadow-md hover:shadow-lg hover:shadow-[#101540]/20 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 disabled:hover:scale-100 font-semibold text-sm"
-          >
-            <FaArrowLeft className="text-sm group-hover:-translate-x-1 transition-transform duration-300" />
-            <span>Previous</span>
-          </button>
+        {/* Pagination Section */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mt-12 bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm transition-all duration-300">
+          <p className="text-sm font-black text-gray-400 uppercase tracking-widest">
+            Showing <span className="text-[#101540]">{users.length}</span> items of <span className="text-[#101540]">{currentPage * usersPerPage}</span>
+          </p>
 
-          <div className="flex items-center gap-3">
-            <span className="text-gray-700 font-semibold text-sm">
-              Page <span className="text-[#101540] text-lg">{currentPage}</span> of{" "}
-              <span className="text-[#101540] text-lg">{totalPages}</span>
-            </span>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+              className="group flex items-center gap-3 px-8 py-4 bg-white text-[#101540] rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm ring-1 ring-gray-100 hover:bg-[#101540] hover:text-white disabled:opacity-30 disabled:grayscale transition-all duration-300"
+            >
+              <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+              Prev
+            </button>
+
+            <div className="flex items-center gap-2 px-6 py-4 bg-[#101540] rounded-2xl text-white font-black shadow-2xl shadow-[#101540]/20">
+              <span className="opacity-40 text-[10px] uppercase tracking-widest mr-1">Page</span>
+              <span className="text-sm">{currentPage}</span>
+              <span className="opacity-20 font-medium mx-1">/</span>
+              <span className="text-sm">{totalPages}</span>
+            </div>
+
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className="group flex items-center gap-3 px-8 py-4 bg-white text-[#101540] rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm ring-1 ring-gray-100 hover:bg-[#101540] hover:text-white disabled:opacity-30 disabled:grayscale transition-all duration-300"
+            >
+              Next
+              <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </button>
           </div>
-
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-            className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#101540] to-[#101540]/80 text-white rounded-xl shadow-md hover:shadow-lg hover:shadow-[#101540]/20 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 disabled:hover:scale-100 font-semibold text-sm"
-          >
-            <span>Next</span>
-            <FaArrowRight className="text-sm group-hover:translate-x-1 transition-transform duration-300" />
-          </button>
         </div>
       </div>
     </div>
