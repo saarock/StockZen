@@ -129,6 +129,22 @@ function App() {
                 </ProtectedPage>
               }
             />
+            <Route
+              path="user-profile/:userId"
+              element={
+                <ProtectedPage>
+                  <Profile />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="my-details"
+              element={
+                <ProtectedPage>
+                  <Profile />
+                </ProtectedPage>
+              }
+            />
           </Route>
 
           {/* User Dashboard Layout */}

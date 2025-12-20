@@ -102,6 +102,24 @@ class UserService {
       throw new Error(error.response?.data?.message || "Failed to fetch admin stats");
     }
   }
+
+  async getProfile(userId = "") {
+    try {
+      const response = await protectedApi.get(`/profile/${userId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || "Failed to fetch profile");
+    }
+  }
+
+  async updateProfile(profileData) {
+    try {
+      const response = await protectedApi.put("/update-profile", profileData);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || "Failed to update profile");
+    }
+  }
 }
 
 const userService = new UserService();

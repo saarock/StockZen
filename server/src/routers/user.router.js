@@ -12,6 +12,8 @@ import {
   updateUserRole,
   updateUserStatus,
   verifyUserMail,
+  getProfile,
+  updateProfile,
 } from "../controller/user.controller.js";
 // import connectedUsers from "../utils/connectedUsers.js";
 import ApiError from "../utils/apiError.js";
@@ -33,6 +35,8 @@ router.post("/logout", verifyJWT, logoutUser);
 router.post("/forget-password", resetPassword);
 router.post("/reset-password", resetNewPassowrd)
 router.post("/subscribe", subscribeToNewsLetter);
+router.get("/profile/:userId?", verifyJWT, getProfile);
+router.put("/update-profile", verifyJWT, updateProfile);
 
 
 // first manage this things and do all the stup

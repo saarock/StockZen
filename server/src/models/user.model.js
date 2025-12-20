@@ -58,6 +58,26 @@ const userSchema = new mongoose.Schema({
         type: Date, 
         default: null,
     },
+    location: {
+        type: String,
+        trim: true,
+        default: ""
+    },
+    gender: {
+        type: String,
+        enum: ['male', 'female', 'other', 'prefer_not_to_say', ''],
+        default: ''
+    },
+    avatar: {
+        type: String,
+        default: ""
+    },
+    bio: {
+        type: String,
+        trim: true,
+        maxlength: 500,
+        default: ""
+    },
 }, {
     timestamps: true
 });
@@ -118,6 +138,7 @@ userSchema.methods.generateAccessToken = async function () {
             {
                 _id: this._id,
                 email: this.email,
+                role: this.role,
             },
             secret,
             {

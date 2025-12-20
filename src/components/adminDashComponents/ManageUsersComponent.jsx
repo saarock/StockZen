@@ -1,5 +1,5 @@
-
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
 import userService from "../../services/userService"
 import {
@@ -11,6 +11,7 @@ import {
   FaToggleOff,
   FaUserShield,
   FaUserMinus,
+  FaSearch,
 } from "react-icons/fa"
 import useUser from "../../hooks/useUser"
 
@@ -143,11 +144,10 @@ const ManageUsersComponent = () => {
                       <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-600">{_user.email}</td>
                       <td className="px-4 md:px-6 py-4 text-xs md:text-sm">
                         <span
-                          className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
-                            _user.role === "admin"
-                              ? "bg-gradient-to-r from-[#101540] to-[#101540]/80 text-white"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
+                          className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${_user.role === "admin"
+                            ? "bg-gradient-to-r from-[#101540] to-[#101540]/80 text-white"
+                            : "bg-gray-100 text-gray-700"
+                            }`}
                         >
                           {_user.role === "admin" && <FaUserShield className="text-xs" />}
                           {_user.role}
@@ -171,15 +171,13 @@ const ManageUsersComponent = () => {
                           <button
                             onClick={() => handleToggleStatus(_user._id, _user.isActive)}
                             disabled={user?._id === _user._id || loadingStatus[_user._id]}
-                            className={`group/btn relative inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg shadow-md transition-all duration-300 ${
-                              _user.isActive
-                                ? "bg-red-500 hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/30"
-                                : "bg-green-500 hover:bg-green-600 hover:shadow-lg hover:shadow-green-500/30"
-                            } text-white ${
-                              user?._id === _user._id || loadingStatus[_user._id]
+                            className={`group/btn relative inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg shadow-md transition-all duration-300 ${_user.isActive
+                              ? "bg-red-500 hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/30"
+                              : "bg-green-500 hover:bg-green-600 hover:shadow-lg hover:shadow-green-500/30"
+                              } text-white ${user?._id === _user._id || loadingStatus[_user._id]
                                 ? "opacity-50 cursor-not-allowed"
                                 : "hover:scale-105"
-                            }`}
+                              }`}
                           >
                             {loadingStatus[_user._id] ? (
                               <>
@@ -202,15 +200,13 @@ const ManageUsersComponent = () => {
                           <button
                             onClick={() => handleToggleAdminRole(_user._id, _user.role)}
                             disabled={user?._id === _user._id || loadingRole[_user._id]}
-                            className={`group/btn relative inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg shadow-md transition-all duration-300 ${
-                              _user.role === "admin"
-                                ? "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 hover:shadow-lg hover:shadow-orange-500/30"
-                                : "bg-gradient-to-r from-[#101540] to-[#101540]/80 hover:shadow-lg hover:shadow-[#101540]/30"
-                            } text-white ${
-                              user?._id === _user._id || loadingRole[_user._id]
+                            className={`group/btn relative inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg shadow-md transition-all duration-300 ${_user.role === "admin"
+                              ? "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 hover:shadow-lg hover:shadow-orange-500/30"
+                              : "bg-gradient-to-r from-[#101540] to-[#101540]/80 hover:shadow-lg hover:shadow-[#101540]/30"
+                              } text-white ${user?._id === _user._id || loadingRole[_user._id]
                                 ? "opacity-50 cursor-not-allowed"
                                 : "hover:scale-105"
-                            }`}
+                              }`}
                             title={user?._id === _user._id ? "You cannot change your own role" : ""}
                           >
                             {loadingRole[_user._id] ? (
@@ -231,6 +227,16 @@ const ManageUsersComponent = () => {
                               </>
                             )}
                           </button>
+
+                          {/* View Profile Button */}
+                          <Link
+                            to={`/admin/dashboard/user-profile/${_user._id}`}
+                            className="inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg shadow-md bg-[#1a2250] text-white hover:bg-[#233166] transition-all duration-300 hover:scale-105"
+                            title="View user profile"
+                          >
+                            <FaSearch className="text-sm" />
+                            <span className="hidden sm:inline">View Profile</span>
+                          </Link>
                         </div>
                       </td>
                     </tr>
