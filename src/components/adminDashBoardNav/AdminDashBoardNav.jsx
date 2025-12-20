@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import userService from "../../services/userService";
 import {
   FaUtensils,
   FaPlusCircle,
@@ -9,10 +10,15 @@ import {
   FaBars,
   FaTimes,
   FaUserCircle,
+  FaBell,
+  FaChartBar,
 } from "react-icons/fa";
+
+import useSocket from "../../hooks/useSocket";
 
 const AdminDashBoardNav = () => {
   const user = useSelector((state) => state.auth.user);
+  const { numberOfNotifications: unreadCount } = useSocket();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const pathname = useLocation().pathname;
 
@@ -21,6 +27,11 @@ const AdminDashBoardNav = () => {
   };
 
   const navLinks = [
+    {
+      name: "Dashboard",
+      path: "/admin/dashboard",
+      icon: <FaChartBar />,
+    },
     {
       name: "Add Product",
       path: "/admin/dashboard/add-product",
@@ -35,6 +46,12 @@ const AdminDashBoardNav = () => {
       name: "Manage Users",
       path: "/admin/dashboard/manage-users",
       icon: <FaUsersCog />,
+    },
+    {
+      name: "Notifications",
+      path: "/admin/dashboard/notifications",
+      icon: <FaBell />,
+      badge: unreadCount,
     },
     {
       name: "My details",
@@ -61,19 +78,17 @@ const AdminDashBoardNav = () => {
         <div className="relative w-6 h-6">
           <FaBars
             size={24}
-            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-              isSidebarOpen
-                ? "opacity-0 rotate-180 scale-0"
-                : "opacity-100 rotate-0 scale-100"
-            }`}
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${isSidebarOpen
+              ? "opacity-0 rotate-180 scale-0"
+              : "opacity-100 rotate-0 scale-100"
+              }`}
           />
           <FaTimes
             size={24}
-            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-              isSidebarOpen
-                ? "opacity-100 rotate-0 scale-100"
-                : "opacity-0 -rotate-180 scale-0"
-            }`}
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${isSidebarOpen
+              ? "opacity-100 rotate-0 scale-100"
+              : "opacity-0 -rotate-180 scale-0"
+              }`}
           />
         </div>
       </button>
@@ -88,11 +103,10 @@ const AdminDashBoardNav = () => {
 
       {/* Sidebar */}
       <aside
-        className={` h-screen bg-white border-r border-[rgba(16,21,64,0.1)] shadow-2xl shadow-[rgba(16,21,64,0.1)] transition-all duration-500 ease-in-out ${
-          isSidebarOpen
-            ? "fixed inset-0 z-40 translate-x-0"
-            : "fixed -translate-x-full z-40"
-        } lg:relative lg:translate-x-0 lg:z-auto w-[280px] sm:w-[320px] lg:w-[280px] xl:w-[300px]`}
+        className={` h-screen bg-white border-r border-[rgba(16,21,64,0.1)] shadow-2xl shadow-[rgba(16,21,64,0.1)] transition-all duration-500 ease-in-out ${isSidebarOpen
+          ? "fixed inset-0 z-40 translate-x-0"
+          : "fixed -translate-x-full z-40"
+          } lg:relative lg:translate-x-0 lg:z-auto w-[280px] sm:w-[320px] lg:w-[280px] xl:w-[300px]`}
       >
         <div className="flex flex-col h-full">
           {/* User Info Section */}
@@ -130,11 +144,10 @@ const AdminDashBoardNav = () => {
                   onClick={() => {
                     if (window.innerWidth < 1024) setSidebarOpen(false);
                   }}
-                  className={`group flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-2xl transition-all duration-300 relative overflow-hidden ${
-                    active
-                      ? "bg-gradient-to-br from-[#101540] to-[#1a2060] text-white shadow-lg shadow-[rgba(16,21,64,0.3)]"
-                      : "text-gray-700 hover:bg-[rgba(16,21,64,0.05)] hover:text-[#101540]"
-                  }`}
+                  className={`group flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-2xl transition-all duration-300 relative overflow-hidden ${active
+                    ? "bg-gradient-to-br from-[#101540] to-[#1a2060] text-white shadow-lg shadow-[rgba(16,21,64,0.3)]"
+                    : "text-gray-700 hover:bg-[rgba(16,21,64,0.05)] hover:text-[#101540]"
+                    }`}
                   style={{
                     animationDelay: `${index * 50}ms`,
                   }}
@@ -150,11 +163,10 @@ const AdminDashBoardNav = () => {
 
                   {/* Icon */}
                   <span
-                    className={`relative z-10 text-xl sm:text-2xl transition-all duration-300 ${
-                      active
-                        ? "scale-110"
-                        : "group-hover:scale-125 group-hover:rotate-12 group-hover:text-[#101540]"
-                    }`}
+                    className={`relative z-10 text-xl sm:text-2xl transition-all duration-300 ${active
+                      ? "scale-110"
+                      : "group-hover:scale-125 group-hover:rotate-12 group-hover:text-[#101540]"
+                      }`}
                   >
                     {link.icon}
                   </span>
@@ -164,8 +176,15 @@ const AdminDashBoardNav = () => {
                     {link.name}
                   </span>
 
+                  {/* Notification Badge */}
+                  {link.badge !== undefined && link.badge > 0 && (
+                    <span className="relative z-10 flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-red-500 text-white text-xs font-bold shadow-lg shadow-red-500/50">
+                      {link.badge}
+                    </span>
+                  )}
+
                   {/* Active indicator */}
-                  {active && (
+                  {active && !link.badge && (
                     <div className="relative z-10 w-2 h-2 rounded-full bg-white shadow-lg shadow-white/50 animate-pulse" />
                   )}
 

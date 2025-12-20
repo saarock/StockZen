@@ -7,6 +7,8 @@ body {
 
 .profile-container {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 40px;
   background: #fff;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
@@ -20,6 +22,8 @@ body {
   border-bottom: 2px solid #e0e0e0;
   padding-bottom: 15px;
   margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
 .profile-title {
@@ -34,13 +38,14 @@ body {
   border: none;
   border-radius: 50%;
   font-size: 20px;
-  width: 42px;
-  height: 42px;
+  width: 48px; /* Touch-friendly */
+  height: 48px; /* Touch-friendly */
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: 0.3s ease;
+  flex-shrink: 0;
 }
 
 .profile-edit-btn:hover {
@@ -73,6 +78,7 @@ body {
   border-radius: 10px;
   background-color: #f9f9f9;
   transition: border 0.3s;
+  min-height: 48px; /* Touch-friendly */
 }
 
 .profile-item input:focus {
@@ -92,7 +98,7 @@ body {
   text-align: center;
   font-size: 18px;
   color: #555;
-  padding: 50px 0;
+  padding: 50px 20px;
 }
 
 @keyframes fadeIn {
@@ -103,5 +109,86 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .profile-container {
+    padding: 30px;
+  }
+
+  .profile-title {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 25px 20px;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .profile-title {
+    font-size: 22px;
+  }
+
+  .profile-edit-btn {
+    width: 44px; /* iOS minimum */
+    height: 44px;
+    font-size: 18px;
+    align-self: flex-end;
+  }
+
+  .profile-item input {
+    font-size: 16px; /* Prevent zoom on iOS */
+    min-height: 44px;
+  }
+
+  .loading,
+  .error,
+  .not-authenticated {
+    font-size: 16px;
+    padding: 40px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 20px 15px;
+  }
+
+  .profile-title {
+    font-size: 20px;
+  }
+
+  .profile-header {
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+
+  .profile-body {
+    gap: 15px;
+  }
+
+  .profile-item label {
+    font-size: 13px;
+  }
+
+  .profile-item input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+
+  .loading,
+  .error,
+  .not-authenticated {
+    font-size: 14px;
+    padding: 30px 10px;
   }
 }

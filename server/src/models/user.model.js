@@ -49,10 +49,14 @@ const userSchema = new mongoose.Schema({
     },
     resetToken: {
         type: String,
-        unique: true,
+        // unique: true,
+        unique: false,
+        default: null,
+
     },
     passwordResetExpires: {
-        type: Date,
+        type: Date, 
+        default: null,
     },
 }, {
     timestamps: true
@@ -161,5 +165,6 @@ userSchema.methods.generateRefreshToken = async function () {
 
 
 const User = mongoose.model("User", userSchema);
+
 export default User;
 

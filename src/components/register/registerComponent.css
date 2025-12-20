@@ -3,20 +3,19 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      border-radius: 2rem;
-  
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border-radius: 2rem;
+  padding: 1rem;
 }
 
 .register-card {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   padding: 3rem;
-  /* box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-radius: 2rem;
-  width: 32rem;
-  
+  width: 100%;
+  max-width: 32rem;
 }
 
 /* Enhanced header styling */
@@ -62,6 +61,7 @@
   transition: all 0.3s ease !important;
   border: none !important;
   cursor: pointer !important;
+  min-height: 48px !important; /* Touch-friendly */
 }
 
 .register-submit-btn:hover {
@@ -72,6 +72,30 @@
 
 .register-submit-btn:active {
   transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .register-container {
+    padding: 0.75rem;
+  }
+
+  .register-card {
+    padding: 2.5rem 2rem;
+    max-width: 100%;
+  }
+
+  .register-title {
+    font-size: 2rem;
+  }
+
+  .register-description {
+    font-size: 0.9375rem;
+  }
+
+  .register-submit-btn {
+    min-height: 44px !important; /* iOS minimum */
+  }
 }
 
 @media (max-width: 640px) {
@@ -85,5 +109,38 @@
 
   .register-description {
     font-size: 0.9375rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-container {
+    padding: 0.5rem;
+    border-radius: 1.5rem;
+  }
+
+  .register-card {
+    padding: 1.75rem 1.25rem;
+    border-radius: 1.5rem;
+  }
+
+  .register-header {
+    margin-bottom: 2rem;
+  }
+
+  .register-title {
+    font-size: 1.5rem;
+  }
+
+  .register-description {
+    font-size: 0.875rem;
+  }
+
+  .register-form {
+    gap: 1rem;
+  }
+
+  .register-submit-btn {
+    padding: 0.875rem !important;
+    font-size: 0.9375rem !important;
   }
 }

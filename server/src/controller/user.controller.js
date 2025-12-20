@@ -7,6 +7,7 @@ import User from "../models/user.model.js";
 import ApiError from "../utils/apiError.js";
 import { generateRandomToken, randomString } from "../utils/randomString.js";
 import Subscriber from "../models/subscriber.js";
+import { notifyAllAdmins, notifyUser } from "../utils/notificationService.js";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -55,14 +56,20 @@ export const sendMailToTheUser = asyncHandler(async (req, res) => {
 
 export const verifyUserMail = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
-  const isCorrectOpt = mailOtpStore.verifyOtp(email, otp);
-  console.log(isCorrectOpt);
+  
+  // Verify OTP
+  const isCorrectOtp = mailOtpStore.verifyOtp(email, otp);
+  console.log(isCorrectOtp);
   console.log("Main verify");
 
-  if (!isCorrectOpt) {
+  if (!isCorrectOtp) {
     throw new ApiError(400, "Wrong otp");
   }
-  res.status(200).json(new ApiResponse(200, null, "Otp verifyed"));
+
+  // OTP verified successfully
+  return res.status(200).json(
+    new ApiResponse(200, { email }, "OTP verified successfully")
+  );
 });
 
 export const registerUser = asyncHandler(async (req, res) => {
@@ -80,6 +87,8 @@ export const registerUser = asyncHandler(async (req, res) => {
     if (existedUser) {
       throw new ApiError(400, "User already exist.");
     }
+    console.log("It came up to me");
+    
 
     const user = await User.create({
       fullName,
@@ -93,7 +102,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     console.log(user);
 
     const createdUser = await User.findById(user._id).select(
-      "-password -refreshToken"
+      "-password -refreshToken -resetToken -passwordResetExpires -__v "
     );
 
     if (!createdUser) {
@@ -260,6 +269,21 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
 
     await user.save();
 
+    // Notify user about status change
+    await notifyUser(
+      userId,
+      `Your account has been ${updatedStatus ? 'activated' : 'deactivated'}.`,
+      'user_status_changed',
+      { userId, isActive: updatedStatus }
+    );
+
+    // Notify admins about status change
+    await notifyAllAdmins(
+      `User "${user.userName}" has been ${updatedStatus ? 'activated' : 'deactivated'}.`,
+      'user_status_changed',
+      { userId, userName: user.userName, isActive: updatedStatus }
+    );
+
     res.status(200).json(
       new ApiResponse(
         200,
@@ -296,6 +320,21 @@ export const updateUserRole = asyncHandler(async (req, res) => {
     user.role = updatedRole;
 
     await user.save();
+
+    // Notify user about role change
+    await notifyUser(
+      currentUserId,
+      `Your role has been changed to "${updatedRole}".`,
+      'user_role_changed',
+      { userId: currentUserId, newRole: updatedRole }
+    );
+
+    // Notify admins about role change
+    await notifyAllAdmins(
+      `User "${user.userName}" role has been changed to "${updatedRole}".`,
+      'user_role_changed',
+      { userId: currentUserId, userName: user.userName, newRole: updatedRole }
+    );
 
     res.status(200).json(
       new ApiResponse(

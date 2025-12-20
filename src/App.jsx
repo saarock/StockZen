@@ -17,7 +17,9 @@ import ManageUser from "./pages/admin/ManageUser copy";
 import ResetPassword from "./pages/login/ResetPassword";
 import MyProduct from "./pages/myProduct/MyProduct";
 import Stats from "./pages/stats/Stats";
-import Notifications from "./pages/notifications/Notificatoins";
+import Notifications from "./pages/notifications/Notifications";
+import AdminNotifications from "./pages/admin/AdminNotifications";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 function App() {
   return (
@@ -77,8 +79,15 @@ function App() {
 
           <Route path="admin/dashboard" element={<AdminDashboardLayout />}>
             <Route
-              path="add-product"
               index
+              element={
+                <ProtectedPage>
+                  <AdminDashboard />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="add-product"
               element={
                 <ProtectedPage>
                   <AddProduct />
@@ -109,6 +118,14 @@ function App() {
               element={
                 <ProtectedPage>
                   <ManageUser />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="notifications"
+              element={
+                <ProtectedPage>
+                  <AdminNotifications />
                 </ProtectedPage>
               }
             />

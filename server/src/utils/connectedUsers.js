@@ -4,8 +4,8 @@ class ConnectedUsers {
   }
 
   addUser(userId, socketId) {
-    console.log("Addinf user: " + userId)
-    this.connectedUsers.set(userId, socketId);
+    console.log("Adding user: " + userId)
+    this.connectedUsers.set(userId.toString(), socketId);
   }
 
   removeUser(socketId) {
@@ -18,8 +18,9 @@ class ConnectedUsers {
   }
 
   getUserSocketId(userId) {
-    console.log("this is the userID: " + userId)
-    return this.connectedUsers.get(userId);
+    if (!userId) return null;
+    console.log("Getting socket for userID: " + userId)
+    return this.connectedUsers.get(userId.toString());
   }
 }
 

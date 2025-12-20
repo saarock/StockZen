@@ -7,6 +7,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import fs from "fs";
 import moment from "moment";
+import { notifyAllAdmins, notifyUser, notifyAllUsers } from "../utils/notificationService.js";
 
 export const saveProduct = asyncHandler(async (req, res, next) => {
   const { name, description, price, expiryDate, stock, category, userId } =
@@ -100,6 +101,23 @@ export const saveProduct = asyncHandler(async (req, res, next) => {
   const product = new Product(newProduct);
   // Save the product to the database
   await product.save();
+
+  // Check for low stock on new product
+  if (product.stock <= 5) {
+    await notifyAllAdmins(
+      `Low stock alert: New product "${product.name}" has only ${product.stock} item(s) in stock.`,
+      'low_stock_alert',
+      { productId: product._id, currentStock: product.stock }
+    );
+  }
+
+  // Notify all admins about new product
+  await notifyAllAdmins(
+    `New product "${product.name}" has been added to the inventory.`,
+    'product_created',
+    { productId: product._id, productName: product.name, price: product.price }
+  );
+
   res
     .status(201)
     .json(new ApiResponse(200, "Product Added Successfull", product));
@@ -204,6 +222,15 @@ export const BuyProduct = asyncHandler(async (req, res) => {
       // Update product stock
       alreadySavedProduct.stock -= parseInt(product.totalItem);
 
+      // Check for low stock
+      if (alreadySavedProduct.stock <= 5) {
+        await notifyAllAdmins(
+          `Low stock alert: "${alreadySavedProduct.name}" has only ${alreadySavedProduct.stock} item(s) left.`,
+          'low_stock_alert',
+          { productId: alreadySavedProduct._id, currentStock: alreadySavedProduct.stock }
+        );
+      }
+
       // Save the updated product
       await alreadySavedProduct.save();
 
@@ -215,10 +242,21 @@ export const BuyProduct = asyncHandler(async (req, res) => {
         totalItems: parseInt(product.totalItem),
         payment_gateway: "Cash",
       });
-      // await Notification.create({
-      //     user: product.userId,
-      //     message: `You have purchase ${product.productName},  ${product.totalItem} items.`
-      // });
+
+      // Notify user about purchase
+      await notifyUser(
+        product.userId,
+        `You have purchased "${product.productName}", ${product.totalItem} item(s) for $${product.totalPrice}.`,
+        'purchase_completed',
+        { productId: product.productId, productName: product.productName, totalItems: product.totalItem, totalPrice: product.totalPrice }
+      );
+
+      // Notify admins about the purchase
+      await notifyAllAdmins(
+        `New order: "${product.productName}" - ${product.totalItem} item(s) purchased.`,
+        'order_placed',
+        { productId: product.productId, productName: product.productName, totalItems: product.totalItem, userId: product.userId }
+      );
     }
 
     return res
@@ -331,80 +369,105 @@ export const manageBookedProduct = asyncHandler(async (req, res) => {
 export const generateBill = asyncHandler(async (req, res) => {
   const { userId, status } = req.query;
 
-  const products = await BuyProducts.find({ user: userId })
-    .populate("product", "name price payment_gateway")
+  const query = { user: userId };
+  if (status) {
+    query.status = status;
+  }
+
+  const products = await BuyProducts.find(query)
+    .populate("product", "name price")
     .populate("user", "userName");
 
-  if (products.length <= 0) {
-    throw new Error("No products found");
+  if (!products || products.length <= 0) {
+    return res.status(404).json({ message: "No products found for this user." });
   }
 
   let totalPrice = 0;
-
   const allTheDetails = products.map((product) => {
-    totalPrice += Number(product.price);
-    if (product.status !== "completed") {
-      throw new ApiError(
-        400,
-        "Product is not completed. Pleased maked all the products status completed"
-      );
-    }
-    // product.status = status;
-
+    const itemPrice = Number(product.price) || 0;
+    totalPrice += itemPrice;
+    
     return {
-      name: product.product.name,
-      perPPrice: product.product.price,
-      totalItems: product.totalItems,
-      soTheMultiPrice: product.price,
+      name: product.product?.name || "Deleted Product",
+      perPPrice: product.product?.price || 0,
+      totalItems: product.totalItems || 0,
+      soTheMultiPrice: itemPrice,
       status: product.status,
       payment_gateway: product.payment_gateway,
     };
   });
 
-  console.log(allTheDetails);
-
-  let anotherPrice = totalPrice;
-
-  if (status) {
-    await Promise.all(products.map((p) => p.save()));
-  }
   return res.status(200).json(
     new ApiResponse(200, {
       allTheDetails,
-      anotherPrice,
-      userName: products[0].user.userName,
-    })
+      anotherPrice: totalPrice,
+      userName: products[0].user?.userName || "Unknown",
+    }, "Bill generated successfully")
   );
 });
 
 export const changeStatusOfTheBookeditems = asyncHandler(async (req, res) => {
-  const { productId, productOriginalId, newStatus, productStock } = req.body;
+  const { productId, newStatus } = req.body;
 
   if (!productId || !newStatus) {
-    throw new Error("Product id and status were required");
+    throw new ApiError(400, "Product id and status are required");
   }
 
-  if (newStatus === "cancelled") {
-    const product = await Product.findById(productOriginalId);
-    if (!product) {
-      throw new Error("No product found");
-    }
-    console.log(productStock);
+  const bookedProduct = await BuyProducts.findById(productId)
+    .populate('user', 'userName')
+    .populate('product', 'name stock');
+
+  if (!bookedProduct) {
+    throw new ApiError(404, "Booked product record not found");
+  }
+
+  const oldStatus = bookedProduct.status;
+  
+  // If status is actually changing
+  if (oldStatus !== newStatus) {
+    const originalProduct = await Product.findById(bookedProduct.product?._id);
     
-    product.stock = product.stock + parseInt(productStock);
-    await product.save();
-  }
-  const product = await BuyProducts.findById(productId);
-  if (!product) {
-    throw new Error("No product found");
+    if (originalProduct) {
+      // Logic for stock management
+      const quantity = bookedProduct.totalItems || 0;
+
+      // 1. Moving TO cancelled from something else -> Restore stock
+      if (newStatus === "cancelled" && oldStatus !== "cancelled") {
+        originalProduct.stock += quantity;
+        await originalProduct.save();
+      }
+      // 2. Moving FROM cancelled to something else -> Deduct stock again
+      else if (oldStatus === "cancelled" && newStatus !== "cancelled") {
+        if (originalProduct.stock < quantity) {
+          throw new ApiError(400, `Insufficient stock to restore this order. Current stock: ${originalProduct.stock}`);
+        }
+        originalProduct.stock -= quantity;
+        await originalProduct.save();
+      }
+    }
+
+    bookedProduct.status = newStatus;
+    await bookedProduct.save();
+
+    // Notify user about order status change
+    await notifyUser(
+      bookedProduct.user?._id,
+      `Your order for "${bookedProduct.product?.name || 'Product'}" has been ${newStatus}.`,
+      'order_status_changed',
+      { orderId: productId, productName: bookedProduct.product?.name, status: newStatus }
+    );
+
+    // Notify admins about status change
+    await notifyAllAdmins(
+      `Order status changed: "${bookedProduct.product?.name || 'Product'}" is now ${newStatus}.`,
+      'order_status_changed',
+      { orderId: productId, productName: bookedProduct.product?.name, status: newStatus, userId: bookedProduct.user?._id }
+    );
   }
 
-  product.status = newStatus;
-  await product.save();
-
-  return res
-    .status(200)
-    .json(new ApiResponse(200, product, "Product status changed successfull"));
+  return res.status(200).json(
+    new ApiResponse(200, bookedProduct, "Product status changed successfully")
+  );
 });
 
 export const ChangeProdutAvailableSatus = asyncHandler(async (req, res) => {
@@ -421,6 +484,13 @@ export const ChangeProdutAvailableSatus = asyncHandler(async (req, res) => {
     product.isAvailable = !product.isAvailable;
 
     await product.save();
+
+    // Notify admins about availability change
+    await notifyAllAdmins(
+      `Product "${product.name}" is now ${product.isAvailable ? 'available' : 'unavailable'}.`,
+      'product_availability_changed',
+      { productId: product._id, productName: product.name, isAvailable: product.isAvailable }
+    );
 
     res
       .status(200)
@@ -444,6 +514,13 @@ export const deleteProducts = asyncHandler(async (req, res) => {
       // If no product was found, return a 404 error
       return res.status(404).json({ message: "Product not found" });
     }
+
+    // Notify admins about product deletion
+    await notifyAllAdmins(
+      `Product "${product.name}" has been deleted from the inventory.`,
+      'product_deleted',
+      { productId: product._id, productName: product.name }
+    );
 
     res
       .status(200)
@@ -546,6 +623,22 @@ export const editTheProducts = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "Product not found." });
     }
 
+    // Check for low stock after edit
+    if (updatedProduct.stock <= 5) {
+      await notifyAllAdmins(
+        `Low stock alert: "${updatedProduct.name}" has only ${updatedProduct.stock} item(s) left.`,
+        'low_stock_alert',
+        { productId: updatedProduct._id, currentStock: updatedProduct.stock }
+      );
+    }
+
+    // Notify admins about product update
+    await notifyAllAdmins(
+      `Product "${updatedProduct.name}" has been updated.`,
+      'product_updated',
+      { productId: updatedProduct._id, productName: updatedProduct.name, changes: productDetails }
+    );
+
     // Respond with the updated product details
     res
       .status(200)
@@ -606,6 +699,70 @@ export const getPurchaseStats = asyncHandler(async (req, res) => {
         });
     } catch (error) {
         console.error("Error fetching purchase stats:", error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
+export const getAdminStats = asyncHandler(async (req, res) => {
+    try {
+        // Total Users
+        const totalUsers = await User.countDocuments();
+        const activeUsers = await User.countDocuments({ status: "active" });
+
+        // Total Products
+        const totalProducts = await Product.countDocuments();
+        const outOfStockProducts = await Product.countDocuments({ stock: 0 });
+        const lowStockProducts = await Product.countDocuments({ stock: { $gt: 0, $lte: 5 } });
+
+        // Revenue and Bookings
+        const bookings = await BuyProducts.find();
+        
+        let totalRevenue = 0;
+        let completedBookings = 0;
+        let pendingBookings = 0;
+        let cancelledBookings = 0;
+
+        bookings.forEach(booking => {
+            if (booking.status === "completed") {
+                totalRevenue += booking.price;
+                completedBookings++;
+            } else if (booking.status === "pending") {
+                pendingBookings++;
+            } else if (booking.status === "cancelled") {
+                cancelledBookings++;
+            }
+        });
+
+        // Recent Bookings (last 5)
+        const recentBookings = await BuyProducts.find()
+            .populate("user", "fullName userName")
+            .populate("product", "name")
+            .sort({ createdAt: -1 })
+            .limit(5);
+
+        // Category-wise product count
+        const categoryStats = await Product.aggregate([
+            { $group: { _id: "$category", count: { $sum: 1 } } }
+        ]);
+
+        res.status(200).json(
+            new ApiResponse(200, {
+                totalUsers,
+                activeUsers,
+                totalProducts,
+                outOfStockProducts,
+                lowStockProducts,
+                totalRevenue,
+                completedBookings,
+                pendingBookings,
+                cancelledBookings,
+                recentBookings,
+                categoryStats
+            }, "Admin stats fetched successfully")
+        );
+    } catch (error) {
+        console.error("Error fetching admin stats:", error);
         res.status(500).json({ message: error.message });
     }
 });

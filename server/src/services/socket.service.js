@@ -7,10 +7,10 @@ export const initSocket = (server) => {
   console.log("Initializing socket.io...");
   const io = new socketIo(server, {
     cors: {
-      origin: "http://localhost:5173",
-        methods: ["GET", "POST"],
-        credentials: true,
-        transports: ['websocket', 'polling']
+      origin: "*",
+      methods: ["GET", "POST"],
+      credentials: true,
+      transports: ['websocket', 'polling']
     }
   });
 

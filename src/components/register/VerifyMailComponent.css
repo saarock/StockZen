@@ -19,6 +19,7 @@
   border-radius: 10px !important;
   transition: all 0.3s ease !important;
   cursor: pointer !important;
+  min-height: 44px; /* Touch-friendly */
 }
 
 .verify-back-btn:hover {
@@ -71,6 +72,7 @@
   border: 2px solid #e2e8f0;
   border-radius: 12px;
   transition: all 0.3s ease;
+  min-height: 48px; /* Touch-friendly */
 }
 
 .verify-input:focus {
@@ -89,6 +91,7 @@
   transition: all 0.3s ease !important;
   border: none !important;
   cursor: pointer !important;
+  min-height: 48px; /* Touch-friendly */
 }
 
 .verify-submit-btn:hover {
@@ -99,6 +102,34 @@
 
 .verify-submit-btn:active {
   transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .verify-card {
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+  }
+
+  .verify-heading {
+    font-size: 2rem;
+  }
+
+  .verify-subtext {
+    font-size: 0.9375rem;
+  }
+
+  .verify-input {
+    font-size: 1.125rem;
+    letter-spacing: 0.4rem;
+    min-height: 44px; /* iOS minimum */
+  }
+
+  .verify-back-btn {
+    top: 1.25rem;
+    left: 1.25rem;
+    min-height: 44px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -114,5 +145,42 @@
     top: 1rem;
     left: 1rem;
     padding: 0.5rem 1.25rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .verify-mail-container {
+    padding: 0.5rem;
+  }
+
+  .verify-card {
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
+  }
+
+  .verify-heading {
+    font-size: 1.5rem;
+  }
+
+  .verify-subtext {
+    font-size: 0.875rem;
+    margin-bottom: 2rem;
+  }
+
+  .verify-input {
+    font-size: 1rem;
+    letter-spacing: 0.3rem;
+    padding: 1rem;
+  }
+
+  .verify-form {
+    gap: 1.25rem;
+  }
+
+  .verify-back-btn {
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem;
   }
 }

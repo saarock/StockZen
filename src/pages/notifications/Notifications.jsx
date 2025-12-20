@@ -25,7 +25,6 @@ const Notifications = () => {
           return
         }
         const data = await userService.getNotifications(currentPage, notificationsPerPage, isRead, user?._id)
-        toast.success(data.message)
         console.log("this")
         console.log(data)
         setNotifications(data.data.notifications)
@@ -87,9 +86,8 @@ const Notifications = () => {
                 {[...notifications].reverse().map((notification) => (
                   <li
                     key={notification._id}
-                    className={`group transition-all duration-300 hover:bg-gray-50 ${
-                      notification.isRead ? "bg-white" : "bg-blue-50/50"
-                    }`}
+                    className={`group transition-all duration-300 hover:bg-gray-50 ${notification.isRead ? "bg-white" : "bg-blue-50/50"
+                      }`}
                   >
                     <div className="p-4 md:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="flex items-start gap-4 flex-1 min-w-0">
@@ -103,9 +101,8 @@ const Notifications = () => {
 
                         <div className="flex-1 min-w-0">
                           <p
-                            className={`text-sm md:text-base leading-relaxed break-words ${
-                              notification.isRead ? "text-gray-600" : "text-gray-900 font-medium"
-                            }`}
+                            className={`text-sm md:text-base leading-relaxed break-words ${notification.isRead ? "text-gray-600" : "text-gray-900 font-medium"
+                              }`}
                           >
                             {notification.message}
                           </p>
