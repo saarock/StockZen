@@ -1,7 +1,7 @@
 import { useState } from "react";
 import LoginComponent from "../../components/login/login";
 import EntryComponent from "../../components/entryComponent";
-import "./LoginPage.css";
+import "./loginPage.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
@@ -69,13 +69,13 @@ const LoginPage = () => {
     <div className="login-page">
       <div className="login-page-container">
         <div className="login-content">
-                <div className="login-right">
+          <div className="login-right">
             <EntryComponent />
           </div>
           <div className="login-left">
             <LoginComponent onSubmit={signIn} onChange={onInputChange} loading={loading} />
           </div>
-    
+
         </div>
       </div>
     </div>
