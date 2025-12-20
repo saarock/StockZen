@@ -133,6 +133,8 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     categoryFilter = "",
     availabilityFilter = "",
     disabled = 2,
+    minPrice,
+    maxPrice
   } = req.query; // Default to page 1 and 4 items per page
 
   const pageNumber = parseInt(page);
@@ -154,6 +156,13 @@ export const getAllProducts = asyncHandler(async (req, res) => {
   // Category filter (if provided and not "2")
   if (categoryFilter !== "2" && categoryFilter.trim()) {
     filters.category = categoryFilter;
+  }
+
+  // Price range filter
+  if (minPrice || maxPrice) {
+    filters.price = {};
+    if (minPrice) filters.price.$gte = Number(minPrice);
+    if (maxPrice) filters.price.$lte = Number(maxPrice);
   }
 
   // Availability filter (if provided and not "2")

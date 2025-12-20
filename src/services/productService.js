@@ -18,12 +18,9 @@ class ProductService {
     }
 
 
-    async getProducts(currentPage, productsPerPage, searchQuery, categoryFilter, availabilityFilter, disabled) {
+    async getProducts(currentPage, productsPerPage, searchQuery, categoryFilter, availabilityFilter, disabled, minPrice = "", maxPrice = "") {
         try {
-
-
-
-            const response = await protectedApi.get(`/getProducts?page=${currentPage}&limit=${productsPerPage}&search=${searchQuery}&categoryFilter=${categoryFilter}&availabilityFilter=${availabilityFilter}&disabled=${disabled}`);
+            const response = await protectedApi.get(`/getProducts?page=${currentPage}&limit=${productsPerPage}&search=${searchQuery}&categoryFilter=${categoryFilter}&availabilityFilter=${availabilityFilter}&disabled=${disabled}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
 
             if (!response || !response.data) {
                 throw new Error('Failed to fetch data from the server.');
