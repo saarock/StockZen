@@ -2,10 +2,10 @@ import api from "../instance/axiosInstance";
 import protectedApi from "../instance/axiosProtectedInstance";
 
 class UserService {
-  async getAllUsers(usersPerPage, currentPage) {
+  async getAllUsers(usersPerPage, currentPage, search = "") {
     try {
       const response = await protectedApi.get(
-        `/get-users?page=${currentPage}&limit=${usersPerPage}`
+        `/get-users?page=${currentPage}&limit=${usersPerPage}&search=${search}`
       );
       const data = await response.data;
       return data;

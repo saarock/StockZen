@@ -50,6 +50,11 @@ const productSchema = new mongoose.Schema({
         type: Boolean,  // Corrected field type
         default: true,  // You can set a default value (true or false)
       },
+    lowStockThreshold: {
+        type: Number,
+        default: 5,
+        min: 0
+    },
 
 },
     { timestamps: true }

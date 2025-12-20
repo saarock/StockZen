@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import productService from "../../services/productService";
 import useUser from "../../hooks/useUser";
 
-import { FaCheckCircle, FaTimesCircle, FaCog } from "react-icons/fa"; // Import icons
+import { FaCheckCircle, FaTimesCircle, FaCog, FaUserCircle } from "react-icons/fa"; // Import icons
 import { toast } from "react-toastify";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const BookedProductComp = () => {
   const [bookedProducts, setBookedProducts] = useState([]); // Holds the booked products
@@ -47,6 +48,49 @@ const BookedProductComp = () => {
 
     fetchBookedProducts();
   }, [page, limit, status, search, user?._id, refetch]); // Fetch data on page change, status, etc.
+
+  const isCancellationWindowOpen = (createdAt) => {
+    const orderTime = new Date(createdAt).getTime();
+    const now = Date.now();
+    const oneHour = 60 * 60 * 1000;
+    return now - orderTime < oneHour;
+  };
+
+  const getTimeRemaining = (createdAt) => {
+    const orderTime = new Date(createdAt).getTime();
+    const oneHour = 60 * 60 * 1000;
+    const now = Date.now();
+    const remaining = oneHour - (now - orderTime);
+    if (remaining <= 0) return "Expired";
+    const minutes = Math.floor(remaining / 60000);
+    return `${minutes} minutes left`;
+  };
+
+  const handleCancelOrder = async (productId) => {
+    if (!window.confirm("Are you sure you want to cancel this order? This action cannot be undone.")) {
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await productService.cancelOrder(productId);
+
+      if (response.success) {
+        toast.success("Order cancelled successfully");
+        setBookedProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === productId
+              ? { ...product, status: "cancelled" }
+              : product
+          )
+        );
+        setRefetchTime((prev) => prev + 1);
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to cancel order");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChangeStatus = async (productId, newStatus) => {
     try {
@@ -215,14 +259,12 @@ const BookedProductComp = () => {
                             <p>Food Track - Your Trusted Partner</p>
                         </div>
                         <div class="bill-body">
-                            <div class="bill-row">
-                                <span class="bill-label">Product Name</span>
                                 <span class="bill-value">${product.product?.name || "Deleted Product"
       }</span>
                             </div>
                             <div class="bill-row">
                                 <span class="bill-label">Booked By</span>
-                                <span class="bill-value">${product.user?.userName || "Unknown"
+                                <span class="bill-value">${product.user?.fullName || product.user?.userName || "Unknown"
       }</span>
                             </div>
                             ${product.payment_gateway
@@ -246,7 +288,7 @@ const BookedProductComp = () => {
                             </div>
                             <div class="bill-total">
                                 <span class="bill-total-label">Total Amount</span>
-                                <span class="bill-total-value">Rs. ${product.price
+                                <span class="bill-total-value">RS ${product.price
       }</span>
                             </div>
                         </div>
@@ -292,9 +334,9 @@ const BookedProductComp = () => {
             <tr>
                 <td>${index + 1}</td>
                 <td>${item.name}</td>
-                <td>Rs. ${item.perPPrice}</td>
+                <td>RS ${item.perPPrice}</td>
                 <td>${item.totalItems}</td>
-                <td>Rs. ${item.soTheMultiPrice}</td>
+                <td>RS ${item.soTheMultiPrice}</td>
                 <td><span class="status-badge status-${item.status}">${item.status
           }</span></td>
             </tr>
@@ -579,112 +621,137 @@ const BookedProductComp = () => {
                     <h3 className="text-xl font-bold text-[#1a2250] mb-2">
                       {product.product?.name || "Deleted Product"}
                     </h3>
-                    <div className="space-y-1 text-gray-600">
-                      <p>
-                        <span className="font-medium">Booked by:</span>{" "}
-                        {product.user?.userName || "Unknown"}
-                      </p>
-                      <p>
-                        <span className="font-medium">Total Items:</span>{" "}
-                        {product.totalItems}
-                      </p>
-                      <p>
-                        <span className="font-medium">Product Name:</span>{" "}
-                        {product.product?.name || "N/A"}
-                      </p>
-                      <p>
-                        <span className="font-medium">Status:</span>{" "}
-                        <span
-                          className={`inline-block px-2 py-1 rounded text-sm font-medium ${product.status === "completed"
-                            ? "bg-green-100 text-green-800"
-                            : product.status === "cancelled"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-yellow-100 text-yellow-800"
-                            }`}
-                        >
-                          {product.status}
+                    <div className="flex items-center gap-3 mb-3 p-2 bg-gray-50 rounded-xl">
+                      {product.user?.avatar ? (
+                        <img
+                          src={product.user.avatar}
+                          alt={product.user.fullName}
+                          className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+                        />
+                      ) : (
+                        <FaUserCircle className="w-10 h-10 text-gray-400" />
+                      )}
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold text-gray-900 leading-tight">
+                          {product.user?.fullName || "No Name"}
                         </span>
-                      </p>
+                        <span className="text-xs text-gray-500">
+                          @{product.user?.userName || "Unknown"}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Product Price */}
-                  <div className="lg:text-right">
-                    <span className="text-2xl font-bold text-[#1a2250]">
-                      Rs: {product.price}
-                    </span>
+                    <p>
+                      <span className="font-medium">Total Items:</span>{" "}
+                      {product.totalItems}
+                    </p>
+                    <p>
+                      <span className="font-medium">Product Name:</span>{" "}
+                      {product.product?.name || "N/A"}
+                    </p>
+                    <p>
+                      <span className="font-medium">Status:</span>{" "}
+                      <span
+                        className={`inline-block px-2 py-1 rounded text-sm font-medium ${product.status === "completed"
+                          ? "bg-green-100 text-green-800"
+                          : product.status === "cancelled"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-yellow-100 text-yellow-800"
+                          }`}
+                      >
+                        {product.status}
+                      </span>
+                    </p>
                   </div>
                 </div>
 
-                {user &&
-                  user?.role === "user" &&
-                  user._id === product.user?._id &&
-                  status === "pending" && (
-                    <div className="mt-4 pt-4 border-t border-gray-200">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
-                        <button
-                          disabled={status === "cancelled" || loading}
-                          onClick={() =>
-                            handleChangeStatus(product._id, "cancelled")
-                          }
-                          className="flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                        >
-                          <FaTimesCircle /> Cancelled
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                {/* Product Price */}
+                <div className="lg:text-right">
+                  <span className="text-2xl font-bold text-[#1a2250]">
+                    RS {product.price}
+                  </span>
+                </div>
+              </div>
 
-                {/* Admin Actions */}
-                {user?.role === "admin" && (
+              {user &&
+                user?.role === "user" &&
+                (product.user?._id === user?._id || product.user === user?._id) &&
+                product.status === "pending" && (
                   <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
-                      <button
-                        disabled={product.status === "pending" || loading}
-                        onClick={() =>
-                          handleChangeStatus(product._id, "pending")
-                        }
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                      >
-                        <FaCog /> Pending
-                      </button>
-                      <button
-                        disabled={product.status === "completed" || loading}
-                        onClick={() =>
-                          handleChangeStatus(product._id, "completed")
-                        }
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                      >
-                        <FaCheckCircle /> Completed
-                      </button>
-                      <button
-                        disabled={product.status === "cancelled" || loading}
-                        onClick={() =>
-                          handleChangeStatus(product._id, "cancelled")
-                        }
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                      >
-                        <FaTimesCircle /> Cancelled
-                      </button>
-                      <button
-                        onClick={() => handleGenerateBill(product)}
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1a2250] text-white rounded-lg hover:bg-[#233166] transition-colors duration-200"
-                      >
-                        <FaCheckCircle /> Generate Bill
-                      </button>
-                      <button
-                        onClick={() =>
-                          generateTotalBill(product.user?._id, status)
-                        }
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1a2250] text-white rounded-lg hover:bg-[#233166] transition-colors duration-200 sm:col-span-2 lg:col-span-1"
-                      >
-                        <FaCheckCircle /> Generate Total Bill for{" "}
-                        {product.user?.userName || "User"}
-                      </button>
+                    <div className="flex flex-col sm:flex-row items-center gap-4">
+                      {isCancellationWindowOpen(product.createdAt) ? (
+                        <div className="flex flex-col gap-2">
+                          <button
+                            disabled={loading}
+                            onClick={() => handleCancelOrder(product._id)}
+                            className="flex items-center justify-center gap-2 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 transition-all duration-200 shadow-md hover:scale-105"
+                          >
+                            <FaTimesCircle /> Cancel Order
+                          </button>
+                          <span className="text-xs text-red-500 font-semibold animate-pulse">
+                            Time remaining: {getTimeRemaining(product.createdAt)}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="text-sm text-gray-500 italic bg-gray-100 px-4 py-2 rounded-lg border border-gray-200">
+                          Cancellation window expired (1 hour passed)
+                        </div>
+                      )}
+                      <p className="text-xs text-gray-400 font-medium max-w-[200px]">
+                        * Self-cancellation is only available within 1 hour of booking.
+                      </p>
                     </div>
                   </div>
                 )}
-              </div>
+
+              {/* Admin Actions */}
+              {user?.role === "admin" && (
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
+                    <button
+                      disabled={product.status === "pending" || loading}
+                      onClick={() =>
+                        handleChangeStatus(product._id, "pending")
+                      }
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                    >
+                      <FaCog /> Pending
+                    </button>
+                    <button
+                      disabled={product.status === "completed" || loading}
+                      onClick={() =>
+                        handleChangeStatus(product._id, "completed")
+                      }
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                    >
+                      <FaCheckCircle /> Completed
+                    </button>
+                    <button
+                      disabled={product.status === "cancelled" || loading}
+                      onClick={() =>
+                        handleChangeStatus(product._id, "cancelled")
+                      }
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                    >
+                      <FaTimesCircle /> Cancelled
+                    </button>
+                    <button
+                      onClick={() => handleGenerateBill(product)}
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1a2250] text-white rounded-lg hover:bg-[#233166] transition-colors duration-200"
+                    >
+                      <FaCheckCircle /> Generate Bill
+                    </button>
+                    <button
+                      onClick={() =>
+                        generateTotalBill(product.user?._id, status)
+                      }
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1a2250] text-white rounded-lg hover:bg-[#233166] transition-colors duration-200 sm:col-span-2 lg:col-span-1"
+                    >
+                      <FaCheckCircle /> Generate Total Bill for{" "}
+                      {product.user?.userName || "User"}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))
         ) : (
@@ -694,25 +761,38 @@ const BookedProductComp = () => {
         )}
       </div>
 
-      {/* Pagination Controls */}
-      <div className="mt-6 flex items-center justify-center gap-4">
-        <button
-          disabled={page === 1 || loading}
-          onClick={() => setPage(page - 1)}
-          className="px-6 py-3 bg-[#1a2250] text-white rounded-lg font-medium hover:bg-[#233166] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-        >
-          Previous
-        </button>
-        <span className="px-4 py-2 bg-white rounded-lg shadow-md font-medium text-[#1a2250]">
-          {page}
-        </span>
-        <button
-          disabled={page === totalPages || bookedProducts?.length <= 0 || loading}
-          onClick={() => setPage(page + 1)}
-          className="px-6 py-3 bg-[#1a2250] text-white rounded-lg font-medium hover:bg-[#233166] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-        >
-          Next
-        </button>
+      {/* Pagination Section */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mt-12 bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm transition-all duration-300">
+        <p className="text-sm font-black text-gray-400 uppercase tracking-widest">
+          Showing <span className="text-[#1a2250]">{bookedProducts.length}</span> items
+        </p>
+
+        <div className="flex items-center gap-4">
+          <button
+            disabled={page === 1 || loading}
+            onClick={() => setPage(page - 1)}
+            className="group flex items-center gap-3 px-8 py-4 bg-white text-[#1a2250] rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm ring-1 ring-gray-100 hover:bg-[#1a2250] hover:text-white disabled:opacity-30 disabled:grayscale transition-all duration-300"
+          >
+            <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+            Prev
+          </button>
+
+          <div className="flex items-center gap-2 px-6 py-4 bg-[#1a2250] rounded-2xl text-white font-black shadow-2xl shadow-[#1a2250]/20">
+            <span className="opacity-40 text-[10px] uppercase tracking-widest mr-1">Page</span>
+            <span className="text-sm">{page}</span>
+            <span className="opacity-20 font-medium mx-1">/</span>
+            <span className="text-sm">{totalPages}</span>
+          </div>
+
+          <button
+            disabled={page === totalPages || bookedProducts?.length <= 0 || loading}
+            onClick={() => setPage(page + 1)}
+            className="group flex items-center gap-3 px-8 py-4 bg-white text-[#1a2250] rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm ring-1 ring-gray-100 hover:bg-[#1a2250] hover:text-white disabled:opacity-30 disabled:grayscale transition-all duration-300"
+          >
+            Next
+            <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          </button>
+        </div>
       </div>
     </div>
   );

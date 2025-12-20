@@ -17,10 +17,10 @@ const Footer = () => {
         toast.success(response.message);
       }
 
-      input.value = ""; 
+      input.value = "";
     } catch (error) {
       toast.error(error.message);
-      input.value = ""; 
+      input.value = "";
 
     }
   };
@@ -124,7 +124,7 @@ const Footer = () => {
                     className="opacity-0 animate-fade-in-up"
                   >
                     <a
-                      href="#"
+                      href={item === "Contact" ? "/support" : "#"}
                       className="group/link text-sm text-gray-600 hover:text-[#101540] transition-all duration-300 flex items-center gap-2"
                     >
                       <span className="w-0 h-0.5 bg-[#101540] group-hover/link:w-4 transition-all duration-300" />

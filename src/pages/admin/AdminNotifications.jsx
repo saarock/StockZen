@@ -4,7 +4,7 @@ import userService from "../../services/userService"
 import useUser from "../../hooks/useUser"
 import notification from "../../services/notification"
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner"
-import { Bell, Check, X, Shield } from "lucide-react"
+import { Bell, Check, X, Shield, ChevronLeft, ChevronRight } from "lucide-react"
 
 const AdminNotifications = () => {
     const [notifications, setNotifications] = useState([])
@@ -146,30 +146,39 @@ const AdminNotifications = () => {
                                 ))}
                             </ul>
 
-                            {/* Pagination */}
+                            {/* Pagination Section */}
                             {totalPages > 1 && (
-                                <div className="bg-gray-50 px-6 py-4 flex items-center justify-between border-t border-gray-100">
-                                    <div className="flex gap-3">
-                                        {currentPage > 1 && (
-                                            <button
-                                                onClick={() => handlePageChange(currentPage - 1)}
-                                                className="px-5 py-2.5 bg-white hover:bg-[#1a2250] text-gray-700 hover:text-white rounded-lg transition-all duration-300 font-medium shadow-sm hover:shadow-md"
-                                            >
-                                                Previous
-                                            </button>
-                                        )}
-                                        {currentPage < totalPages && (
-                                            <button
-                                                onClick={() => handlePageChange(currentPage + 1)}
-                                                className="px-5 py-2.5 bg-[#1a2250] hover:bg-[#2a3570] text-white rounded-lg transition-all duration-300 font-medium shadow-sm hover:shadow-lg"
-                                            >
-                                                Next
-                                            </button>
-                                        )}
+                                <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mt-12 bg-gray-50 p-8 rounded-[2.5rem] border-t border-gray-100 transition-all duration-300">
+                                    <p className="text-sm font-black text-gray-400 uppercase tracking-widest hidden sm:block">
+                                        Showing <span className="text-[#1a2250]">{notifications.length}</span> items
+                                    </p>
+
+                                    <div className="flex items-center gap-4">
+                                        <button
+                                            onClick={() => handlePageChange(currentPage - 1)}
+                                            disabled={currentPage === 1}
+                                            className="group flex items-center gap-3 px-8 py-4 bg-white text-[#1a2250] rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm ring-1 ring-gray-100 hover:bg-[#1a2250] hover:text-white disabled:opacity-30 disabled:grayscale transition-all duration-300"
+                                        >
+                                            <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+                                            Prev
+                                        </button>
+
+                                        <div className="flex items-center gap-2 px-6 py-4 bg-[#1a2250] rounded-2xl text-white font-black shadow-2xl shadow-[#1a2250]/20">
+                                            <span className="opacity-40 text-[10px] uppercase tracking-widest mr-1">Page</span>
+                                            <span className="text-sm">{currentPage}</span>
+                                            <span className="opacity-20 font-medium mx-1">/</span>
+                                            <span className="text-sm">{totalPages}</span>
+                                        </div>
+
+                                        <button
+                                            onClick={() => handlePageChange(currentPage + 1)}
+                                            disabled={currentPage === totalPages}
+                                            className="group flex items-center gap-3 px-8 py-4 bg-white text-[#1a2250] rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm ring-1 ring-gray-100 hover:bg-[#1a2250] hover:text-white disabled:opacity-30 disabled:grayscale transition-all duration-300"
+                                        >
+                                            Next
+                                            <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                                        </button>
                                     </div>
-                                    <span className="text-sm text-gray-500 hidden sm:block">
-                                        Page {currentPage} of {totalPages}
-                                    </span>
                                 </div>
                             )}
                         </>

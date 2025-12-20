@@ -18,12 +18,9 @@ class ProductService {
     }
 
 
-    async getProducts(currentPage, productsPerPage, searchQuery, categoryFilter, availabilityFilter, disabled) {
+    async getProducts(currentPage, productsPerPage, searchQuery, categoryFilter, availabilityFilter, disabled, minPrice = "", maxPrice = "") {
         try {
-
-
-
-            const response = await protectedApi.get(`/getProducts?page=${currentPage}&limit=${productsPerPage}&search=${searchQuery}&categoryFilter=${categoryFilter}&availabilityFilter=${availabilityFilter}&disabled=${disabled}`);
+            const response = await protectedApi.get(`/getProducts?page=${currentPage}&limit=${productsPerPage}&search=${searchQuery}&categoryFilter=${categoryFilter}&availabilityFilter=${availabilityFilter}&disabled=${disabled}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
 
             if (!response || !response.data) {
                 throw new Error('Failed to fetch data from the server.');
@@ -91,12 +88,10 @@ class ProductService {
         }
     }
 
-    async getPurchaseStats(userId) {
+    async getPurchaseStats(userId, page = 1, limit = 10) {
         try {
-            const response = await protectedApi.get(`/get-purchaseStats?userId=${userId}`);
+            const response = await protectedApi.get(`/get-purchaseStats?userId=${userId}&page=${page}&limit=${limit}`);
             const data = await response.data;
-            console.log("hah")
-            console.log(data)
             return data;
         } catch (error) {
             throw new Error(error.response.data.message);
@@ -134,17 +129,26 @@ class ProductService {
         }
 
     }
-    async generateBill(userId,status) {
+    async generateBill(userId, status) {
         try {
             const response = await protectedApi.get(`/generate-bill?userId=${userId}&status=${status}`);
             const data = await response.data;
             return data;
-       
-
-        } catch(error) {     
+        } catch (error) {
             throw new Error(error.response.data.message);
         }
     }
+
+    async cancelOrder(productId) {
+        try {
+            const response = await protectedApi.post(`/cancel-order`, { productId });
+            const data = await response.data;
+            return data;
+        } catch (error) {
+            throw new Error(error.response.data.message || "Failed to cancel order");
+        }
+    }
+
 
 }
 

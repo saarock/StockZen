@@ -212,15 +212,24 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
 
 export const getAllUsers = asyncHandler(async (req, res) => {
   try {
-    const { page = 1, limit = 4 } = req.query; // Default to page 1 and 4 items per page
+    const { page = 1, limit = 4, search = "" } = req.query; // Added search to query params
     const pageNumber = parseInt(page);
     const limitNumber = parseInt(limit);
     const skip = (pageNumber - 1) * limitNumber;
 
-    const users = await User.find().skip(skip).limit(limit);
+    const query = {};
+    if (search.trim()) {
+      query.$or = [
+        { fullName: { $regex: search, $options: "i" } },
+        { userName: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ];
+    }
 
-    const totalUsers = await User.countDocuments(); // Get the total number of Users
-    const totalPages = Math.ceil(totalUsers / limitNumber); // Calculate total pages
+    const users = await User.find(query).skip(skip).limit(limitNumber);
+
+    const totalUsers = await User.countDocuments(query); // Update total count based on search results
+    const totalPages = Math.ceil(totalUsers / limitNumber);
 
     res.status(200).json(
       new ApiResponse(
@@ -231,8 +240,7 @@ export const getAllUsers = asyncHandler(async (req, res) => {
           totalPages,
           totalUsers,
         },
-        "Users fetched successfully",
-        ``
+        "Users fetched successfully"
       )
     );
     console.log("user send success");

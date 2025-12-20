@@ -2,25 +2,19 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import {
   Box,
-  DollarSign,
+  IndianRupee,
   Calendar,
   Tag,
   Package,
   Image,
   AlignLeft,
   Sparkles,
+  AlertTriangle,
 } from "lucide-react";
 import productService from "../../services/productService";
 import { handleResponse } from "../../utils";
+import { categoryOptions } from "../../constant";
 
-// Mock data for demonstration - replace with your actual imports
-const categoryOptions = [
-  { value: "", label: "Select Category" },
-  { value: "electronics", label: "Electronics" },
-  { value: "clothing", label: "Clothing" },
-  { value: "food", label: "Food" },
-  { value: "books", label: "Books" },
-];
 
 const AddProduct = () => {
   const [formData, setFormData] = useState({
@@ -31,6 +25,7 @@ const AddProduct = () => {
     product_image: null,
     stock: "",
     description: "",
+    lowStockThreshold: 5,
     userId:
       typeof window !== "undefined"
         ? JSON.parse(localStorage.getItem("userData") || "{}")?._id || ""
@@ -113,6 +108,7 @@ const AddProduct = () => {
     submitData.append("category", formData.category);
     submitData.append("stock", formData.stock);
     submitData.append("description", formData.description);
+    submitData.append("lowStockThreshold", formData.lowStockThreshold);
     submitData.append("userId", formData.userId);
     if (formData.product_image)
       submitData.append("product_image", formData.product_image);
@@ -136,6 +132,7 @@ const AddProduct = () => {
         product_image: null,
         stock: "",
         description: "",
+        lowStockThreshold: 5,
         userId:
           typeof window !== "undefined"
             ? JSON.parse(localStorage.getItem("userData") || "{}")?._id || ""
@@ -199,11 +196,10 @@ const AddProduct = () => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Enter product name"
-                    className={`w-full px-4 py-3.5 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-4 ${
-                      errors.name
-                        ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-100"
-                        : "border-[rgba(16,21,64,0.15)] bg-white focus:border-[#101540] focus:ring-[rgba(16,21,64,0.1)] hover:border-[rgba(16,21,64,0.25)]"
-                    }`}
+                    className={`w-full px-4 py-3.5 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-4 ${errors.name
+                      ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-100"
+                      : "border-[rgba(16,21,64,0.15)] bg-white focus:border-[#101540] focus:ring-[rgba(16,21,64,0.1)] hover:border-[rgba(16,21,64,0.25)]"
+                      }`}
                   />
                   {errors.name && (
                     <p className="mt-2 text-sm text-red-600 flex items-center gap-1 animate-shake">
@@ -220,8 +216,8 @@ const AddProduct = () => {
                   htmlFor="price"
                   className="flex items-center gap-2 text-sm font-semibold text-[#101540] mb-3"
                 >
-                  <DollarSign className="w-5 h-5" />
-                  Price
+                  <IndianRupee className="w-5 h-5" />
+                  Price (RS)
                 </label>
                 <div className="relative">
                   <input
@@ -233,11 +229,10 @@ const AddProduct = () => {
                     placeholder="0.00"
                     min="0"
                     step="0.01"
-                    className={`w-full px-4 py-3.5 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-4 ${
-                      errors.price
-                        ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-100"
-                        : "border-[rgba(16,21,64,0.15)] bg-white focus:border-[#101540] focus:ring-[rgba(16,21,64,0.1)] hover:border-[rgba(16,21,64,0.25)]"
-                    }`}
+                    className={`w-full px-4 py-3.5 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-4 ${errors.price
+                      ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-100"
+                      : "border-[rgba(16,21,64,0.15)] bg-white focus:border-[#101540] focus:ring-[rgba(16,21,64,0.1)] hover:border-[rgba(16,21,64,0.25)]"
+                      }`}
                   />
                   {errors.price && (
                     <p className="mt-2 text-sm text-red-600 flex items-center gap-1 animate-shake">
@@ -265,11 +260,10 @@ const AddProduct = () => {
                     value={formData.expiryDate}
                     onChange={handleChange}
                     min={new Date().toISOString().split("T")[0]}
-                    className={`w-full px-4 py-3.5 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-4 ${
-                      errors.expiryDate
-                        ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-100"
-                        : "border-[rgba(16,21,64,0.15)] bg-white focus:border-[#101540] focus:ring-[rgba(16,21,64,0.1)] hover:border-[rgba(16,21,64,0.25)]"
-                    }`}
+                    className={`w-full px-4 py-3.5 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-4 ${errors.expiryDate
+                      ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-100"
+                      : "border-[rgba(16,21,64,0.15)] bg-white focus:border-[#101540] focus:ring-[rgba(16,21,64,0.1)] hover:border-[rgba(16,21,64,0.25)]"
+                      }`}
                   />
                   {errors.expiryDate && (
                     <p className="mt-2 text-sm text-red-600 flex items-center gap-1 animate-shake">
@@ -295,12 +289,12 @@ const AddProduct = () => {
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3.5 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-4 appearance-none bg-white ${
-                      errors.category
-                        ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-100"
-                        : "border-[rgba(16,21,64,0.15)] focus:border-[#101540] focus:ring-[rgba(16,21,64,0.1)] hover:border-[rgba(16,21,64,0.25)]"
-                    }`}
+                    className={`w-full px-4 py-3.5 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-4 appearance-none bg-white ${errors.category
+                      ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-100"
+                      : "border-[rgba(16,21,64,0.15)] focus:border-[#101540] focus:ring-[rgba(16,21,64,0.1)] hover:border-[rgba(16,21,64,0.25)]"
+                      }`}
                   >
+                    <option value="">Select Category</option>
                     {categoryOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}
@@ -349,11 +343,10 @@ const AddProduct = () => {
                     onChange={handleChange}
                     placeholder="Enter available stock"
                     min="0"
-                    className={`w-full px-4 py-3.5 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-4 ${
-                      errors.stock
-                        ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-100"
-                        : "border-[rgba(16,21,64,0.15)] bg-white focus:border-[#101540] focus:ring-[rgba(16,21,64,0.1)] hover:border-[rgba(16,21,64,0.25)]"
-                    }`}
+                    className={`w-full px-4 py-3.5 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-4 ${errors.stock
+                      ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-100"
+                      : "border-[rgba(16,21,64,0.15)] bg-white focus:border-[#101540] focus:ring-[rgba(16,21,64,0.1)] hover:border-[rgba(16,21,64,0.25)]"
+                      }`}
                   />
                   {errors.stock && (
                     <p className="mt-2 text-sm text-red-600 flex items-center gap-1 animate-shake">
@@ -361,6 +354,32 @@ const AddProduct = () => {
                       {errors.stock}
                     </p>
                   )}
+                </div>
+              </div>
+
+              {/* Low Stock Threshold */}
+              <div className="group/field md:col-span-2">
+                <label
+                  htmlFor="lowStockThreshold"
+                  className="flex items-center gap-2 text-sm font-semibold text-[#101540] mb-3"
+                >
+                  <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                  Low Stock Alert Threshold
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    id="lowStockThreshold"
+                    name="lowStockThreshold"
+                    value={formData.lowStockThreshold}
+                    onChange={handleChange}
+                    placeholder="Enter threshold for low stock alert (e.g., 5)"
+                    min="1"
+                    className="w-full px-4 py-3.5 rounded-2xl border-2 border-[rgba(16,21,64,0.15)] bg-white focus:border-[#101540] focus:ring-[rgba(16,21,64,0.1)] hover:border-[rgba(16,21,64,0.25)] transition-all duration-300 focus:outline-none focus:ring-4"
+                  />
+                  <p className="mt-2 text-xs text-gray-500 italic">
+                    * Administrators will be notified when stock reaches this level or below.
+                  </p>
                 </div>
               </div>
 
@@ -381,11 +400,10 @@ const AddProduct = () => {
                     onChange={handleChange}
                     placeholder="Enter detailed product description..."
                     rows={4}
-                    className={`w-full px-4 py-3.5 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-4 resize-none ${
-                      errors.description
-                        ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-100"
-                        : "border-[rgba(16,21,64,0.15)] bg-white focus:border-[#101540] focus:ring-[rgba(16,21,64,0.1)] hover:border-[rgba(16,21,64,0.25)]"
-                    }`}
+                    className={`w-full px-4 py-3.5 rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-4 resize-none ${errors.description
+                      ? "border-red-300 bg-red-50 focus:border-red-400 focus:ring-red-100"
+                      : "border-[rgba(16,21,64,0.15)] bg-white focus:border-[#101540] focus:ring-[rgba(16,21,64,0.1)] hover:border-[rgba(16,21,64,0.25)]"
+                      }`}
                   />
                   {errors.description && (
                     <p className="mt-2 text-sm text-red-600 flex items-center gap-1 animate-shake">
@@ -416,11 +434,10 @@ const AddProduct = () => {
                   />
                   <label
                     htmlFor="product_image"
-                    className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-2xl cursor-pointer transition-all duration-300 group/upload overflow-hidden ${
-                      errors.product_image
-                        ? "border-red-300 bg-red-50 hover:border-red-400"
-                        : "border-[rgba(16,21,64,0.2)] bg-[rgba(16,21,64,0.02)] hover:border-[#101540] hover:bg-[rgba(16,21,64,0.05)]"
-                    }`}
+                    className={`flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-2xl cursor-pointer transition-all duration-300 group/upload overflow-hidden ${errors.product_image
+                      ? "border-red-300 bg-red-50 hover:border-red-400"
+                      : "border-[rgba(16,21,64,0.2)] bg-[rgba(16,21,64,0.02)] hover:border-[#101540] hover:bg-[rgba(16,21,64,0.05)]"
+                      }`}
                   >
                     {imagePreview ? (
                       <div className="relative w-full h-full">

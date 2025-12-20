@@ -20,6 +20,7 @@ import Stats from "./pages/stats/Stats";
 import Notifications from "./pages/notifications/Notifications";
 import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import SupportPage from "./pages/support/SupportPage";
 
 function App() {
   return (
@@ -73,6 +74,7 @@ function App() {
                 </ProtectedPage>
               }
             />
+            <Route path="/support" element={<SupportPage />} />
           </Route>
 
           {/* Admin Dashboard layout */}

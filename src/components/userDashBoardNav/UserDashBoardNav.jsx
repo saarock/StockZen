@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { NavLink, useLocation } from "react-router-dom"
-import { FaUser, FaCog, FaBell, FaBoxOpen, FaBars, FaTimes, FaUserCircle } from "react-icons/fa"
+import { FaUser, FaCog, FaBell, FaBoxOpen, FaBars, FaTimes, FaUserCircle, FaLifeRing } from "react-icons/fa"
 import useUser from "../../hooks/useUser"
 import userService from "../../services/userService"
 import useSocket from "../../hooks/useSocket"
@@ -41,6 +41,12 @@ const UserDashBoardNav = () => {
       path: "my-product",
       icon: <FaBoxOpen />,
       tooltip: "View your products",
+    },
+    {
+      name: "Support",
+      path: "/support",
+      icon: <FaLifeRing />,
+      tooltip: "Get help and contact support",
     },
   ]
 

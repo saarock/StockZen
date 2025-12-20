@@ -13,6 +13,7 @@ import {
   FaUserMinus,
   FaSearch,
 } from "react-icons/fa"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import useUser from "../../hooks/useUser"
 
 const ManageUsersComponent = () => {
@@ -23,11 +24,12 @@ const ManageUsersComponent = () => {
   const usersPerPage = 10
   const [loadingStatus, setLoadingStatus] = useState({})
   const [loadingRole, setLoadingRole] = useState({})
+  const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
     async function getUsers() {
       try {
-        const usersData = await userService.getAllUsers(usersPerPage, currentPage)
+        const usersData = await userService.getAllUsers(usersPerPage, currentPage, searchQuery)
         setUsers(usersData.data.users)
         setTotalPages(usersData.data.totalPages)
       } catch (error) {
@@ -35,7 +37,7 @@ const ManageUsersComponent = () => {
       }
     }
     getUsers()
-  }, [currentPage])
+  }, [currentPage, searchQuery])
 
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1)
@@ -83,11 +85,30 @@ const ManageUsersComponent = () => {
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#101540]/5 to-transparent rounded-full blur-3xl -z-0" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-[#101540]/5 to-transparent rounded-full blur-3xl -z-0" />
 
-          <div className="relative z-10">
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#101540] to-[#101540]/70 bg-clip-text text-transparent mb-2 animate-fade-in">
-              User Management
-            </h1>
-            <p className="text-gray-600 text-sm md:text-base">Manage user accounts, permissions, and access control</p>
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#101540] to-[#101540]/70 bg-clip-text text-transparent mb-2 animate-fade-in">
+                User Management
+              </h1>
+              <p className="text-gray-600 text-sm md:text-base">Manage user accounts, permissions, and access control</p>
+            </div>
+
+            {/* Search Bar */}
+            <div className="relative group w-full md:w-96">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <FaSearch className="text-gray-400 group-focus-within:text-[#101540] transition-colors" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search by name, email or username..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value)
+                  setCurrentPage(1) // Reset to first page on search
+                }}
+                className="block w-full pl-11 pr-4 py-3.5 bg-white border-2 border-gray-100 rounded-2xl text-sm placeholder-gray-400 focus:outline-none focus:border-[#101540] focus:ring-4 focus:ring-[#101540]/5 transition-all shadow-sm"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -123,7 +144,7 @@ const ManageUsersComponent = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {users &&
+                {users && users.length > 0 ? (
                   users.map((_user, index) => (
                     <tr
                       key={_user._id}
@@ -240,38 +261,62 @@ const ManageUsersComponent = () => {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="px-6 py-12 text-center">
+                      <div className="flex flex-col items-center justify-center gap-4 text-gray-500">
+                        <FaSearch className="text-4xl opacity-20" />
+                        <p className="font-medium">No users found matching your criteria</p>
+                        {searchQuery && (
+                          <button
+                            onClick={() => setSearchQuery("")}
+                            className="text-[#101540] text-sm font-semibold hover:underline"
+                          >
+                            Clear search
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
 
-        {/* Pagination */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8 bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-          <button
-            onClick={handlePrevPage}
-            disabled={currentPage === 1}
-            className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#101540] to-[#101540]/80 text-white rounded-xl shadow-md hover:shadow-lg hover:shadow-[#101540]/20 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 disabled:hover:scale-100 font-semibold text-sm"
-          >
-            <FaArrowLeft className="text-sm group-hover:-translate-x-1 transition-transform duration-300" />
-            <span>Previous</span>
-          </button>
+        {/* Pagination Section */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mt-12 bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm transition-all duration-300">
+          <p className="text-sm font-black text-gray-400 uppercase tracking-widest">
+            Showing <span className="text-[#101540]">{users.length}</span> items of <span className="text-[#101540]">{currentPage * usersPerPage}</span>
+          </p>
 
-          <div className="flex items-center gap-3">
-            <span className="text-gray-700 font-semibold text-sm">
-              Page <span className="text-[#101540] text-lg">{currentPage}</span> of{" "}
-              <span className="text-[#101540] text-lg">{totalPages}</span>
-            </span>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+              className="group flex items-center gap-3 px-8 py-4 bg-white text-[#101540] rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm ring-1 ring-gray-100 hover:bg-[#101540] hover:text-white disabled:opacity-30 disabled:grayscale transition-all duration-300"
+            >
+              <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+              Prev
+            </button>
+
+            <div className="flex items-center gap-2 px-6 py-4 bg-[#101540] rounded-2xl text-white font-black shadow-2xl shadow-[#101540]/20">
+              <span className="opacity-40 text-[10px] uppercase tracking-widest mr-1">Page</span>
+              <span className="text-sm">{currentPage}</span>
+              <span className="opacity-20 font-medium mx-1">/</span>
+              <span className="text-sm">{totalPages}</span>
+            </div>
+
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className="group flex items-center gap-3 px-8 py-4 bg-white text-[#101540] rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm ring-1 ring-gray-100 hover:bg-[#101540] hover:text-white disabled:opacity-30 disabled:grayscale transition-all duration-300"
+            >
+              Next
+              <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </button>
           </div>
-
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-            className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#101540] to-[#101540]/80 text-white rounded-xl shadow-md hover:shadow-lg hover:shadow-[#101540]/20 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105 disabled:hover:scale-100 font-semibold text-sm"
-          >
-            <span>Next</span>
-            <FaArrowRight className="text-sm group-hover:translate-x-1 transition-transform duration-300" />
-          </button>
         </div>
       </div>
     </div>
