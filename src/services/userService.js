@@ -39,6 +39,18 @@ class UserService {
     }
   }
 
+  async getUnreadCount(userId) {
+    try {
+      const response = await protectedApi.get(
+        `/get-notifications?page=1&limit=1&isRead=false&userId=${userId}`
+      );
+      return response.data.data.totalNotifications || 0;
+    } catch (error) {
+      console.error("Error fetching unread count:", error);
+      return 0;
+    }
+  }
+
   async updateUserRole(currentUserId, updatedRole) {
     try {
       const response = await protectedApi.patch(`/update-user-role`, {
@@ -81,6 +93,33 @@ class UserService {
       throw new Error(error.response.data.message);
     }
   };
+
+  async getAdminStats() {
+    try {
+      const response = await protectedApi.get("/admin-stats");
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || "Failed to fetch admin stats");
+    }
+  }
+
+  async getProfile(userId = "") {
+    try {
+      const response = await protectedApi.get(`/profile/${userId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || "Failed to fetch profile");
+    }
+  }
+
+  async updateProfile(profileData) {
+    try {
+      const response = await protectedApi.put("/update-profile", profileData);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || "Failed to update profile");
+    }
+  }
 }
 
 const userService = new UserService();

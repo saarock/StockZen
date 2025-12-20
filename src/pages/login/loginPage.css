@@ -33,6 +33,7 @@
   align-items: center;
 }
 
+/* Responsive Design */
 @media (max-width: 1024px) {
   .login-content {
     grid-template-columns: 1fr;
@@ -43,6 +44,10 @@
   .login-right {
     order: -1;
   }
+
+  .login-page-container {
+    padding: 3rem 1.5rem;
+  }
 }
 
 @media (max-width: 640px) {
@@ -52,5 +57,16 @@
 
   .login-content {
     gap: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-page-container {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .login-content {
+    gap: 1.5rem;
+    max-width: 100%;
   }
 }

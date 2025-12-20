@@ -4,10 +4,10 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  /* background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%); */
   border-radius: 12px;
   text-align: center;
-  margin: 2rem 0;
+  margin: 2rem auto;
+  max-width: 1200px;
 }
 
 .entry-title {
@@ -35,9 +35,10 @@
   cursor: pointer;
   transition: all 0.3s ease;
   margin-bottom: 2rem;
-  /* Added display inline-block and text-decoration none for Link component */
   display: inline-block;
   text-decoration: none;
+  min-height: 48px; /* Touch-friendly */
+  min-width: 48px;
 }
 
 .entry-toggle:hover {
@@ -61,4 +62,60 @@
   height: auto;
   object-fit: contain;
   border-radius: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .entry-container {
+    padding: 1.5rem 1rem;
+    margin: 1.5rem auto;
+  }
+
+  .entry-title {
+    font-size: 1.5rem;
+  }
+
+  .entry-subtitle {
+    font-size: 0.9375rem;
+    max-width: 100%;
+  }
+
+  .entry-toggle {
+    padding: 0.75rem 2rem;
+    font-size: 0.9375rem;
+    min-height: 44px; /* iOS minimum */
+  }
+
+  .invertory-image {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .entry-container {
+    padding: 1.25rem 0.75rem;
+    margin: 1rem auto;
+    border-radius: 8px;
+  }
+
+  .entry-title {
+    font-size: 1.25rem;
+  }
+
+  .entry-subtitle {
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .entry-toggle {
+    padding: 0.625rem 1.5rem;
+    font-size: 0.875rem;
+    width: 100%; /* Full width on small mobile */
+    max-width: 300px;
+  }
+
+  .invertory-image {
+    max-width: 100%;
+    margin-top: 0.75rem;
+  }
 }

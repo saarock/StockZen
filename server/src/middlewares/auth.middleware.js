@@ -21,26 +21,18 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
         throw new ApiError(401, "Invalid or expired token");
       }
 
-    
-      req.user = decoded;
-      console.log(decoded._id, "decoded");
-      const user = await User.findById(decoded._id);
+      const user = await User.findById(decoded._id).select("-password -refreshToken");
       if (!user) {
         return res.status(404).json({ message: "Invalid User" });
       }
+
       if (!user.isActive) {
         return res
           .status(403)
           .json({ message: "You are blocked pleased logout and contact us!" });
       }
 
-      // const totalNotifications = await Notification.countDocuments({
-      //   user: decoded._id,
-      //   isRead: false,
-      // });
-      // console.log(totalNotifications + "   this is the org");
-      // req.user.totalNotifications = totalNotifications;
-      // console.log(req.user.totalNotifications);
+      req.user = user;
       next();
     });
   } catch (error) {

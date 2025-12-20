@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { RegisterComponent, VerifyMailComponent } from "../../components";
 import { Auth } from "../../services";
@@ -67,13 +68,13 @@ const RegisterPage = () => {
         // alert()
         const response = await handleResponse(Auth.register(formData));
         console.log(response);
-        
+
         if (response.success) {
-         navigate("/login");
-        return;
+          navigate("/login");
+          return;
         } else {
           toast.error(response.error);
-           goToPrevPage()
+          goToPrevPage()
         }
       }
 
@@ -107,14 +108,27 @@ const RegisterPage = () => {
     setLoadingOTP(true);
     e.preventDefault();
     try {
-      const response = await handleResponse(Auth.verifyMail(otpFormData));
-      if (response.success) {
-   await register();
-      } else {
-        toast.error(response.error);
-        dispatch(setError(response.error));
+      // Step 1: Verify OTP
+      const otpResponse = await handleResponse(Auth.verifyMail(otpFormData));
+
+      if (!otpResponse.success) {
+        toast.error(otpResponse.error);
+        dispatch(setError(otpResponse.error));
         return;
       }
+
+      // Step 2: Register the user account
+      const registerResponse = await handleResponse(Auth.register(formData));
+
+      if (!registerResponse.success) {
+        toast.error(registerResponse.error);
+        goToPrevPage();
+        return;
+      }
+
+      // Registration successful - navigate to login page
+      toast.success("Registration successful! Please login.");
+      navigate("/login");
 
     } catch (error) {
       toast.error(error.message);

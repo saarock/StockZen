@@ -7,6 +7,7 @@ import User from "../models/user.model.js";
 import ApiError from "../utils/apiError.js";
 import { generateRandomToken, randomString } from "../utils/randomString.js";
 import Subscriber from "../models/subscriber.js";
+import { notifyAllAdmins, notifyUser } from "../utils/notificationService.js";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -55,14 +56,20 @@ export const sendMailToTheUser = asyncHandler(async (req, res) => {
 
 export const verifyUserMail = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
-  const isCorrectOpt = mailOtpStore.verifyOtp(email, otp);
-  console.log(isCorrectOpt);
+  
+  // Verify OTP
+  const isCorrectOtp = mailOtpStore.verifyOtp(email, otp);
+  console.log(isCorrectOtp);
   console.log("Main verify");
 
-  if (!isCorrectOpt) {
+  if (!isCorrectOtp) {
     throw new ApiError(400, "Wrong otp");
   }
-  res.status(200).json(new ApiResponse(200, null, "Otp verifyed"));
+
+  // OTP verified successfully
+  return res.status(200).json(
+    new ApiResponse(200, { email }, "OTP verified successfully")
+  );
 });
 
 export const registerUser = asyncHandler(async (req, res) => {
@@ -80,6 +87,8 @@ export const registerUser = asyncHandler(async (req, res) => {
     if (existedUser) {
       throw new ApiError(400, "User already exist.");
     }
+    console.log("It came up to me");
+    
 
     const user = await User.create({
       fullName,
@@ -93,7 +102,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     console.log(user);
 
     const createdUser = await User.findById(user._id).select(
-      "-password -refreshToken"
+      "-password -refreshToken -resetToken -passwordResetExpires -__v "
     );
 
     if (!createdUser) {
@@ -260,6 +269,21 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
 
     await user.save();
 
+    // Notify user about status change
+    await notifyUser(
+      userId,
+      `Your account has been ${updatedStatus ? 'activated' : 'deactivated'}.`,
+      'user_status_changed',
+      { userId, isActive: updatedStatus }
+    );
+
+    // Notify admins about status change
+    await notifyAllAdmins(
+      `User "${user.userName}" has been ${updatedStatus ? 'activated' : 'deactivated'}.`,
+      'user_status_changed',
+      { userId, userName: user.userName, isActive: updatedStatus }
+    );
+
     res.status(200).json(
       new ApiResponse(
         200,
@@ -297,6 +321,21 @@ export const updateUserRole = asyncHandler(async (req, res) => {
 
     await user.save();
 
+    // Notify user about role change
+    await notifyUser(
+      currentUserId,
+      `Your role has been changed to "${updatedRole}".`,
+      'user_role_changed',
+      { userId: currentUserId, newRole: updatedRole }
+    );
+
+    // Notify admins about role change
+    await notifyAllAdmins(
+      `User "${user.userName}" role has been changed to "${updatedRole}".`,
+      'user_role_changed',
+      { userId: currentUserId, userName: user.userName, newRole: updatedRole }
+    );
+
     res.status(200).json(
       new ApiResponse(
         200,
@@ -316,11 +355,12 @@ export const updateUserRole = asyncHandler(async (req, res) => {
 
 export const logoutUser = asyncHandler(async (req, res) => {
   try {
-    if (!req.body.user) {
-      throw new ApiError(400, "User doesnot found");
+    const userId = req.user?._id;
+    if (!userId) {
+      throw new ApiError(400, "User not found");
     }
     await User.findByIdAndUpdate(
-      req.body.user._id,
+      userId,
       {
         $set: { refreshToken: undefined },
       },
@@ -404,3 +444,68 @@ export const subscribeToNewsLetter = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, {}, "Subscribed to news letter"));
   }
 });
+
+/**
+ * Get user profile
+ */
+export const getProfile = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const targetId = userId || req.user?._id;
+
+  if (!targetId) {
+    throw new ApiError(400, "User ID is required");
+  }
+
+  // If viewing someone else's profile, check if requester is admin
+  if (userId && userId !== req.user?._id.toString() && req.user?.role !== "admin") {
+    throw new ApiError(403, "Not authorized to view this profile");
+  }
+
+  const user = await User.findById(targetId).select(
+    "-password -refreshToken -resetToken -passwordResetExpires -__v"
+  );
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, user, "Profile fetched successfully")
+  );
+});
+
+/**
+ * Update user profile
+ */
+export const updateProfile = asyncHandler(async (req, res) => {
+  const { fullName, phoneNumber, location, gender, bio, avatar } = req.body;
+  const userId = req.user?._id;
+
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized");
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  // Update allowed fields
+  if (fullName) user.fullName = fullName;
+  if (phoneNumber) user.phoneNumber = phoneNumber;
+  if (location !== undefined) user.location = location;
+  if (gender !== undefined) user.gender = gender;
+  if (bio !== undefined) user.bio = bio;
+  if (avatar !== undefined) user.avatar = avatar;
+
+  await user.save({ validateBeforeSave: false });
+
+  const updatedUser = await User.findById(userId).select(
+    "-password -refreshToken -resetToken -passwordResetExpires -__v"
+  );
+
+  return res.status(200).json(
+    new ApiResponse(200, updatedUser, "Profile updated successfully")
+  );
+});
+

@@ -1,13 +1,14 @@
-
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import { FaUser, FaCog, FaBell, FaBoxOpen, FaBars, FaTimes, FaUserCircle } from "react-icons/fa"
 import useUser from "../../hooks/useUser"
+import userService from "../../services/userService"
+import useSocket from "../../hooks/useSocket"
 
 
 const UserDashBoardNav = () => {
   const { user } = useUser()
-  const numberOfNotifications = 120
+  const { numberOfNotifications } = useSocket()
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const pathname = useLocation().pathname
 
@@ -56,15 +57,13 @@ const UserDashBoardNav = () => {
         <div className="relative w-6 h-6">
           <FaBars
             size={24}
-            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-              isSidebarOpen ? "opacity-0 rotate-180 scale-0" : "opacity-100 rotate-0 scale-100"
-            }`}
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${isSidebarOpen ? "opacity-0 rotate-180 scale-0" : "opacity-100 rotate-0 scale-100"
+              }`}
           />
           <FaTimes
             size={24}
-            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-              isSidebarOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-180 scale-0"
-            }`}
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${isSidebarOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-180 scale-0"
+              }`}
           />
         </div>
       </button>
@@ -79,9 +78,8 @@ const UserDashBoardNav = () => {
 
       {/* Sidebar */}
       <aside
-        className={`sticky top-0 left-0 h-screen bg-white border-r border-[rgba(16,21,64,0.1)] shadow-2xl shadow-[rgba(16,21,64,0.1)] transition-all duration-500 ease-in-out ${
-          isSidebarOpen ? "fixed inset-0 z-40 translate-x-0" : "fixed -translate-x-full z-40"
-        } lg:relative lg:translate-x-0 lg:z-auto w-[280px] sm:w-[320px] lg:w-[280px] xl:w-[300px]`}
+        className={`sticky top-0 left-0 h-screen bg-white border-r border-[rgba(16,21,64,0.1)] shadow-2xl shadow-[rgba(16,21,64,0.1)] transition-all duration-500 ease-in-out ${isSidebarOpen ? "fixed inset-0 z-40 translate-x-0" : "fixed -translate-x-full z-40"
+          } lg:relative lg:translate-x-0 lg:z-auto w-[280px] sm:w-[320px] lg:w-[280px] xl:w-[300px]`}
       >
         <div className="flex flex-col h-full">
           {/* User Info Section */}
@@ -126,11 +124,10 @@ const UserDashBoardNav = () => {
                     if (window.innerWidth < 1024) setSidebarOpen(false)
                   }}
                   title={link.tooltip}
-                  className={`group flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-2xl transition-all duration-300 relative overflow-hidden ${
-                    active
-                      ? "bg-gradient-to-br from-[#101540] to-[#1a2060] text-white shadow-lg shadow-[rgba(16,21,64,0.3)]"
-                      : "text-gray-700 hover:bg-[rgba(16,21,64,0.05)] hover:text-[#101540]"
-                  }`}
+                  className={`group flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-2xl transition-all duration-300 relative overflow-hidden ${active
+                    ? "bg-gradient-to-br from-[#101540] to-[#1a2060] text-white shadow-lg shadow-[rgba(16,21,64,0.3)]"
+                    : "text-gray-700 hover:bg-[rgba(16,21,64,0.05)] hover:text-[#101540]"
+                    }`}
                   style={{
                     animationDelay: `${index * 50}ms`,
                   }}
@@ -146,9 +143,8 @@ const UserDashBoardNav = () => {
 
                   {/* Icon */}
                   <span
-                    className={`relative z-10 text-xl sm:text-2xl transition-all duration-300 ${
-                      active ? "scale-110" : "group-hover:scale-125 group-hover:rotate-12 group-hover:text-[#101540]"
-                    }`}
+                    className={`relative z-10 text-xl sm:text-2xl transition-all duration-300 ${active ? "scale-110" : "group-hover:scale-125 group-hover:rotate-12 group-hover:text-[#101540]"
+                      }`}
                   >
                     {link.icon}
                   </span>
@@ -157,9 +153,9 @@ const UserDashBoardNav = () => {
                   <span className="relative z-10 font-semibold text-sm sm:text-base flex-1">{link.name}</span>
 
                   {/* Notification Badge */}
-                  {link.badge && link.badge > 0 && (
-                    <span className="relative z-10 flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-red-500 text-white text-xs font-bold shadow-lg shadow-red-500/50 animate-pulse">
-                      {link.badge > 99 ? "99+" : link.badge}
+                  {link.badge !== undefined && link.badge > 0 && (
+                    <span className="relative z-10 flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full bg-red-500 text-white text-xs font-bold shadow-lg shadow-red-500/50">
+                      {link.badge}
                     </span>
                   )}
 

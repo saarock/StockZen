@@ -132,7 +132,7 @@
 
   .nav-item {
     justify-content: center;
-    padding: 0.5rem; /* Tailwind p-2 */
+    padding: 0.75rem; /* Increased for better touch target */
   }
 
   .nav-icon {
@@ -144,6 +144,26 @@
     top: 0;
     right: 0;
     padding: 0.125rem 0.375rem; /* Tailwind py-0.5 px-1.5 */
+    font-size: 0.625rem;
+  }
+}
+
+/* Tablet view */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .nav-panel {
+    width: 200px;
+  }
+
+  .greeting-text {
+    font-size: 1.1rem;
+  }
+
+  .nav-text {
+    font-size: 0.9rem;
+  }
+
+  .nav-icon {
+    font-size: 1.1rem;
   }
 }
 
@@ -159,5 +179,13 @@
   .user-avatar {
     width: 2rem; /* Tailwind w-8 */
     height: 2rem; /* Tailwind h-8 */
+  }
+
+  .nav-item {
+    padding: 0.625rem;
+  }
+
+  .nav-icon {
+    font-size: 1.25rem;
   }
 }

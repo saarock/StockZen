@@ -17,6 +17,9 @@ import ManageUser from "./pages/admin/ManageUser copy";
 import ResetPassword from "./pages/login/ResetPassword";
 import MyProduct from "./pages/myProduct/MyProduct";
 import Stats from "./pages/stats/Stats";
+import Notifications from "./pages/notifications/Notifications";
+import AdminNotifications from "./pages/admin/AdminNotifications";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 function App() {
   return (
@@ -60,9 +63,7 @@ function App() {
               }
             />
 
-
-              <Route path="/reset-password" element={<ResetPassword />} />
-          
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             <Route
               path="/products"
@@ -78,8 +79,15 @@ function App() {
 
           <Route path="admin/dashboard" element={<AdminDashboardLayout />}>
             <Route
-              path="add-product"
               index
+              element={
+                <ProtectedPage>
+                  <AdminDashboard />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="add-product"
               element={
                 <ProtectedPage>
                   <AddProduct />
@@ -113,6 +121,30 @@ function App() {
                 </ProtectedPage>
               }
             />
+            <Route
+              path="notifications"
+              element={
+                <ProtectedPage>
+                  <AdminNotifications />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="user-profile/:userId"
+              element={
+                <ProtectedPage>
+                  <Profile />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="my-details"
+              element={
+                <ProtectedPage>
+                  <Profile />
+                </ProtectedPage>
+              }
+            />
           </Route>
 
           {/* User Dashboard Layout */}
@@ -126,8 +158,23 @@ function App() {
                 </ProtectedPage>
               }
             />
-            <Route path="my-product" element={<ProtectedPage><MyProduct/></ProtectedPage>} />
-            <Route path="stats" element={<ProtectedPage><Stats /></ProtectedPage>} />
+            <Route
+              path="my-product"
+              element={
+                <ProtectedPage>
+                  <MyProduct />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="stats"
+              element={
+                <ProtectedPage>
+                  <Stats />
+                </ProtectedPage>
+              }
+            />
+            <Route path="notifications" element={<ProtectedPage><Notifications /></ProtectedPage>} />
 
           </Route>
         </Routes>

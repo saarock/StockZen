@@ -14,6 +14,7 @@ import {
   getPurchaseStats,
   manageBookedProduct,
   saveProduct,
+  getAdminStats,
 } from "../controller/product.controller.js";
 import CryptoJS from "crypto-js";
 
@@ -34,6 +35,7 @@ router.post("/change-status-of-booked-items", verifyJWT, changeStatusOfTheBooked
 router.delete("/change-available", verifyJWT, ChangeProdutAvailableSatus);
 router.put("/edit-product", verifyJWT, editTheProducts);
 router.delete("/deleteProduct", verifyJWT, deleteProducts);
+router.get("/admin-stats", verifyJWT, getAdminStats);
 
 
 router.get("/get-purchaseStats", verifyJWT, getPurchaseStats);
