@@ -12,6 +12,7 @@ import {
   FaUserCircle,
   FaBell,
   FaChartBar,
+  FaLifeRing,
 } from "react-icons/fa";
 
 import useSocket from "../../hooks/useSocket";
@@ -62,6 +63,11 @@ const AdminDashBoardNav = () => {
       name: "Manage booked product",
       path: "/admin/dashboard/manage-booked-product",
       icon: <FaDeviantart />,
+    },
+    {
+      name: "Support",
+      path: "/support",
+      icon: <FaLifeRing />,
     },
   ];
 

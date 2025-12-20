@@ -20,6 +20,7 @@ import {
   FaBars,
   FaTimes,
   FaBox,
+  FaLifeRing,
 } from "react-icons/fa"
 import logoutFromClientSide from "../../utils/logOut"
 
@@ -33,6 +34,13 @@ const Header = () => {
 
   const nav = [
     { id: "home", name: "Home", slug: "/", icon: <FaHome />, userActive: true },
+    {
+      id: "support",
+      name: "Support",
+      slug: "/support",
+      icon: <FaLifeRing />,
+      userActive: true,
+    },
     {
       id: "login",
       name: "Login",

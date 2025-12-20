@@ -2,10 +2,13 @@
 
 import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
+import useUser from "../../hooks/useUser"
 
 export default function HomePage() {
   const [scrollY, setScrollY] = useState(0)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const { user } = useUser()
+  const isAuthenticated = !!user
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY)
@@ -94,33 +97,70 @@ export default function HomePage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-              <Link
-                to="/register"
-                className="group relative px-8 py-4 bg-[#101540] text-white rounded-xl font-semibold text-center overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-[#101540]/30 hover:-translate-y-1 hover:scale-[1.02]"
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  Get Started Free
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    className="group-hover:translate-x-1 transition-transform"
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    to={user?.role === "admin" ? "/admin/dashboard" : "/user/dashboard/profile"}
+                    className="group relative px-8 py-4 bg-[#101540] text-white rounded-xl font-semibold text-center overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-[#101540]/30 hover:-translate-y-1 hover:scale-[1.02]"
                   >
-                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  </svg>
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-[#1a2158] via-[#101540] to-[#1a2158] opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_100%] group-hover:animate-shimmer" />
-              </Link>
-              <button className="group px-8 py-4 bg-white border-2 border-[#101540]/10 text-[#101540] rounded-xl font-semibold hover:border-[#101540]/30 hover:bg-gradient-to-br hover:from-[#101540]/5 hover:to-transparent transition-all duration-300 hover:shadow-lg hover:-translate-y-1 relative overflow-hidden">
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  Schedule Demo
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="opacity-70">
-                    <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
-                    <path d="M8 5v3l2 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  </svg>
-                </span>
-              </button>
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      Go to Dashboard
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        className="group-hover:translate-x-1 transition-transform"
+                      >
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#1a2158] via-[#101540] to-[#1a2158] opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_100%] group-hover:animate-shimmer" />
+                  </Link>
+                  <Link
+                    to="/products"
+                    className="group px-8 py-4 bg-white border-2 border-[#101540]/10 text-[#101540] rounded-xl font-semibold hover:border-[#101540]/30 hover:bg-gradient-to-br hover:from-[#101540]/5 hover:to-transparent transition-all duration-300 hover:shadow-lg hover:-translate-y-1 relative overflow-hidden text-center"
+                  >
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      Browse Products
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="opacity-70">
+                        <path d="M3 3h10v10H3V3z" stroke="currentColor" strokeWidth="1.5" />
+                        <path d="M3 6h10M6 3v10" stroke="currentColor" strokeWidth="1.5" />
+                      </svg>
+                    </span>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/register"
+                    className="group relative px-8 py-4 bg-[#101540] text-white rounded-xl font-semibold text-center overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-[#101540]/30 hover:-translate-y-1 hover:scale-[1.02]"
+                  >
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      Get Started Free
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        className="group-hover:translate-x-1 transition-transform"
+                      >
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#1a2158] via-[#101540] to-[#1a2158] opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_100%] group-hover:animate-shimmer" />
+                  </Link>
+                  <button className="group px-8 py-4 bg-white border-2 border-[#101540]/10 text-[#101540] rounded-xl font-semibold hover:border-[#101540]/30 hover:bg-gradient-to-br hover:from-[#101540]/5 hover:to-transparent transition-all duration-300 hover:shadow-lg hover:-translate-y-1 relative overflow-hidden">
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      Schedule Demo
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="opacity-70">
+                        <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
+                        <path d="M8 5v3l2 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                      </svg>
+                    </span>
+                  </button>
+                </>
+              )}
             </div>
 
             <div className="grid grid-cols-3 gap-6 pt-8 animate-fade-in" style={{ animationDelay: "0.4s" }}>
@@ -179,7 +219,7 @@ export default function HomePage() {
                     <div className="relative">
                       <div className="text-sm text-gray-600 mb-2">Total Inventory Value</div>
                       <div className="text-3xl font-bold bg-gradient-to-br from-[#101540] to-[#1a2158] bg-clip-text text-transparent mb-2">
-                        $2.4M
+                        RS 2.4M
                       </div>
                       <div className="flex items-center gap-1 text-green-600">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="animate-bounce-subtle">

@@ -23,11 +23,12 @@ const ManageUsersComponent = () => {
   const usersPerPage = 10
   const [loadingStatus, setLoadingStatus] = useState({})
   const [loadingRole, setLoadingRole] = useState({})
+  const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
     async function getUsers() {
       try {
-        const usersData = await userService.getAllUsers(usersPerPage, currentPage)
+        const usersData = await userService.getAllUsers(usersPerPage, currentPage, searchQuery)
         setUsers(usersData.data.users)
         setTotalPages(usersData.data.totalPages)
       } catch (error) {
@@ -35,7 +36,7 @@ const ManageUsersComponent = () => {
       }
     }
     getUsers()
-  }, [currentPage])
+  }, [currentPage, searchQuery])
 
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1)
@@ -83,11 +84,30 @@ const ManageUsersComponent = () => {
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#101540]/5 to-transparent rounded-full blur-3xl -z-0" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-[#101540]/5 to-transparent rounded-full blur-3xl -z-0" />
 
-          <div className="relative z-10">
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#101540] to-[#101540]/70 bg-clip-text text-transparent mb-2 animate-fade-in">
-              User Management
-            </h1>
-            <p className="text-gray-600 text-sm md:text-base">Manage user accounts, permissions, and access control</p>
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#101540] to-[#101540]/70 bg-clip-text text-transparent mb-2 animate-fade-in">
+                User Management
+              </h1>
+              <p className="text-gray-600 text-sm md:text-base">Manage user accounts, permissions, and access control</p>
+            </div>
+
+            {/* Search Bar */}
+            <div className="relative group w-full md:w-96">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <FaSearch className="text-gray-400 group-focus-within:text-[#101540] transition-colors" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search by name, email or username..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value)
+                  setCurrentPage(1) // Reset to first page on search
+                }}
+                className="block w-full pl-11 pr-4 py-3.5 bg-white border-2 border-gray-100 rounded-2xl text-sm placeholder-gray-400 focus:outline-none focus:border-[#101540] focus:ring-4 focus:ring-[#101540]/5 transition-all shadow-sm"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -123,7 +143,7 @@ const ManageUsersComponent = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {users &&
+                {users && users.length > 0 ? (
                   users.map((_user, index) => (
                     <tr
                       key={_user._id}
@@ -240,7 +260,25 @@ const ManageUsersComponent = () => {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="px-6 py-12 text-center">
+                      <div className="flex flex-col items-center justify-center gap-4 text-gray-500">
+                        <FaSearch className="text-4xl opacity-20" />
+                        <p className="font-medium">No users found matching your criteria</p>
+                        {searchQuery && (
+                          <button
+                            onClick={() => setSearchQuery("")}
+                            className="text-[#101540] text-sm font-semibold hover:underline"
+                          >
+                            Clear search
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

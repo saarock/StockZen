@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Users, Package, ShoppingCart, DollarSign, AlertTriangle, TrendingUp, Clock } from 'lucide-react';
+import { Users, Package, ShoppingCart, IndianRupee, AlertTriangle, TrendingUp, Clock } from 'lucide-react';
 import userService from '../../services/userService';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import './AdminPages.css';
@@ -38,7 +38,7 @@ const AdminDashboard = () => {
     const statCards = [
         { title: 'Total Users', value: stats.totalUsers, icon: <Users className="w-8 h-8 text-blue-500" />, sub: `${stats.activeUsers} active` },
         { title: 'Total Products', value: stats.totalProducts, icon: <Package className="w-8 h-8 text-purple-500" />, sub: `${stats.outOfStockProducts} out of stock` },
-        { title: 'Total Revenue', value: `$${stats.totalRevenue.toLocaleString()}`, icon: <DollarSign className="w-8 h-8 text-green-500" />, sub: 'From completed orders' },
+        { title: 'Total Revenue', value: `RS ${stats.totalRevenue.toLocaleString()}`, icon: <IndianRupee className="w-8 h-8 text-green-500" />, sub: 'From completed orders' },
         { title: 'Pending Orders', value: stats.pendingBookings, icon: <Clock className="w-8 h-8 text-yellow-500" />, sub: 'Awaiting confirmation' },
         { title: 'Low Stock Alerts', value: stats.lowStockProducts, icon: <AlertTriangle className="w-8 h-8 text-red-500" />, sub: 'Less than 5 items' },
         { title: 'Category Count', value: stats.categoryStats.length, icon: <TrendingUp className="w-8 h-8 text-indigo-500" />, sub: 'Product categories' },
@@ -99,7 +99,7 @@ const AdminDashboard = () => {
                                         <td className="px-4 py-3 text-xs text-gray-400">
                                             {new Date(booking.createdAt).toLocaleDateString()}
                                         </td>
-                                        <td className="px-4 py-3 text-right font-semibold text-gray-900">${booking.price}</td>
+                                        <td className="px-4 py-3 text-right font-semibold text-gray-900">RS {booking.price}</td>
                                     </tr>
                                 ))}
                             </tbody>

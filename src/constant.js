@@ -1,11 +1,14 @@
 export const ACCESS_TOKEN_COOKIE_NAME = "gfngasasdg";
 export const REFRESH_TOKEN_COOKIE_NAME = "gfhsdfhfdh";
 
-  // Sample category options (replace with your actual categories)
-  export const categoryOptions = [
-    { value: '', label: 'Select a category' },
-    { value: 'drinks', label: 'Beverages' },
-    { value: 'food', label: 'Appetizers' },
-    { value: 'raw-food', label: 'Main Course' },
-    { value: 'desserts', label: 'Desserts' },
-  ];
+// Product category options used throughout the app
+export const categoryOptions = [
+  { value: "electronics", label: "Electronics" },
+  { value: "clothing", label: "Clothing & Apparel" },
+  { value: "food", label: "Food & Groceries" },
+  { value: "beverages", label: "Beverages" },
+  { value: "household", label: "Household Items" },
+  { value: "health", label: "Health & Beauty" },
+  { value: "books", label: "Books & Stationaries" },
+  { value: "others", label: "Others" },
+];

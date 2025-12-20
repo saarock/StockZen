@@ -156,10 +156,10 @@ const ShowAndManageProductComponent = ({ adminWant = "1", refresh }) => {
                   <option value="2">All Categories</option>
                   {categoryOptions?.length > 0
                     ? categoryOptions.map((ca) => (
-                        <option key={ca.value} value={ca.value}>
-                          {ca.label}
-                        </option>
-                      ))
+                      <option key={ca.value} value={ca.value}>
+                        {ca.label}
+                      </option>
+                    ))
                     : null}
                 </select>
               </div>
@@ -175,6 +175,7 @@ const ShowAndManageProductComponent = ({ adminWant = "1", refresh }) => {
                   <option value="2">All</option>
                   <option value="1">Available</option>
                   <option value="0">Out of Stock</option>
+                  <option value="low">Low Stock</option>
                 </select>
               </div>
             </div>

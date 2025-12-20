@@ -10,7 +10,7 @@ import moment from "moment";
 import { notifyAllAdmins, notifyUser, notifyAllUsers } from "../utils/notificationService.js";
 
 export const saveProduct = asyncHandler(async (req, res, next) => {
-  const { name, description, price, expiryDate, stock, category, userId } =
+  const { name, description, price, expiryDate, stock, category, userId, lowStockThreshold } =
     req.body;
 
   //  Required field validation
@@ -96,6 +96,7 @@ export const saveProduct = asyncHandler(async (req, res, next) => {
     stock,
     category,
     admin: newUser,
+    lowStockThreshold: Number(lowStockThreshold) || 5,
   };
 
   const product = new Product(newProduct);
@@ -103,7 +104,7 @@ export const saveProduct = asyncHandler(async (req, res, next) => {
   await product.save();
 
   // Check for low stock on new product
-  if (product.stock <= 5) {
+  if (product.stock <= product.lowStockThreshold) {
     await notifyAllAdmins(
       `Low stock alert: New product "${product.name}" has only ${product.stock} item(s) in stock.`,
       'low_stock_alert',
@@ -163,6 +164,9 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     } else if (availabilityFilter === "0") {
       // Products with stock == 0 (out of stock)
       filters.stock = 0; // Out of stock
+    } else if (availabilityFilter === "low") {
+      // Products where stock <= lowStockThreshold (default to 5 if not set)
+      filters.$expr = { $lte: ["$stock", { $ifNull: ["$lowStockThreshold", 5] }] };
     }
   }
 
@@ -246,7 +250,7 @@ export const BuyProduct = asyncHandler(async (req, res) => {
       // Notify user about purchase
       await notifyUser(
         product.userId,
-        `You have purchased "${product.productName}", ${product.totalItem} item(s) for $${product.totalPrice}.`,
+        `You have purchased "${product.productName}", ${product.totalItem} item(s) for RS ${product.totalPrice}.`,
         'purchase_completed',
         { productId: product.productId, productName: product.productName, totalItems: product.totalItem, totalPrice: product.totalPrice }
       );
@@ -286,20 +290,24 @@ export const manageBookedProduct = asyncHandler(async (req, res) => {
 
   // Admin logic (fetch all booked products)
   if (user.role === "admin") {
-    // Search filter based on the search term (username search)
-    const searchFilter = search
-      ? {
-          user: await User.findOne({
-            userName: { $regex: search, $options: "i" },
-          }).select("_id"),
-        } // Find user by username
-      : {}; // If no search term, no filter is applied
+    // Search filter based on the search term (username or full name search)
+    let searchFilter = {};
+    if (search) {
+      const matchingUsers = await User.find({
+        $or: [
+          { userName: { $regex: search, $options: "i" } },
+          { fullName: { $regex: search, $options: "i" } },
+        ]
+      }).select("_id");
+      const userIds = matchingUsers.map(u => u._id);
+      searchFilter = { user: { $in: userIds } };
+    }
 
     const bookedProducts = await BuyProducts.find({
       ...searchFilter,
       status: status || { $in: ["pending", "completed", "cancelled"] },
     })
-      .populate("user", "userName") // Populate with the username of the user who made the booking
+      .populate("user", "userName fullName avatar") // Populate with the full details of the user who made the booking
       .populate("product", "name")
       .skip(skip)
       .limit(Number(limit))
@@ -342,6 +350,7 @@ export const manageBookedProduct = asyncHandler(async (req, res) => {
     })
       .skip(skip)
       .populate("product", "name")
+      .populate("user", "userName fullName avatar")
       .limit(Number(limit))
       .sort({ createdAt: -1 }); // Sort by newest bookings
 
@@ -678,6 +687,7 @@ export const editTheProducts = asyncHandler(async (req, res) => {
         ...productDetails,
         stock: parseInt(stock),
         price: parseInt(price),
+        lowStockThreshold: parseInt(lowStockThreshold) || 5,
       },
       { new: true }
     );
@@ -687,7 +697,7 @@ export const editTheProducts = asyncHandler(async (req, res) => {
     }
 
     // Check for low stock after edit
-    if (updatedProduct.stock <= 5) {
+    if (updatedProduct.stock <= updatedProduct.lowStockThreshold) {
       await notifyAllAdmins(
         `Low stock alert: "${updatedProduct.name}" has only ${updatedProduct.stock} item(s) left.`,
         'low_stock_alert',
@@ -776,7 +786,14 @@ export const getAdminStats = asyncHandler(async (req, res) => {
         // Total Products
         const totalProducts = await Product.countDocuments();
         const outOfStockProducts = await Product.countDocuments({ stock: 0 });
-        const lowStockProducts = await Product.countDocuments({ stock: { $gt: 0, $lte: 5 } });
+        const lowStockProducts = await Product.countDocuments({
+            $expr: {
+                $and: [
+                    { $gt: ["$stock", 0] },
+                    { $lte: ["$stock", { $ifNull: ["$lowStockThreshold", 5] }] }
+                ]
+            }
+        });
 
         // Revenue and Bookings
         const bookings = await BuyProducts.find();
