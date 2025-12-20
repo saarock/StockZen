@@ -48,6 +48,36 @@ const BookedProductComp = () => {
     fetchBookedProducts();
   }, [page, limit, status, search, user?._id, refetch]); // Fetch data on page change, status, etc.
 
+  const isCancellationWindowOpen = (createdAt) => {
+    const orderTime = new Date(createdAt).getTime();
+    const now = Date.now();
+    const oneHour = 60 * 60 * 1000;
+    return now - orderTime < oneHour;
+  };
+
+  const handleCancelOrder = async (productId) => {
+    try {
+      setLoading(true);
+      const response = await productService.cancelOrder(productId);
+
+      if (response.success) {
+        toast.success("Order cancelled successfully");
+        setBookedProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === productId
+              ? { ...product, status: "cancelled" }
+              : product
+          )
+        );
+        setRefetchTime((prev) => prev + 1);
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to cancel order");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleChangeStatus = async (productId, newStatus) => {
     try {
       setLoading(true);
@@ -619,18 +649,25 @@ const BookedProductComp = () => {
                 {user &&
                   user?.role === "user" &&
                   user._id === product.user?._id &&
-                  status === "pending" && (
+                  product.status === "pending" && (
                     <div className="mt-4 pt-4 border-t border-gray-200">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
-                        <button
-                          disabled={status === "cancelled" || loading}
-                          onClick={() =>
-                            handleChangeStatus(product._id, "cancelled")
-                          }
-                          className="flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                        >
-                          <FaTimesCircle /> Cancelled
-                        </button>
+                      <div className="flex flex-col sm:flex-row items-center gap-4">
+                        {isCancellationWindowOpen(product.createdAt) ? (
+                          <button
+                            disabled={loading}
+                            onClick={() => handleCancelOrder(product._id)}
+                            className="flex items-center justify-center gap-2 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 transition-all duration-200 shadow-md hover:scale-105"
+                          >
+                            <FaTimesCircle /> Cancel Order
+                          </button>
+                        ) : (
+                          <div className="text-sm text-gray-500 italic bg-gray-100 px-4 py-2 rounded-lg border border-gray-200">
+                            Cancellation window expired (1 hour passed)
+                          </div>
+                        )}
+                        <p className="text-xs text-gray-400 font-medium">
+                          * Self-cancellation is only available within 1 hour of booking.
+                        </p>
                       </div>
                     </div>
                   )}

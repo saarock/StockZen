@@ -6,6 +6,7 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 import {
   BuyProduct,
   ChangeProdutAvailableSatus,
+  cancelOrderByUser,
   changeStatusOfTheBookeditems,
   deleteProducts,
   editTheProducts,
@@ -32,6 +33,7 @@ router.post("/buy-products", verifyJWT, BuyProduct);
 router.get("/manage-booked-product", verifyJWT, manageBookedProduct);
 router.get("/generate-bill", verifyJWT, generateBill)
 router.post("/change-status-of-booked-items", verifyJWT, changeStatusOfTheBookeditems);
+router.post("/cancel-order", verifyJWT, cancelOrderByUser);
 router.delete("/change-available", verifyJWT, ChangeProdutAvailableSatus);
 router.put("/edit-product", verifyJWT, editTheProducts);
 router.delete("/deleteProduct", verifyJWT, deleteProducts);

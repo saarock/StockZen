@@ -118,8 +118,16 @@ const AdminDashBoardNav = () => {
             <div className="relative z-10 flex items-center gap-4">
               <div className="relative group">
                 <div className="absolute -inset-1 bg-white/30 rounded-full blur-md group-hover:blur-lg transition-all duration-300" />
-                <div className="relative h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20 shadow-lg group-hover:scale-110 transition-all duration-300">
-                  <FaUserCircle className="text-white text-3xl sm:text-4xl" />
+                <div className="relative h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20 shadow-lg group-hover:scale-110 transition-all duration-300 overflow-hidden">
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt="Admin avatar"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <FaUserCircle className="text-white text-3xl sm:text-4xl" />
+                  )}
                 </div>
               </div>
               <div className="flex-1 min-w-0">

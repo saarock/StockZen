@@ -470,6 +470,69 @@ export const changeStatusOfTheBookeditems = asyncHandler(async (req, res) => {
   );
 });
 
+/**
+ * User cancels their own order within 1 hour
+ */
+export const cancelOrderByUser = asyncHandler(async (req, res) => {
+  const { productId } = req.body;
+  const userId = req.user?._id;
+
+  if (!productId) {
+    throw new ApiError(400, "Product ID is required");
+  }
+
+  const bookedProduct = await BuyProducts.findById(productId)
+    .populate('product', 'name stock');
+
+  if (!bookedProduct) {
+    throw new ApiError(404, "Order not found");
+  }
+
+  // Check if order belongs to user
+  if (bookedProduct.user.toString() !== userId.toString()) {
+    throw new ApiError(403, "You are not authorized to cancel this order");
+  }
+
+  // Check if already cancelled or completed
+  if (bookedProduct.status === "cancelled") {
+    throw new ApiError(400, "Order is already cancelled");
+  }
+  
+  if (bookedProduct.status === "completed") {
+    throw new ApiError(400, "Cannot cancel a completed order. Please contact admin.");
+  }
+
+  // Check 1 hour window (3600000 ms)
+  const createdAt = new Date(bookedProduct.createdAt).getTime();
+  const now = Date.now();
+  const diff = now - createdAt;
+
+  if (diff > 3600000) {
+    throw new ApiError(400, "Cancellation window (1 hour) has expired. Please contact admin.");
+  }
+
+  // Restore stock
+  const product = await Product.findById(bookedProduct.product?._id);
+  if (product) {
+    product.stock += (bookedProduct.totalItems || 0);
+    await product.save();
+  }
+
+  bookedProduct.status = "cancelled";
+  await bookedProduct.save();
+
+  // Notify admins about user cancellation
+  await notifyAllAdmins(
+    `User "${req.user.userName}" cancelled their order for "${bookedProduct.product?.name || 'Product'}" within the 1-hour window.`,
+    'order_cancelled_by_user',
+    { orderId: productId, productName: bookedProduct.product?.name, userId }
+  );
+
+  return res.status(200).json(
+    new ApiResponse(200, bookedProduct, "Order cancelled successfully")
+  );
+});
+
 export const ChangeProdutAvailableSatus = asyncHandler(async (req, res) => {
   try {
     const { id } = req.body; // The product ID should be in the request body

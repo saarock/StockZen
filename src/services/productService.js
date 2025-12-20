@@ -134,17 +134,26 @@ class ProductService {
         }
 
     }
-    async generateBill(userId,status) {
+    async generateBill(userId, status) {
         try {
             const response = await protectedApi.get(`/generate-bill?userId=${userId}&status=${status}`);
             const data = await response.data;
             return data;
-       
-
-        } catch(error) {     
+        } catch (error) {
             throw new Error(error.response.data.message);
         }
     }
+
+    async cancelOrder(productId) {
+        try {
+            const response = await protectedApi.post(`/cancel-order`, { productId });
+            const data = await response.data;
+            return data;
+        } catch (error) {
+            throw new Error(error.response.data.message || "Failed to cancel order");
+        }
+    }
+
 
 }
 
