@@ -1,0 +1,53 @@
+%% UI Sitemap for Stock-Zen
+%% Nodes reflect pages and main components discovered in `src/pages` and `src/components`
+
+flowchart TD
+  subgraph Public
+    Home[Home]
+    Products[Products]
+    ProductDetail[Product Detail]
+    Login[Login]
+    Register[Register]
+    NotFound[404]
+    Support[Support]
+  end
+
+  subgraph User
+    UserDashboard[/User Dashboard Layout/]
+    Profile[Profile]
+    MyProducts[My Products]
+    Notifications[Notifications]
+    BookedProducts[Booked Products]
+    Stats[Stats]
+  end
+
+  subgraph Seller
+    AddProduct[Add Product]
+    EditProduct[Edit Product]
+    UploadImages[Upload Images]
+  end
+
+  subgraph Admin
+    AdminDashboard[Admin Dashboard]
+    ProductManage[Product Manage]
+    UserManage[User Manage]
+    AdminNotifications[Admin Notifications]
+  end
+
+  Home --> Products
+  Products --> ProductDetail
+  ProductDetail --> BookedProducts
+  ProductDetail --> AddProduct
+  Login --> UserDashboard
+  Register --> Login
+  UserDashboard --> Profile
+  UserDashboard --> MyProducts
+  UserDashboard --> Notifications
+  MyProducts --> BookedProducts
+  AdminDashboard --> ProductManage
+  AdminDashboard --> UserManage
+  AdminDashboard --> AdminNotifications
+
+  %% notes
+  classDef pages fill:#f4f6f8,stroke:#333,stroke-width:1px;
+  class Home,Products,ProductDetail,Login,Register,NotFound,Support,UserDashboard,Profile,MyProducts,Notifications,BookedProducts,Stats,AddProduct,EditProduct,UploadImages,AdminDashboard,ProductManage,UserManage,AdminNotifications pages;

@@ -8,6 +8,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import fs from "fs";
 import moment from "moment";
 import { notifyAllAdmins, notifyUser, notifyAllUsers } from "../utils/notificationService.js";
+import { createSignature, getEsewaConfig } from "../utils/esewa.js";
 
 export const saveProduct = asyncHandler(async (req, res, next) => {
   const { name, description, price, expiryDate, stock, category, userId, lowStockThreshold } =
@@ -624,7 +625,7 @@ export const editTheProducts = asyncHandler(async (req, res) => {
       .json({ message: "Product details are required and must be an object." });
   }
 
-  const { id, name, description, price, stock } = productDetails;
+  const { id, name, description, price, stock, lowStockThreshold } = productDetails;
 
   // Check if all required fields are provided and not null, undefined, or empty
   if (id == null || id === undefined || id.trim() === "") {
@@ -838,6 +839,8 @@ export const getAdminStats = asyncHandler(async (req, res) => {
         let completedBookings = 0;
         let pendingBookings = 0;
         let cancelledBookings = 0;
+        let pendingCount = 0;
+
 
         bookings.forEach(booking => {
             if (booking.status === "completed") {
@@ -891,4 +894,122 @@ export const getAdminStats = asyncHandler(async (req, res) => {
         console.error("Error fetching admin stats:", error);
         res.status(500).json({ message: error.message });
     }
+});
+
+export const initiateEsewaPayment = asyncHandler(async (req, res) => {
+  const products = req.body; // Expecting array of products
+  if (!products || products.length === 0) {
+    throw new ApiError(400, "No products found to purchase");
+  }
+
+  const transaction_uuid = `${Date.now()}-${Math.floor(Math.random() * 100000)}`;
+  let total_amount = 0;
+
+  // Validate and Create Pending Orders
+  for (const product of products) {
+    const dbProduct = await Product.findById(product.productId);
+    if (!dbProduct) {
+      throw new ApiError(404, `Product not found: ${product.productName}`);
+    }
+    if (dbProduct.stock < parseInt(product.totalItem)) {
+      throw new ApiError(400, `Insufficient stock for ${dbProduct.name}`);
+    }
+
+    // Deduct stock temporarily (Reserve)
+    dbProduct.stock -= parseInt(product.totalItem);
+    await dbProduct.save();
+
+    total_amount += parseInt(product.totalPrice);
+
+    await BuyProducts.create({
+      user: product.userId,
+      product: product.productId,
+      price: parseInt(product.totalPrice),
+      totalItems: parseInt(product.totalItem),
+      payment_gateway: "esewa",
+      transaction_uuid,
+      status: "pending",
+    });
+  }
+
+  const config = getEsewaConfig();
+  const product_code = config.merchantId;
+  
+  const totalAmountStr = total_amount.toString();
+  
+  const signatureString = `total_amount=${totalAmountStr},transaction_uuid=${transaction_uuid},product_code=${product_code}`;
+  const signature = createSignature(signatureString);
+
+  res.json({
+    amount: totalAmountStr,
+    failure_url: config.failureUrl,
+    product_delivery_charge: "0",
+    product_service_charge: "0",
+    product_code: product_code,
+    signature: signature,
+    signed_field_names: "total_amount,transaction_uuid,product_code",
+    success_url: config.successUrl,
+    tax_amount: "0",
+    total_amount: totalAmountStr,
+    transaction_uuid: transaction_uuid,
+    esewa_payment_url: config.esewaPaymentUrl
+  });
+});
+
+export const verifyEsewaPayment = asyncHandler(async (req, res) => {
+  const { data } = req.query;
+  if (!data) {
+    throw new ApiError(400, "Missing payment data");
+  }
+
+  // Decode Base64
+  const decodedData = JSON.parse(Buffer.from(data, "base64").toString("utf-8"));
+  console.log("eSewa Payment Verification Data:", decodedData);
+
+  if (decodedData.status !== "COMPLETE") {
+    // If failed, we should RESTORE STOCK for the pending items
+    const pendingOrders = await BuyProducts.find({ transaction_uuid: decodedData.transaction_uuid });
+    
+    for (const order of pendingOrders) {
+        order.status = "failed";
+        await order.save();
+        
+        // Restore stock
+        const product = await Product.findById(order.product);
+        if (product) {
+            product.stock += order.totalItems;
+            await product.save();
+        }
+    }
+    return res.status(400).json(
+      new ApiResponse(400, null, "Payment failed or cancelled")
+    );
+  }
+
+  const orders = await BuyProducts.find({ transaction_uuid: decodedData.transaction_uuid });
+  
+  if (orders.length === 0) {
+      return res.status(404).json(
+        new ApiResponse(404, null, "Order not found")
+      );
+  }
+
+  // Mark all as completed
+  for (const order of orders) {
+      if (order.status !== "completed") {
+        order.status = "completed";
+        await order.save();
+
+        await notifyUser(
+            order.user,
+            `Payment successful! Your order for product ID ${order.product} is confirmed.`,
+            "payment_success",
+            { orderId: order._id }
+        );
+      }
+  }
+
+  res.status(200).json(
+    new ApiResponse(200, orders, "Payment verification successful")
+  );
 });

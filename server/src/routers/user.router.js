@@ -68,7 +68,7 @@ router.post("/verifyToken", verifyJWT, async (req, res) => {
   } catch (eror) {
     throw new ApiError(
       500,
-      error?.message || "Something went wrong while login"
+      eror?.message || "Something went wrong while login"
     );
   }
 });
