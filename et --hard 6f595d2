@@ -1,0 +1,50 @@
+[33m6f595d2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32msprint-7[m[33m, [m[1;31morigin/sprint-7[m[33m)[m removed un-necessary files and fixed bugs on the payment with esewa and product components and pages
+[33mf1a83e0[m [client] bug fixes
+[33m0ff3c6c[m add user stats with pagination features and with more details
+[33mefead44[m [client] improved the UI and UX , change the different UI for the user level like e-commerce
+[33mdb9f819[m [client] [server ] fixed minor bugs , add support with faq, worked on the cancle order within 1 hour , worked on user profile
+[33m11d1ca2[m feat: Add booked product management with viewing, cancellation, status updates, bill generation, and admin dashboard navigation.
+[33m364962c[m[33m ([m[1;31morigin/sprint-6[m[33m, [m[1;32msprint-6[m[33m)[m feat: Implement user authentication, profile management, and admin user management features.
+[33m733980d[m [client] [server] notification part complleted
+[33m7fa0944[m [server] solved the error on the notification
+[33m0a2b59c[m [server] for notificatin all the router, controllers and model setup for user level notification
+[33ma6f4147[m [client] notification UI created
+[33m6dd3fe6[m [client] created the notification services
+[33m701a3fe[m[33m ([m[1;31morigin/sprint-5[m[33m, [m[1;32msprint-5[m[33m)[m [client] [server] user can now view the stats
+[33m88cb059[m [clent] [server] subscribe completed
+[33m43efefc[m [client] [server] As a user, user can canclled the order
+[33m30050f9[m [client] [server] forget password features completed
+[33ma07801a[m [client] admin can now edit and delete the products
+[33me72c533[m [server] admin can make available or un-available to the product for users
+[33m31ed72b[m[33m ([m[1;31morigin/sprint-4[m[33m, [m[1;32msprint-4[m[33m)[m [server] user logout sucessfully from the server side
+[33m63ad862[m [server] [cleint] at the server user can be blocked unblocked vai a admin and also admin can now change the roles with the best UI
+[33mdc800e7[m [client] created more beautiful UI and added the extra button to make or remove as admin role
+[33mb70b72d[m [server] view and block/unblock to the user controllers and routers added
+[33m10d1055[m [client] userServices class created to hit the api on the backend
+[33m20fb100[m [client] to manage users by admin components and page were created
+[33m7946b38[m[33m ([m[1;31morigin/sprint-3[m[33m, [m[1;32msprint-3[m[33m)[m [client] correct the error message and added loading spinner
+[33m7e04646[m [server] chagne the status of booked items completed
+[33m01a789c[m generate the total bill for all the products completed
+[33m5638fb9[m [server] completed the setup for the total bill generate for specific user
+[33mcc2bb53[m admin can see the booked product and change the status or generate the bill
+[33md78afe7[m buy with the cash done
+[33mf3905b0[m[33m ([m[1;31morigin/main[m[33m)[m Merge pull request #3 from saarock/sprint-2
+[33m5a78641[m[33m ([m[1;31morigin/sprint-2[m[33m, [m[1;32msprint-2[m[33m)[m while verify token very router also send the related current user datas so at the client side can access each time new data at the page reload
+[33m76b4db5[m Merge pull request #2 from saarock/sprint-2
+[33m247c4b0[m [client] imporved ui and server can show all the products to the user and both admin with filters and search
+[33m180a47c[m [client] view successful component created
+[33md391801[m [client] user can view all the products which are avaialble
+[33m5806add[m changes the nav bar design
+[33m43e1654[m created the component to manage the product by admin
+[33me8450ab[m Merge pull request #1 from saarock/sprint-2
+[33mc2c7563[m admin can add the prodct
+[33me71ebe6[m created add product and admin dasgbaord with the side nav for dashboard of the admin
+[33m7ac9be0[m completed by setup for the admin like route, security etc
+[33md369c3b[m[33m ([m[1;31morigin/sprint-1[m[33m, [m[1;32msprint-1[m[33m)[m regsiter, login and home page both for backend and fronted completed
+[33m96f46e9[m register completed from client and server side now staring the login part
+[33m237f67a[m created demo component and setup all the necessary packages and create folder and files which are necessary
+[33m2a88689[m All the bugs clear and database connection done with complete register auth controllers , services and all the necessary app configs
+[33m5f4938a[m solved many errors
+[33mc65e963[m setup done created the register components, controllers, with apiResponse, and request
+[33m8de561d[m[33m ([m[1;32mmain[m[33m)[m server setup
+[33md8b122d[m proejct init
