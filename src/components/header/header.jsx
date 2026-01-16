@@ -106,12 +106,12 @@ const Header = () => {
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
               <div className="relative group">
                 <div className="absolute -inset-1.5 bg-[#101540] rounded-full opacity-0 group-hover:opacity-20 blur-xl transition-all duration-500" />
-                <div className="relative h-10 w-10 sm:h-11 sm:w-11 md:h-12 md:w-12 lg:h-14 lg:w-14 rounded-2xl bg-gradient-to-br from-[#101540] to-[#1a2060] flex items-center justify-center shadow-lg shadow-[rgba(16,21,64,0.3)] transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[rgba(16,21,64,0.5)] group-hover:rotate-3">
-                  <FaBox className="text-white text-lg sm:text-xl md:text-2xl lg:text-3xl" />
+                <div className="relative h-10 w-10 sm:h-11 sm:w-11 md:h-12 md:w-12 lg:h-14 lg:w-14 rounded-2xl bg-white flex items-center justify-center shadow-lg shadow-[rgba(16,21,64,0.3)] transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[rgba(16,21,64,0.5)] group-hover:rotate-3 overflow-hidden">
+                  <img src="/logo.png" alt="StockZen Logo" className="w-full h-full object-cover" />
                 </div>
               </div>
               <span className="hidden sm:block text-sm sm:text-base md:text-lg lg:text-xl font-bold bg-gradient-to-r from-[#101540] to-[#1a2060] bg-clip-text text-transparent whitespace-nowrap">
-                Inventory System
+                StockZen
               </span>
             </div>
 

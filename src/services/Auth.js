@@ -8,7 +8,7 @@ class Auth {
       const data = await response.data;
       return data;
     } catch (error) {
-      throw new Error(error.response.data.message);
+      throw new Error(error.response?.data?.message || error.message);
     }
   }
 
@@ -18,7 +18,7 @@ class Auth {
       const data = response.data;
       return data;
     } catch (error) {
-      throw new Error(error.response.data.message);
+      throw new Error(error.response?.data?.message || error.message);
     }
   }
 
@@ -30,7 +30,7 @@ class Auth {
       const data = response.data;
       return data;
     } catch (error) {
-      throw new Error(error.response.data.message);
+      throw new Error(error.response?.data?.message || error.message);
     }
   }
 
@@ -40,7 +40,7 @@ class Auth {
       const data = response.data;
       return data;
     } catch (error) {
-      throw new Error(error.response.data.message);
+      throw new Error(error.response?.data?.message || error.message);
     }
   }
 
@@ -52,7 +52,7 @@ class Auth {
       const data = response.data;
       return data;
     } catch (error) {
-      throw new Error(error.response.data.message);
+      throw new Error(error.response?.data?.message || error.message);
     }
   }
 

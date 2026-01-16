@@ -763,7 +763,7 @@ const BookedProductComp = () => {
 
       {/* Pagination Section */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mt-12 bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm transition-all duration-300">
-        <p className="text-sm font-black text-gray-400 uppercase tracking-widest">
+        <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">
           Showing <span className="text-[#1a2250]">{bookedProducts.length}</span> items
         </p>
 
@@ -771,13 +771,13 @@ const BookedProductComp = () => {
           <button
             disabled={page === 1 || loading}
             onClick={() => setPage(page - 1)}
-            className="group flex items-center gap-3 px-8 py-4 bg-white text-[#1a2250] rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm ring-1 ring-gray-100 hover:bg-[#1a2250] hover:text-white disabled:opacity-30 disabled:grayscale transition-all duration-300"
+            className="group flex items-center gap-3 px-8 py-4 bg-white text-[#1a2250] rounded-2xl font-bold text-xs uppercase tracking-widest shadow-sm ring-1 ring-gray-100 hover:bg-[#1a2250] hover:text-white disabled:opacity-30 disabled:grayscale transition-all duration-300"
           >
             <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
             Prev
           </button>
 
-          <div className="flex items-center gap-2 px-6 py-4 bg-[#1a2250] rounded-2xl text-white font-black shadow-2xl shadow-[#1a2250]/20">
+          <div className="flex items-center gap-2 px-6 py-4 bg-[#1a2250] rounded-2xl text-white font-bold shadow-2xl shadow-[#1a2250]/20">
             <span className="opacity-40 text-[10px] uppercase tracking-widest mr-1">Page</span>
             <span className="text-sm">{page}</span>
             <span className="opacity-20 font-medium mx-1">/</span>
@@ -787,7 +787,7 @@ const BookedProductComp = () => {
           <button
             disabled={page === totalPages || bookedProducts?.length <= 0 || loading}
             onClick={() => setPage(page + 1)}
-            className="group flex items-center gap-3 px-8 py-4 bg-white text-[#1a2250] rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm ring-1 ring-gray-100 hover:bg-[#1a2250] hover:text-white disabled:opacity-30 disabled:grayscale transition-all duration-300"
+            className="group flex items-center gap-3 px-8 py-4 bg-white text-[#1a2250] rounded-2xl font-bold text-xs uppercase tracking-widest shadow-sm ring-1 ring-gray-100 hover:bg-[#1a2250] hover:text-white disabled:opacity-30 disabled:grayscale transition-all duration-300"
           >
             Next
             <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

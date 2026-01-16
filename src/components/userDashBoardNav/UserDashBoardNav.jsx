@@ -184,7 +184,7 @@ const UserDashBoardNav = () => {
             <div className="p-4 rounded-2xl bg-gradient-to-br from-[rgba(16,21,64,0.05)] to-[rgba(16,21,64,0.02)] border border-[rgba(16,21,64,0.1)] relative overflow-hidden group hover:shadow-lg transition-all duration-300">
               <div className="absolute top-0 right-0 w-20 h-20 bg-[rgba(16,21,64,0.05)] rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
               <p className="relative z-10 text-xs text-gray-600 font-medium">User Dashboard v1.0</p>
-              <p className="relative z-10 text-xs text-gray-400 mt-1">© 2025 Inventory System</p>
+              <p className="relative z-10 text-xs text-gray-400 mt-1">© {new Date().getFullYear()} StockZen</p>
             </div>
           </div>
         </div>

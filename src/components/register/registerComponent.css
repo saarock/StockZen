@@ -144,3 +144,31 @@
     font-size: 0.9375rem !important;
   }
 }
+
+.password-strength-meter {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.strength-bar {
+  height: 4px;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  background-color: #e2e8f0;
+  width: 0%;
+}
+
+.strength-1 { width: 20%; background-color: #ef4444; }
+.strength-2 { width: 40%; background-color: #f59e0b; }
+.strength-3 { width: 60%; background-color: #f59e0b; }
+.strength-4 { width: 80%; background-color: #10b981; }
+.strength-5 { width: 100%; background-color: #10b981; }
+
+.strength-text {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+  text-align: right;
+}

@@ -24,6 +24,10 @@ const buyProductSchema = new mongoose.Schema(
       required: true,
       enum: ["esewa", "khalti", "Cash"],
     },
+    transaction_uuid: {
+      type: String,
+      // required: true, // Optional for Cash payments
+    },
     status: {
       type: String,
       enum: ["pending", "completed", "cancelled", "failed"],

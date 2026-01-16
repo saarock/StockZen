@@ -1,0 +1,52 @@
+%% User Flow for Stock-Zen
+%% Generated from reading project source (pages/components)
+
+flowchart LR
+  Home[Home Page]
+  Login[Login Page]
+  Register[Register Page]
+  Products[Products Listing]
+  ProductDetail[Product Detail]
+  Book[Book Product]
+  Buy[Buy / Checkout]
+  OrderConfirm[Order Confirmation]
+  MyOrders[My Orders / Booked Products]
+  Profile[User Profile]
+  Notifications[Notifications Page]
+  Support[Support Page]
+
+  Home -->|click Products| Products
+  Home -->|click Login| Login
+  Home -->|click Register| Register
+  Login -->|success| Products
+  Register -->|success| Login
+  Products -->|view details| ProductDetail
+  ProductDetail -->|book| Book
+  ProductDetail -->|buy| Buy
+  Book -->|confirm| OrderConfirm
+  Buy -->|payment success| OrderConfirm
+  OrderConfirm --> MyOrders
+  MyOrders --> Profile
+  Profile --> Notifications
+  Home --> Support
+  Products -->|guest click buy| Login
+
+  %% Admin flows
+  AdminLogin[Admin Login]
+  AdminDashboard[Admin Dashboard]
+  ManageProducts[Manage Products]
+  ManageUsers[Manage Users]
+  AdminNotifications[Admin Notifications]
+
+  Home -->|admin link| AdminLogin
+  AdminLogin -->|admin auth| AdminDashboard
+  AdminDashboard --> ManageProducts
+  AdminDashboard --> ManageUsers
+  AdminDashboard --> AdminNotifications
+  ManageProducts -->|approve/remove| Products
+  ManageUsers -->|ban/unban| Login
+
+  %% Real-time interactions
+  ProductDetail ---|socket events| Notifications
+  AdminNotifications ---|broadcast| Notifications
+  Notifications -->|open| ProductDetail

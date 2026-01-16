@@ -8,6 +8,7 @@ import ApiError from "../utils/apiError.js";
 import { generateRandomToken, randomString } from "../utils/randomString.js";
 import Subscriber from "../models/subscriber.js";
 import { notifyAllAdmins, notifyUser } from "../utils/notificationService.js";
+import { userRegisterSchema } from "../schemas/userSchema.js"; // Import schema
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -74,11 +75,17 @@ export const verifyUserMail = asyncHandler(async (req, res) => {
 
 export const registerUser = asyncHandler(async (req, res) => {
   try {
-    const { fullName, userName, phoneNumber, email, password, role } = req.body;
+    // Zod Validation
+    const validationResult = userRegisterSchema.safeParse(req.body);
 
-    if (!fullName || !email || !phoneNumber || !password) {
-      throw new ApiError(400, "All field are required");
+    if (!validationResult.success) {
+      const errorMessage = validationResult.error.errors
+        .map((err) => err.message)
+        .join(", ");
+      throw new ApiError(400, errorMessage);
     }
+
+    const { fullName, userName, phoneNumber, email, password, role } = req.body;
 
     const existedUser = await User.findOne({
       $or: [{ email }, { phoneNumber }, { userName }],
@@ -117,7 +124,7 @@ export const registerUser = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, createdUser, "Register Successfull"));
   } catch (error) {
     throw new ApiError(
-      500,
+      error.statusCode || 500, // Preserve status code if it's an ApiError
       error?.message || "Something went wrong while login"
     );
   }

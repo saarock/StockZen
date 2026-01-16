@@ -21,6 +21,8 @@ import Notifications from "./pages/notifications/Notifications";
 import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import SupportPage from "./pages/support/SupportPage";
+import PaymentSuccess from "./pages/payment/PaymentSuccess";
+import PaymentFailure from "./pages/payment/PaymentFailure";
 
 function App() {
   return (
@@ -75,6 +77,22 @@ function App() {
               }
             />
             <Route path="/support" element={<SupportPage />} />
+            <Route
+              path="/payment-success"
+              element={
+                <ProtectedPage>
+                  <PaymentSuccess />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="/payment-failure"
+              element={
+                <ProtectedPage>
+                  <PaymentFailure />
+                </ProtectedPage>
+              }
+            />
           </Route>
 
           {/* Admin Dashboard layout */}

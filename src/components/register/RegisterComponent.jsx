@@ -14,6 +14,7 @@ const RegisterComponent = ({
   onChangePhoneNumber,
   goToBackPage,
   loading,
+  passwordStrength,
 }) => {
   return (
     <div className="register-container">
@@ -74,6 +75,14 @@ const RegisterComponent = ({
               required={true}
               onChange={onChangePassword}
             />
+            {passwordStrength > 0 && (
+              <div className="password-strength-meter">
+                <div className={`strength-bar strength-${passwordStrength}`}></div>
+                <span className="strength-text">
+                  {passwordStrength < 2 ? 'Weak' : passwordStrength < 4 ? 'Medium' : 'Strong'}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="form-row">

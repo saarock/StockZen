@@ -121,14 +121,14 @@ const ShowAndManageProductComponent = ({ adminWant = "1", refresh }) => {
     }
   }
 
-  const addToCartBtn = (event, userId, productId, name, price, imageUrl) => {
+  const addToCartBtn = (event, userId, productId, name, price, imageUrl, qty) => {
     event.preventDefault()
     toast.success("Product added to cart successfully!")
     const product = {
       userId,
       productId,
-      totalItem,
-      totalPrice: price * totalItem,
+      totalItem: qty,
+      totalPrice: price * qty,
       imageUrl,
       productName: name,
     }
@@ -158,7 +158,7 @@ const ShowAndManageProductComponent = ({ adminWant = "1", refresh }) => {
           {/* Enhanced Search & Branding (User View) */}
           {!isAdmin && (
             <div className="text-center space-y-4 mb-12">
-              <h1 className="text-5xl font-black text-[#101540] tracking-tight">
+              <h1 className="text-5xl font-bold text-[#101540] tracking-tight">
                 Premium <span className="bg-gradient-to-r from-[#101540] to-[#1a2060] bg-clip-text text-transparent">Inventory</span>
               </h1>
               <p className="text-gray-400 font-medium max-w-2xl mx-auto">
@@ -185,7 +185,7 @@ const ShowAndManageProductComponent = ({ adminWant = "1", refresh }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Category Filter */}
               <div className="space-y-2">
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest pl-1">Department</label>
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1">Department</label>
                 <div className="relative">
                   <select
                     className="w-full appearance-none px-4 py-3.5 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-[#101540] text-[#101540] font-bold transition-all cursor-pointer"

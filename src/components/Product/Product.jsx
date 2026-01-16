@@ -18,6 +18,7 @@ const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user,
   });
 
   const [isDetailModalOpen, setDetailModalOpen] = useState(false);
+  const [qty, setQty] = useState(1);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -65,17 +66,17 @@ const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user,
         </td>
         <td className="px-8 py-5">
           <div className="space-y-1">
-            <p className="text-sm font-black text-[#101540]">{product.name}</p>
-            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{product.category}</p>
+            <p className="text-sm font-bold text-[#101540]">{product.name}</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{product.category}</p>
           </div>
         </td>
         <td className="px-8 py-5 text-center">
           {product.isAvailable ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-black uppercase tracking-tighter shadow-sm">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-tighter shadow-sm">
               <FaCheckCircle className="w-3 h-3" /> Available
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-black uppercase tracking-tighter shadow-sm">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-bold uppercase tracking-tighter shadow-sm">
               <FaTimesCircle className="w-3 h-3" /> Unavailable
             </span>
           )}
@@ -86,11 +87,11 @@ const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user,
           </p>
         </td>
         <td className="px-8 py-5">
-          <p className="text-sm font-black text-[#101540]">RS {product.price.toLocaleString()}</p>
+          <p className="text-sm font-bold text-[#101540]">RS {product.price.toLocaleString()}</p>
         </td>
         <td className="px-8 py-5">
           <div className="flex items-center gap-2">
-            <span className={`text-sm font-black ${product.stock <= (product.lowStockThreshold || 5) ? 'text-rose-600 animate-pulse' : 'text-gray-900'}`}>
+            <span className={`text-sm font-bold ${product.stock <= (product.lowStockThreshold || 5) ? 'text-rose-600 animate-pulse' : 'text-gray-900'}`}>
               {product.stock}
             </span>
             <div className="w-16 bg-gray-100 h-1.5 rounded-full overflow-hidden">
@@ -131,18 +132,18 @@ const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user,
           </td>
         ) : (
           <td className="px-8 py-5" onClick={(e) => e.stopPropagation()}>
-            <form onSubmit={(e) => addToCart(e, user._id, product._id, product.name, product.price, product.imageUrl)} className="flex items-center gap-2">
+            <form onSubmit={(e) => addToCart(e, user._id, product._id, product.name, product.price, product.imageUrl, qty)} className="flex items-center gap-2">
               <input
                 type="number"
                 min={1}
                 max={product.stock}
-                onChange={(e) => setTotalItem(e.target.value)}
+                value={qty}
+                onChange={(e) => setQty(Number(e.target.value))}
                 className="w-16 px-3 py-2 bg-gray-50 border-2 border-transparent rounded-lg focus:border-[#101540] focus:bg-white text-sm font-bold transition-all"
                 placeholder="Qty"
-                defaultValue={1}
                 required
               />
-              <button type="submit" className="px-4 py-2 bg-[#101540] text-white text-xs font-black uppercase tracking-widest rounded-lg hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50" disabled={product.stock === 0}>
+              <button type="submit" className="px-4 py-2 bg-[#101540] text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50" disabled={product.stock === 0}>
                 {product.stock === 0 ? 'Out' : 'Add'}
               </button>
             </form>
@@ -156,7 +157,7 @@ const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user,
           <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-xl max-h-[90vh] overflow-hidden border border-gray-100 animate-in zoom-in-95 duration-300">
             <div className="bg-[#101540] p-8 text-white flex justify-between items-center">
               <div>
-                <h2 className="text-2xl font-black">Edit Asset</h2>
+                <h2 className="text-2xl font-bold">Edit Asset</h2>
                 <p className="text-xs font-bold text-white/50 uppercase tracking-widest mt-1">Ref ID: {product._id.slice(-6)}</p>
               </div>
               <button
@@ -171,7 +172,7 @@ const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user,
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">Asset Name</label>
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Asset Name</label>
                     <input
                       name="name"
                       value={productDetails.name}
@@ -181,7 +182,7 @@ const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user,
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">Department</label>
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Department</label>
                     <select
                       name="category"
                       value={productDetails.category}
@@ -196,7 +197,7 @@ const Product = ({ product, handleDeleteProduct, handleToggleAvailability, user,
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">Resource Description</label>
+                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">Resource Description</label>
                   <textarea
                     name="description"
                     value={productDetails.description}

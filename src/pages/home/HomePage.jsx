@@ -184,7 +184,7 @@ export default function HomePage() {
 
           {/* Right Mockup */}
           <div
-            className="relative animate-fade-in-up"
+            className="relative -top-40 animate-fade-in-up"
             style={{
               animationDelay: "0.2s",
               transform: `translateY(${scrollY * 0.1}px)`,

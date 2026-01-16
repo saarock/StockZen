@@ -44,15 +44,15 @@ const Footer = () => {
           {/* Brand Section with enhanced styling */}
           <div className="space-y-6 group">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#101540] to-[#1a2260] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
-                <span className="text-white font-bold text-lg">IS</span>
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 overflow-hidden">
+                <img src="/logo.png" alt="StockZen Logo" className="w-full h-full object-cover" />
               </div>
               <h3 className="text-xl font-bold text-[#101540] group-hover:text-[#1a2260] transition-colors duration-300">
-                Inventory System
+                StockZen
               </h3>
             </div>
             <p className="text-sm text-gray-600 leading-relaxed">
-              Modern inventory management solution for businesses of all sizes.
+              Modern stock and inventory management solution for businesses of all sizes.
               Streamline your operations with powerful tools.
             </p>
             {/* Newsletter signup */}
@@ -183,7 +183,7 @@ const Footer = () => {
           <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
             <p className="text-sm text-gray-600 flex items-center gap-2">
               <span className="text-[#101540]">©</span>
-              {new Date().getFullYear()} Inventory System.
+              {new Date().getFullYear()} StockZen.
               <span className="hidden sm:inline">All rights reserved.</span>
             </p>
             <div className="flex items-center gap-2 text-xs text-gray-500">

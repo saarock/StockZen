@@ -14,6 +14,8 @@ const AdminDashboard = () => {
             try {
                 setLoading(true);
                 const response = await userService.getAdminStats();
+                console.log(response.data);
+
                 setStats(response.data);
             } catch (error) {
                 toast.error(error.message);
@@ -86,7 +88,7 @@ const AdminDashboard = () => {
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-1">
-                        <h1 className="text-3xl font-extrabold text-[#101540] tracking-tight">Admin Insights</h1>
+                        <h1 className="text-3xl font-bold text-[#101540] tracking-tight">Admin Insights</h1>
                         <p className="text-gray-500 font-medium">Monitoring your inventory and operations in real-time.</p>
                     </div>
                     <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl shadow-sm border border-gray-100">
@@ -102,7 +104,7 @@ const AdminDashboard = () => {
                             <div className="flex items-center justify-between relative z-10">
                                 <div className="space-y-2">
                                     <p className="text-sm font-bold text-gray-400 uppercase tracking-wider">{card.title}</p>
-                                    <h3 className="text-3xl font-black text-[#101540]">{card.value}</h3>
+                                    <h3 className="text-3xl font-bold text-[#101540]">{card.value}</h3>
                                     <div className="flex items-center gap-2">
                                         <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 group-hover:bg-[#101540] group-hover:text-white transition-colors duration-300">
                                             {card.sub}
@@ -124,7 +126,7 @@ const AdminDashboard = () => {
                     {/* Recent Bookings - 2 columns on desktop */}
                     <div className="lg:col-span-2 bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
                         <div className="p-8 border-b border-gray-50 flex items-center justify-between bg-gradient-to-r from-gray-50/50 to-transparent">
-                            <h2 className="text-xl font-black text-[#101540] flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-[#101540] flex items-center gap-3">
                                 <div className="p-2 bg-blue-100 rounded-lg">
                                     <ShoppingCart className="w-5 h-5 text-blue-600" />
                                 </div>
@@ -138,14 +140,14 @@ const AdminDashboard = () => {
                             <table className="w-full">
                                 <thead className="bg-gray-50/50">
                                     <tr>
-                                        <th className="px-8 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest">Customer</th>
-                                        <th className="px-8 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest">Product</th>
-                                        <th className="px-8 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest">Date</th>
-                                        <th className="px-8 py-4 text-right text-xs font-black text-gray-400 uppercase tracking-widest">Value</th>
+                                        <th className="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">Customer</th>
+                                        <th className="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">Product</th>
+                                        <th className="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">Date</th>
+                                        <th className="px-8 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-widest">Value</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-50">
-                                    {stats.recentBookings.map((booking) => (
+                                    {stats.recentBookings?.data?.map((booking) => (
                                         <tr key={booking._id} className="group hover:bg-[#f8fafc] transition-all duration-300">
                                             <td className="px-8 py-5">
                                                 <div className="flex items-center gap-3">
@@ -173,14 +175,14 @@ const AdminDashboard = () => {
                                                 </p>
                                             </td>
                                             <td className="px-8 py-5 text-right">
-                                                <span className="text-sm font-black text-[#101540]">RS {booking.price.toLocaleString()}</span>
+                                                <span className="text-sm font-bold text-[#101540]">RS {booking.price.toLocaleString()}</span>
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
-                        {stats.recentBookings.length === 0 && (
+                        {stats.recentBookings.data.length === 0 && (
                             <div className="py-20 text-center space-y-4">
                                 <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto">
                                     <ShoppingCart className="w-8 h-8 text-gray-200" />
@@ -207,7 +209,7 @@ const AdminDashboard = () => {
                                         <div key={index} className="space-y-2">
                                             <div className="flex justify-between text-sm">
                                                 <span className="font-bold opacity-80">{cat._id}</span>
-                                                <span className="font-black text-rose-400">{cat.count} items</span>
+                                                <span className="font-bold text-rose-400">{cat.count} items</span>
                                             </div>
                                             <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
                                                 <div
@@ -223,17 +225,17 @@ const AdminDashboard = () => {
                                 )}
                             </div>
 
-                            <div className="pt-6 border-t border-white/10">
+                            {/* <div className="pt-6 border-t border-white/10">
                                 <div className="p-4 bg-white/5 rounded-2xl flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center shadow-lg">
                                         <TrendingUp className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
                                         <p className="text-xs font-bold opacity-60">System Growth</p>
-                                        <p className="text-lg font-black text-green-400">+12.5% vs Last Week</p>
+                                        <p className="text-lg font-bold text-green-400">+12.5% vs Last Week</p>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* Background Decor */}

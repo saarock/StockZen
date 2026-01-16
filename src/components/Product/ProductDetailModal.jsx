@@ -31,10 +31,10 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                     <div className="md:w-7/12 p-10 md:p-14 space-y-10 relative">
                         <div className="flex justify-between items-start">
                             <div className="space-y-2">
-                                <span className="inline-block px-4 py-1.5 bg-[#101540]/5 text-[#101540] text-[10px] font-black uppercase tracking-widest rounded-full">
+                                <span className="inline-block px-4 py-1.5 bg-[#101540]/5 text-[#101540] text-[10px] font-bold uppercase tracking-widest rounded-full">
                                     {categoryOptions.find(opt => opt.value === product.category)?.label || product.category}
                                 </span>
-                                <h2 className="text-4xl font-black text-[#101540] tracking-tight">{product.name}</h2>
+                                <h2 className="text-4xl font-bold text-[#101540] tracking-tight">{product.name}</h2>
                             </div>
                             <button onClick={onClose} className="p-3 hover:bg-gray-100 rounded-2xl transition-all">
                                 <X className="w-6 h-6 text-gray-400" />
@@ -42,7 +42,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                         </div>
 
                         <div className="space-y-4">
-                            <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Description</p>
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Description</p>
                             <p className="text-gray-600 font-medium leading-relaxed italic border-l-4 border-[#101540]/10 pl-6">
                                 "{product.description || "No official description recorded for this asset."}"
                             </p>
@@ -50,12 +50,12 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
 
                         <div className="grid grid-cols-2 gap-8">
                             <div className="p-6 bg-gray-50 rounded-[2rem] border border-gray-100">
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Market Value</p>
-                                <p className="text-2xl font-black text-[#101540]">RS {product.price?.toLocaleString()}</p>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Market Value</p>
+                                <p className="text-2xl font-bold text-[#101540]">RS {product.price?.toLocaleString()}</p>
                             </div>
                             <div className="p-6 bg-[#f8fafc] rounded-[2rem] border border-gray-100">
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Inventory Unit</p>
-                                <p className={`text-2xl font-black ${product.stock <= (product.lowStockThreshold || 5) ? 'text-rose-500' : 'text-emerald-500'}`}>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Inventory Unit</p>
+                                <p className={`text-2xl font-bold ${product.stock <= (product.lowStockThreshold || 5) ? 'text-rose-500' : 'text-emerald-500'}`}>
                                     {product.stock} Units
                                 </p>
                             </div>
@@ -68,8 +68,8 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                                         <AlertTriangle className="w-4 h-4" />
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-black text-orange-400 uppercase tracking-widest">Alert Threshold</p>
-                                        <p className="text-xl font-black text-orange-700">{product.lowStockThreshold || 5} Units</p>
+                                        <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest">Alert Threshold</p>
+                                        <p className="text-xl font-bold text-orange-700">{product.lowStockThreshold || 5} Units</p>
                                     </div>
                                 </div>
                             </div>
@@ -80,8 +80,8 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                                         {product.isAvailable ? <FaCheckCircle className="w-4 h-4" /> : <FaTimesCircle className="w-4 h-4" />}
                                     </div>
                                     <div>
-                                        <p className={`text-[10px] font-black uppercase tracking-widest ${product.isAvailable ? 'text-emerald-400' : 'text-rose-400'}`}>Status</p>
-                                        <p className={`text-xl font-black ${product.isAvailable ? 'text-emerald-700' : 'text-rose-700'}`}>
+                                        <p className={`text-[10px] font-bold uppercase tracking-widest ${product.isAvailable ? 'text-emerald-400' : 'text-rose-400'}`}>Status</p>
+                                        <p className={`text-xl font-bold ${product.isAvailable ? 'text-emerald-700' : 'text-rose-700'}`}>
                                             {product.isAvailable ? 'Available' : 'Restricted'}
                                         </p>
                                     </div>

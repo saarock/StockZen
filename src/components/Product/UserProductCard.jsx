@@ -11,7 +11,7 @@ const UserProductCard = ({ product, user, addToCart, setTotalItem }) => {
     const handleAddToCart = (e) => {
         e.preventDefault();
         setTotalItem(qty);
-        addToCart(e, user?._id, product._id, product.name, product.price, product.imageUrl);
+        addToCart(e, user?._id, product._id, product.name, product.price, product.imageUrl, qty);
     };
 
     return (
@@ -20,16 +20,16 @@ const UserProductCard = ({ product, user, addToCart, setTotalItem }) => {
                 {/* Badge Container */}
                 <div className="absolute top-5 left-5 z-20 flex flex-col gap-2">
                     {isLowStock && (
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg animate-pulse">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/90 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest rounded-full shadow-lg animate-pulse">
                             <Zap className="w-3 h-3" /> Only {product.stock} Left
                         </div>
                     )}
                     {product.isAvailable ? (
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest rounded-full shadow-lg">
                             <ShieldCheck className="w-3 h-3" /> Certified
                         </div>
                     ) : (
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-500/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-500/90 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest rounded-full shadow-lg">
                             Restricted
                         </div>
                     )}
@@ -47,7 +47,7 @@ const UserProductCard = ({ product, user, addToCart, setTotalItem }) => {
                     {/* Quick View Button */}
                     <button
                         onClick={() => setDetailModalOpen(true)}
-                        className="absolute bottom-6 left-1/2 -translate-x-1/2 translate-y-12 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 flex items-center gap-2 px-6 py-3 bg-white text-[#101540] rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl transition-all duration-500 hover:bg-[#101540] hover:text-white"
+                        className="absolute bottom-6 left-1/2 -translate-x-1/2 translate-y-12 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 flex items-center gap-2 px-6 py-3 bg-white text-[#101540] rounded-2xl font-bold text-xs uppercase tracking-widest shadow-2xl transition-all duration-500 hover:bg-[#101540] hover:text-white"
                     >
                         <Eye className="w-4 h-4" /> Quick Look
                     </button>
@@ -57,15 +57,15 @@ const UserProductCard = ({ product, user, addToCart, setTotalItem }) => {
                 <div className="p-8 flex flex-col flex-1 gap-4">
                     <div className="space-y-1">
                         <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
+                            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
                                 {product.category}
                             </span>
                             <div className="flex items-center text-amber-400">
                                 <Star className="w-3 h-3 fill-current" />
-                                <span className="text-[10px] font-black ml-1 text-gray-400">4.8</span>
+                                <span className="text-[10px] font-bold ml-1 text-gray-400">4.8</span>
                             </div>
                         </div>
-                        <h3 className="text-xl font-black text-[#101540] tracking-tight hover:text-[#1a2060] transition-colors cursor-pointer" onClick={() => setDetailModalOpen(true)}>
+                        <h3 className="text-xl font-bold text-[#101540] tracking-tight hover:text-[#1a2060] transition-colors cursor-pointer" onClick={() => setDetailModalOpen(true)}>
                             {product.name}
                         </h3>
                         <p className="text-sm text-gray-500 line-clamp-2 font-medium leading-relaxed mt-2">
@@ -76,19 +76,19 @@ const UserProductCard = ({ product, user, addToCart, setTotalItem }) => {
                     <div className="mt-auto pt-4 flex flex-col gap-6">
                         <div className="flex items-baseline justify-between">
                             <div className="flex flex-col">
-                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Price Point</span>
-                                <span className="text-2xl font-black text-[#101540]">RS {product.price?.toLocaleString()}</span>
+                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Price Point</span>
+                                <span className="text-2xl font-bold text-[#101540]">RS {product.price?.toLocaleString()}</span>
                             </div>
                             {!isOutOfStock && (
                                 <div className="flex items-center bg-gray-100 rounded-xl p-1 border border-gray-200 shadow-inner">
                                     <button
                                         onClick={() => setQty(Math.max(1, qty - 1))}
-                                        className="w-8 h-8 flex items-center justify-center font-black text-gray-500 hover:text-[#101540] transition-colors"
+                                        className="w-8 h-8 flex items-center justify-center font-bold text-gray-500 hover:text-[#101540] transition-colors"
                                     >-</button>
-                                    <span className="w-8 text-center text-xs font-black text-[#101540]">{qty}</span>
+                                    <span className="w-8 text-center text-xs font-bold text-[#101540]">{qty}</span>
                                     <button
                                         onClick={() => setQty(Math.min(product.stock, qty + 1))}
-                                        className="w-8 h-8 flex items-center justify-center font-black text-gray-500 hover:text-[#101540] transition-colors"
+                                        className="w-8 h-8 flex items-center justify-center font-bold text-gray-500 hover:text-[#101540] transition-colors"
                                     >+</button>
                                 </div>
                             )}
@@ -97,7 +97,7 @@ const UserProductCard = ({ product, user, addToCart, setTotalItem }) => {
                         <button
                             onClick={handleAddToCart}
                             disabled={isOutOfStock || !product.isAvailable}
-                            className={`group/btn w-full py-4 rounded-2xl flex items-center justify-center gap-3 font-black text-xs uppercase tracking-[0.2em] shadow-xl transition-all duration-300 active:scale-95 ${isOutOfStock || !product.isAvailable
+                            className={`group/btn w-full py-4 rounded-2xl flex items-center justify-center gap-3 text-xs uppercase tracking-[0.2em] shadow-xl transition-all duration-300 active:scale-95 ${isOutOfStock || !product.isAvailable
                                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed grayscale shadow-none'
                                 : 'bg-gradient-to-br from-[#101540] to-[#1a2060] text-white shadow-[#101540]/20 hover:shadow-[#101540]/40 hover:-translate-y-1'
                                 }`}

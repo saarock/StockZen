@@ -219,7 +219,7 @@ const AdminDashBoardNav = () => {
                 Admin Dashboard v1.0
               </p>
               <p className="relative z-10 text-xs text-gray-400 mt-1">
-                © 2025 Inventory System
+                © {new Date().getFullYear()} StockZen
               </p>
             </div>
           </div>

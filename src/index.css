@@ -3,9 +3,12 @@
 
 body {
   position: relative;
-  font-family: 'Outfit', 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  letter-spacing: -0.015em;
+  font-weight: 400;
 }
 /*  */
 /* @custom-variant dark (&:is(.dark *)); */
@@ -400,3 +403,5 @@ body {
     -webkit-overflow-scrolling: touch;
   }
 }
+
+
