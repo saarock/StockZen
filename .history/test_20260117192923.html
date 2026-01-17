@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Zen - Usability Testing Report</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 210mm; /* A4 width */
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+        @media print {
+            body {
+                width: 210mm;
+                height: 297mm;
+                margin: 0;
+                padding: 20mm;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+        }
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 30px;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-left: 5px solid #2563eb;
+            border-radius: 4px;
+        }
+        .header-info {
+            background-color: #f3f4f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .header-info p {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background-color: #e5e7eb;
+            font-weight: 600;
+        }
+        .status-pass {
+            color: #059669;
+            font-weight: bold;
+            background-color: #d1fae5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .test-case {
+            margin-bottom: 40px;
+            border: 1px solid #e5e7eb;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .summary-box {
+          border: 1px solid #e2e8f0;
+          padding: 15px;
+          margin-bottom: 20px;
+          border-radius: 6px;
+        }
+        
+        strong {
+            color: #1f2937;
+        }
+    </style>
+</head>
+<body>
+    <h1>Stock Zen Usability Testing Report</h1>
+    <div class="header-info">
+        <p><strong>Tested By:</strong> Rahul Chaudhari</p>
+        <p><strong>Test Executed Date:</strong> Dec 7</p>
+        <p><strong>Test Executed Location:</strong> Dillibazar</p>
+        <p><strong>Context:</strong> Environment written in Pact analysis: normal environment</p>
+    </div>
+    <!-- Test Case 1 -->
+    <div class="test-case">
+        <h2>Test Case ID: 1 - Login Test</h2>
+        <div class="summary-box">
+            <p><strong>Module Name:</strong> Login Test</p>
+            <p><strong>Description:</strong> Done to test login</p>
+            <p><strong>Pre-Condition:</strong> User should be a valid user</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%">Step</th>
+                    <th style="width: 20%">Test Step</th>
+                    <th style="width: 15%">Test Data</th>
+                    <th style="width: 25%">Expeted Result</th>
+                    <th style="width: 25%">Actual Result</th>
+                    <th style="width: 10%">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Open app</td>
+                    <td>-</td>
+                    <td>There should be a loading indicator in login button instead of “LOGIN”. Toast messages for successful login. Direct to Home Page</td>
+                    <td>Login Successful and direct to Home Page.</td>
+                    <td><span class="status-pass">Pass</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Enter phone</td>
+                    <td>902342354</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Enter password</td>
+                    <td>Password@123</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                 <tr>
+                    <td>4</td>
+                    <td>Click Login Button</td>
+                    <td>-</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Post-Condition:</strong> Should show home screen</p>
+    </div>
+    <!-- Test Case 2 -->
+    <div class="test-case">
+        <h2>Test Case ID: 2 - Signup Test</h2>
+        <div class="summary-box">
+             <p><strong>Module Name:</strong> Signup Test</p>
+             <p><strong>Description:</strong> Signup</p>
+             <p><strong>Pre-Condition:</strong> There should be no user with email and phone</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%">Step</th>
+                    <th style="width: 20%">Test Step</th>
+                    <th style="width: 15%">Test Data</th>
+                    <th style="width: 25%">Expected Result</th>
+                    <th style="width: 25%">Actual Result</th>
+                    <th style="width: 10%">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Open app</td>
+                    <td>-</td>
+                    <td>There should be a loading indicator in login button instead of “Sign Up”. Toast messages for successful signup. Direct to Home Page</td>
+                    <td>Signup Successful and direct to Home Page.</td>
+                    <td><span class="status-pass">Pass</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Enter Signup Link</td>
+                    <td>-</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Enter Name</td>
+                    <td>Test User</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Enter phone number</td>
+                    <td>9898989898</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                 <tr>
+                    <td>5</td>
+                    <td>Enter email</td>
+                    <td>test@gmail.com</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Enter password</td>
+                    <td>password@123</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Post-Condition:</strong> Should show home screen</p>
+    </div>
+    <div class="page-break"></div>
+    <!-- Test Case 3 -->
+    <div class="test-case">
+        <h2>Test Case ID: 3 - Add to Favorites</h2>
+        <div class="summary-box">
+             <p><strong>Module Name:</strong> Add to Favorites’</p>
+             <p><strong>Description:</strong> Done to add product to favorite</p>
+             <p><strong>Pre-Condition:</strong> User should be logged in and there should be a product</p>
+        </div>
+        <table>
+           <thead>
+                <tr>
+                    <th style="width: 5%">Step</th>
+                    <th style="width: 20%">Test Step</th>
+                    <th style="width: 15%">Test Data</th>
+                    <th style="width: 25%">Expected Result</th>
+                    <th style="width: 25%">Actual Result</th>
+                    <th style="width: 10%">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Click on a product card</td>
+                    <td>-</td>
+                    <td>Product should be added to favorites and success toast should be shown.</td>
+                    <td>Product should be added to favorites list.</td>
+                    <td><span class="status-pass">Pass</span></td>
+                </tr>
+                 <tr>
+                    <td>2</td>
+                    <td>Click “Add to Favorite” Button</td>
+                    <td>-</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Post-Condition:</strong> User can see the product card in favorites screen</p>
+    </div>
+    <!-- Test Case 4 -->
+    <div class="test-case">
+        <h2>Test Case ID: 4 - Add to Cart</h2>
+         <div class="summary-box">
+            <p><strong>Module Name:</strong> Add to Cart</p>
+            <p><strong>Description:</strong> Done to add product to Cart</p>
+            <p><strong>Pre-Condition:</strong> User should be logged in and there should be a product</p>
+        </div>
+        <table>
+           <thead>
+                <tr>
+                    <th style="width: 5%">Step</th>
+                    <th style="width: 20%">Test Step</th>
+                    <th style="width: 15%">Test Data</th>
+                    <th style="width: 25%">Expected Result</th>
+                    <th style="width: 25%">Actual Result</th>
+                    <th style="width: 10%">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Click on a product card</td>
+                    <td>-</td>
+                    <td>Product should be added to cart.</td>
+                    <td>Product should be added to cart.</td>
+                    <td><span class="status-pass">Pass</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Click “Add to Cart” Button</td>
+                    <td>-</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Post-Condition:</strong> User can see the product in the cart.</p>
+    </div>
+    <!-- Test Case 5 -->
+    <div class="test-case">
+        <h2>Test Case ID: 5 - View Cart List Test</h2>
+        <div class="summary-box">
+             <p><strong>Module Name:</strong> View Cart List Test</p>
+             <p><strong>Description:</strong> Done to test the Cart List screen</p>
+             <p><strong>Pre-Condition:</strong> User should be logged in and at least 1 item should exist in the cart</p>
+             <p><strong>Dependencies:</strong> Cart screen and product listing must be functional</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%">Step</th>
+                    <th style="width: 20%">Test Step</th>
+                    <th style="width: 15%">Test Data</th>
+                    <th style="width: 25%">Expected Result</th>
+                    <th style="width: 25%">Actual Result</th>
+                    <th style="width: 10%">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Navigate to Cart Screen</td>
+                    <td>-</td>
+                    <td>Cart screen should show list of items with image, name, and unit price.</td>
+                    <td>Cart items shown properly</td>
+                    <td><span class="status-pass">Pass</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Check quantity displayed</td>
+                    <td>-</td>
+                    <td>Correct quantity should appear for each item (default 1).</td>
+                    <td>Shown correctly</td>
+                    <td><span class="status-pass">Pass</span></td>
+                </tr>
+                 <tr>
+                    <td>3</td>
+                    <td>Check Empty Cart State</td>
+                    <td>-</td>
+                    <td>If no items: show “Empty Cart” message + “Shop Now” button.</td>
+                    <td>Working correctly</td>
+                    <td><span class="status-pass">Pass</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Post-Condition:</strong> User sees accurate list of selected cart items.</p>
+    </div>
+    <div class="page-break"></div>
+    <!-- Test Case 6 -->
+    <div class="test-case">
+        <h2>Test Case ID: 6 - Update Quantity Test</h2>
+        <div class="summary-box">
+            <p><strong>Module Name:</strong> Update Quantity Test</p>
+            <p><strong>Description:</strong> Done to test quantity update in cart</p>
+            <p><strong>Pre-Condition:</strong> User should be logged in and there should be a product in the cart</p>
+            <p><strong>Dependencies:</strong> cart logic must be functioning</p>
+        </div>
+        <table>
+           <thead>
+                <tr>
+                    <th style="width: 5%">Step</th>
+                    <th style="width: 20%">Test Step</th>
+                    <th style="width: 15%">Test Data</th>
+                    <th style="width: 25%">Expected Result</th>
+                    <th style="width: 25%">Actual Result</th>
+                    <th style="width: 10%">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Click "+" button</td>
+                    <td>-</td>
+                    <td>Item quantity should increase by 1 and total price should update instantly.</td>
+                    <td>Quantity increased and price updated</td>
+                    <td><span class="status-pass">Pass</span></td>
+                </tr>
+                 <tr>
+                    <td>2</td>
+                    <td>Click "–" button</td>
+                    <td>-</td>
+                    <td>Quantity should decrease but minimum quantity should stay at 1.</td>
+                    <td>Working as expected</td>
+                    <td><span class="status-pass">Pass</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Post-Condition:</strong> Cart item quantity updates correctly and reflects on total price.</p>
+    </div>
+    <!-- Test Case 7 -->
+    <div class="test-case">
+        <h2>Test Case ID: 7 - Add Item to Cart (Removal Test)</h2>
+        <div class="summary-box">
+             <p><strong>Module Name:</strong> Add Item to Cart</p>
+             <p><strong>Description:</strong> Done to test removing product from cart</p>
+             <p><strong>Pre-Condition:</strong> User should be logged in and at least one item must be in the cart</p>
+             <p><strong>Dependencies:</strong> cart screen should be functional</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%">Step</th>
+                    <th style="width: 20%">Test Step</th>
+                    <th style="width: 15%">Test Data</th>
+                    <th style="width: 25%">Expected Result</th>
+                    <th style="width: 25%">Actual Result</th>
+                    <th style="width: 10%">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Open Cart Screen</td>
+                    <td>-</td>
+                    <td>Cart should display items added</td>
+                    <td>Items displayed</td>
+                    <td><span class="status-pass">Pass</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Click Trash/Delete Icon</td>
+                    <td>-</td>
+                    <td>Item should be removed instantly, and totals recalculated</td>
+                    <td>Item removed</td>
+                    <td><span class="status-pass">Pass</span></td>
+                </tr>
+            </tbody>
+        </table>
+         <p><strong>Post-Condition:</strong> User sees updated cart items list.</p>
+    </div>
+    <!-- Test Case 8 -->
+    <div class="test-case">
+        <h2>Test Case ID: 8 - Remove Item from Cart</h2>
+        <div class="summary-box">
+            <p><strong>Module Name:</strong> Remove Item from Cart</p>
+            <p><strong>Description:</strong> Done to test removing product from cart</p>
+            <p><strong>Pre-Condition:</strong> User should be logged in and at least one item must be in the cart</p>
+            <p><strong>Dependencies:</strong> cart screen should be functional</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%">Step</th>
+                    <th style="width: 20%">Test Step</th>
+                    <th style="width: 15%">Test Data</th>
+                    <th style="width: 25%">Expected Result</th>
+                    <th style="width: 25%">Actual Result</th>
+                    <th style="width: 10%">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Open Cart Screen</td>
+                    <td>-</td>
+                    <td>Cart should display items added</td>
+                    <td>Items displayed</td>
+                    <td><span class="status-pass">Pass</span></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Click Trash/Delete Icon</td>
+                    <td>-</td>
+                    <td>Item should be removed instantly and totals recalculated</td>
+                    <td>Item removed</td>
+                    <td><span class="status-pass">Pass</span></td>
+                </tr>
+            </tbody>
+        </table>
+         <p><strong>Post-Condition:</strong> User sees updated cart items list.</p>
+    </div>
+</body>
+</html>
